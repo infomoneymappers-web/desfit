@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Generador de datos — FLI</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#e0e0e0;padding:24px;min-height:100vh}
+  h1{color:#aaff00;font-size:22px;margin-bottom:4px}
+  .sub{color:#666;font-size:13px;margin-bottom:24px}
+  .card{background:#141414;border:1px solid #222;border-radius:14px;padding:20px;margin-bottom:16px}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:#666;margin-bottom:12px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;align-items:flex-end}
+  label{font-size:12px;color:#888;margin-bottom:3px;display:block}
+  input,select{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:8px 12px;color:#e0e0e0;font-size:13px;font-family:'Inter',sans-serif;outline:none;min-width:160px}
+  input:focus,select:focus{border-color:#aaff00}
+  .btn{background:#aaff00;color:#0a0a0a;border:none;border-radius:10px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.2s}
+  .btn:hover{opacity:0.85}
+  .btn:disabled{opacity:0.4;cursor:not-allowed}
+  .btn-outline{background:transparent;color:#f44;border:1px solid #f44;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+  .btn-outline:hover{background:#2a0a0a}
+  .btn-sec{background:#1e1e1e;color:#e0e0e0;border:1px solid #333;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+  .log{background:#0d0d0d;border:1px solid #222;border-radius:10px;padding:14px;height:300px;overflow-y:auto;font-size:12px;font-family:'Courier New',monospace;line-height:1.8}
+  .log .ok{color:#aaff00} .log .err{color:#f44} .log .info{color:#666} .log .warn{color:#ffaa00}
+  .progress-bar{height:6px;background:#1e1e1e;border-radius:4px;margin:12px 0;overflow:hidden;display:none}
+  .progress-fill{height:100%;background:#aaff00;border-radius:4px;transition:width 0.2s;width:0%}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;display:none}
+  .stat{background:#1a1a1a;border-radius:10px;padding:12px;text-align:center}
+  .stat-val{font-size:24px;font-weight:700;color:#aaff00;font-family:'Courier New'}
+  .stat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#555;margin-top:3px}
+  .auth-status{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 12px;border-radius:20px;background:#1a1a1a;border:1px solid #333;margin-left:12px}
+  .dot{width:7px;height:7px;border-radius:50%;background:#555}
+  .dot.on{background:#aaff00}
+</style>
+</head>
+<body>
+
+<h1>🏋️ FLI — Generador de datos de prueba</h1>
+<p class="sub">Inserta 30 días de datos realistas directamente en Supabase</p>
+
+<!-- LOGIN ADMIN -->
+<div class="card" id="login-card">
+  <h2>🔐 Login admin (necesario para pasar RLS)</h2>
+  <div class="row">
+    <div><label>Email admin</label><input type="email" id="admin-email" placeholder="admin@email.com"></div>
+    <div><label>Contraseña</label><input type="password" id="admin-pass" placeholder="••••••••"></div>
+    <button class="btn" onclick="loginAdmin()">Iniciar sesión</button>
+    <span class="auth-status" id="auth-status"><span class="dot" id="auth-dot"></span><span id="auth-txt">Sin sesión</span></span>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div class="card">
+  <h2>⚙️ Configuración</h2>
+  <div class="row">
+    <div><label>Email del cliente</label><input type="text" id="email" value="godm_604@hotmail.com" style="min-width:240px"></div>
+    <div><label>Días a generar</label><input type="number" id="dias" value="30" min="7" max="90" style="min-width:90px"></div>
+    <div><label>Comidas por día</label>
+      <select id="numComidas">
+        <option value="3">3 comidas</option><option value="4">4 comidas</option>
+        <option value="5">5 comidas</option><option value="6" selected>6 comidas</option>
+        <option value="7">7 comidas</option><option value="8">8 comidas</option>
+      </select>
+    </div>
+    <div><label>Días entreno/sem</label>
+      <select id="diasEntreno">
+        <option value="3">3 días</option><option value="4">4 días</option>
+        <option value="5">5 días</option><option value="6" selected>6 días</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div><label>Peso inicial (kg)</label><input type="number" id="pesoInicial" value="82" style="min-width:110px"></div>
+    <div><label>Altura (cm)</label><input type="number" id="altura" value="175" style="min-width:110px"></div>
+    <div><label>% Grasa inicial</label><input type="number" id="grasaInicial" value="22" step="0.1" style="min-width:110px"></div>
+    <div><label>Objetivo físico</label>
+      <select id="objetivo">
+        <option value="perdida_grasa" selected>🔥 Pérdida de grasa</option>
+        <option value="ganancia_muscular">💪 Ganancia muscular</option>
+        <option value="recomposicion_corporal">⚡ Recomposición</option>
+        <option value="mantenimiento">⚖️ Mantenimiento</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="stats" id="stats-wrap">
+  <div class="stat"><div class="stat-val" id="st-macros">0</div><div class="stat-lbl">Registros macro</div></div>
+  <div class="stat"><div class="stat-val" id="st-entrenos">0</div><div class="stat-lbl">Entrenamientos</div></div>
+  <div class="stat"><div class="stat-val" id="st-medidas">0</div><div class="stat-lbl">Medidas físicas</div></div>
+  <div class="stat"><div class="stat-val" id="st-errores">0</div><div class="stat-lbl">Errores</div></div>
+</div>
+
+<div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+  <button class="btn" id="btn-generar" onclick="generarDatos()">⚡ Generar 30 días de datos</button>
+  <button class="btn-outline" onclick="limpiarDatos()">🗑️ Limpiar datos existentes</button>
+</div>
+
+<div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+<div class="card">
+  <h2>📋 Log</h2>
+  <div class="log" id="log"><span class="info">Primero inicia sesión como admin, luego genera los datos...</span></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://zljsvjtphngxnsmykgcz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Y3IVWyc_uiHjZ6wp_CctOw_X3Uft7n1';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { storageKey: 'sb-seed-session' } });
+
+const COMIDAS_POR_N = {
+  3:['Desayuno','Almuerzo','Cena'],
+  4:['Desayuno','Media Mañana','Almuerzo','Cena'],
+  5:['Desayuno','Media Mañana','Almuerzo','Merienda','Cena'],
+  6:['Desayuno','Media Mañana','Almuerzo','Merienda','Snack Media Tarde','Cena'],
+  7:['Desayuno','Media Mañana','Almuerzo','Merienda','Snack Media Tarde','Pre-Entreno','Cena'],
+  8:['Desayuno','Media Mañana','Almuerzo','Merienda','Snack Media Tarde','Pre-Entreno','Post-Entreno','Cena'],
+};
+const DIST_SPEC = {
+  3:{Desayuno:30,Almuerzo:40,Cena:30},
+  4:{Desayuno:25,'Media Mañana':15,Almuerzo:35,Cena:25},
+  5:{Desayuno:25,'Media Mañana':10,Almuerzo:30,Merienda:15,Cena:20},
+  6:{Desayuno:20,'Media Mañana':10,Almuerzo:30,Merienda:15,'Snack Media Tarde':10,Cena:15},
+  7:{Desayuno:18,'Media Mañana':10,Almuerzo:25,Merienda:15,'Snack Media Tarde':10,'Pre-Entreno':7,Cena:15},
+  8:{Desayuno:18,'Media Mañana':10,Almuerzo:25,Merienda:12,'Snack Media Tarde':8,'Pre-Entreno':7,'Post-Entreno':10,Cena:10},
+};
+const DIAS_ENTRENO_MAP = {3:[1,3,5],4:[1,2,4,5],5:[1,2,3,4,5],6:[1,2,3,4,5,6]};
+const NOMBRE_DIA = {1:'Lunes',2:'Martes',3:'Miércoles',4:'Jueves',5:'Viernes',6:'Sábado',7:'Domingo'};
+
+let errCount=0, okMacros=0, okEntrenos=0, okMedidas=0;
+
+function log(msg, tipo='info'){
+  const logEl = document.getElementById('log');
+  const d = document.createElement('div');
+  d.className = tipo;
+  d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+function setProgress(pct){ document.getElementById('progress-fill').style.width=pct+'%'; }
+function updateStats(){
+  document.getElementById('st-macros').textContent=okMacros;
+  document.getElementById('st-entrenos').textContent=okEntrenos;
+  document.getElementById('st-medidas').textContent=okMedidas;
+  document.getElementById('st-errores').textContent=errCount;
+}
+function rnd(min,max){ return Math.round((Math.random()*(max-min)+min)*10)/10; }
+function rndInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function getFecha(daysAgo){ const d=new Date(); d.setDate(d.getDate()-daysAgo); return d.toISOString().split('T')[0]; }
+function getDiaSemana(fecha){ const dow=new Date(fecha+'T12:00:00').getDay(); return dow===0?7:dow; }
+
+async function loginAdmin(){
+  const email = document.getElementById('admin-email').value.trim();
+  const pass  = document.getElementById('admin-pass').value;
+  if(!email||!pass){ alert('Ingresa email y contraseña'); return; }
+  log(`Iniciando sesión como ${email}...`, 'info');
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if(error){
+    log('❌ Error de login: '+error.message, 'err');
+    document.getElementById('auth-dot').className='dot';
+    document.getElementById('auth-txt').textContent='Error de login';
+    return;
+  }
+  log(`✅ Sesión iniciada: ${data.user.email}`, 'ok');
+  document.getElementById('auth-dot').className='dot on';
+  document.getElementById('auth-txt').textContent=data.user.email;
+}
+
+// Auto-recuperar sesión si ya estaba logueado
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session){
+    document.getElementById('auth-dot').className='dot on';
+    document.getElementById('auth-txt').textContent=session.user.email;
+    document.getElementById('admin-email').value=session.user.email;
+    log('✅ Sesión admin recuperada: '+session.user.email,'ok');
+  }
+});
+
+async function limpiarDatos(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ log('❌ Primero inicia sesión como admin','err'); return; }
+  const email = document.getElementById('email').value.trim();
+  if(!confirm(`⚠️ ¿Eliminar TODOS los datos de ${email}?`)) return;
+  const { data: u } = await sb.from('usuarios').select('id').eq('email',email).maybeSingle();
+  if(!u){ log('❌ Usuario no encontrado','err'); return; }
+  await sb.from('registro_macros').delete().eq('cliente_id',u.id);
+  await sb.from('entrenamientos').delete().eq('cliente_id',u.id);
+  await sb.from('medidas_fisicas').delete().eq('cliente_id',u.id);
+  await sb.from('plan_semanal').delete().eq('cliente_id',u.id);
+  log('✅ Datos eliminados', 'ok');
+}
+
+async function generarDatos(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ log('❌ Primero inicia sesión como admin','err'); return; }
+
+  document.getElementById('log').innerHTML='';
+  errCount=0; okMacros=0; okEntrenos=0; okMedidas=0;
+
+  const email        = document.getElementById('email').value.trim();
+  const totalDias    = parseInt(document.getElementById('dias').value);
+  const numComidas   = parseInt(document.getElementById('numComidas').value);
+  const diasEntreno  = parseInt(document.getElementById('diasEntreno').value);
+  const pesoInicial  = parseFloat(document.getElementById('pesoInicial').value);
+  const alturaCm     = parseFloat(document.getElementById('altura').value);
+  const grasaInicial = parseFloat(document.getElementById('grasaInicial').value);
+  const objetivo     = document.getElementById('objetivo').value;
+
+  document.getElementById('btn-generar').disabled=true;
+  document.getElementById('stats-wrap').style.display='grid';
+  document.getElementById('progress-bar').style.display='block';
+  setProgress(0);
+
+  // 1. Buscar usuario cliente
+  log(`Buscando usuario: ${email}`, 'info');
+  const { data: usuario } = await sb.from('usuarios').select('id,nombre,email').eq('email',email).maybeSingle();
+  if(!usuario){ log('❌ Usuario no encontrado','err'); document.getElementById('btn-generar').disabled=false; return; }
+  const clienteId = usuario.id;
+  log(`✓ Cliente: ${usuario.nombre||email} (${clienteId})`, 'ok');
+  setProgress(5);
+
+  // 2. Macros objetivo
+  const macrosMap = {
+    perdida_grasa:       {p:170, c:180, g:55},
+    ganancia_muscular:   {p:180, c:300, g:65},
+    recomposicion_corporal:{p:175,c:220,g:60},
+    mantenimiento:       {p:150, c:250, g:60},
+  };
+  const {p:macroProt, c:macroCarbs, g:macroGrasas} = macrosMap[objetivo]||macrosMap.mantenimiento;
+  const kcalObj = Math.round(macroProt*4 + macroCarbs*4 + macroGrasas*9);
+  log(`Macros objetivo: ${macroProt}p / ${macroCarbs}c / ${macroGrasas}g = ${kcalObj} kcal`, 'info');
+
+  // 3. clientes_config
+  const comidas = COMIDAS_POR_N[numComidas];
+  const { data: cfgEx } = await sb.from('clientes_config').select('id').eq('usuario_id',clienteId).maybeSingle();
+  const cfgPayload = {
+    usuario_id: clienteId, estado:'activo',
+    num_comidas: numComidas, dias_entreno: diasEntreno,
+    objetivo_fisico: objetivo,
+    macros_prot: macroProt, macros_carbs: macroCarbs, macros_grasas: macroGrasas,
+    comidas_activas: JSON.stringify(comidas),
+  };
+  if(cfgEx) await sb.from('clientes_config').update(cfgPayload).eq('usuario_id',clienteId);
+  else       await sb.from('clientes_config').insert(cfgPayload);
+  log('✓ clientes_config actualizado', 'ok');
+  setProgress(8);
+
+  // 4. plan_semanal
+  await sb.from('plan_semanal').delete().eq('cliente_id',clienteId);
+  const diasPlanArr = DIAS_ENTRENO_MAP[diasEntreno]||DIAS_ENTRENO_MAP[6];
+  const gruposPorIdx = ['Pecho + Tríceps','Espalda + Bíceps','Piernas','Hombros + Core','Full Body','Cardio + Abs'];
+  const planRows = diasPlanArr.map((dia,i)=>({ cliente_id:clienteId, dia:NOMBRE_DIA[dia], grupo:gruposPorIdx[i]||'Entrenamiento' }));
+  await sb.from('plan_semanal').insert(planRows);
+  log(`✓ plan_semanal: ${planRows.length} días (${planRows.map(r=>r.dia).join(', ')})`, 'ok');
+  setProgress(12);
+
+  // 5. Progresión peso/medidas
+  const pesoFinal = objetivo==='perdida_grasa' ? pesoInicial-rnd(2.5,4.5) :
+                    objetivo==='ganancia_muscular' ? pesoInicial+rnd(1.5,3) : pesoInicial+rnd(-0.5,0.5);
+  const grasaFinal= objetivo==='perdida_grasa' ? grasaInicial-rnd(2,3.5) :
+                    objetivo==='ganancia_muscular' ? grasaInicial+rnd(0.5,1.5) : grasaInicial-rnd(0.5,1.5);
+  const dist = DIST_SPEC[numComidas];
+
+  // 5b. Cargar IDs reales de la tabla ejercicios
+  log(`Cargando ejercicios reales de la BD...`, 'info');
+  const { data: ejerciciosDB, error: ejErr } = await sb.from('ejercicios').select('id, nombre, grupo').order('id');
+  if(ejErr || !ejerciciosDB || !ejerciciosDB.length){
+    log('❌ No se pudieron cargar ejercicios de la BD: ' + (ejErr?.message||'tabla vacía'), 'err');
+    document.getElementById('btn-generar').disabled=false;
+    return;
+  }
+  const ejerciciosIds = ejerciciosDB.map(e => e.id);
+  log(`✓ ${ejerciciosIds.length} ejercicios disponibles (IDs: ${ejerciciosIds.slice(0,5).join(', ')}...)`, 'ok');
+  setProgress(13);
+
+  log(`Generando ${totalDias} días...`, 'info');
+
+  for(let i=totalDias-1; i>=0; i--){
+    const fecha = getFecha(i);
+    const diaSemana = getDiaSemana(fecha);
+    const esHoy = i===0;
+    const progreso = (totalDias-i)/totalDias;
+
+    // Medidas cada 7 días
+    if(i % 7 === 0 || i === totalDias-1){
+      const pesoDia  = Math.round((pesoInicial+(pesoFinal-pesoInicial)*progreso+rnd(-0.3,0.3))*10)/10;
+      const grasaDia = Math.round((grasaInicial+(grasaFinal-grasaInicial)*progreso+rnd(-0.2,0.2))*10)/10;
+      const cintura  = Math.round((85-(objetivo==='perdida_grasa'?progreso*4:progreso)+rnd(-0.5,0.5))*10)/10;
+      const cadera   = Math.round((95-(objetivo==='perdida_grasa'?progreso*2:0)+rnd(-0.3,0.3))*10)/10;
+      const biceps   = Math.round((34+(objetivo==='ganancia_muscular'?progreso*2:progreso*0.5)+rnd(-0.2,0.2))*10)/10;
+      const { error:mErr } = await sb.from('medidas_fisicas').insert({
+        cliente_id:clienteId, fecha, peso_kg:pesoDia, altura_cm:alturaCm,
+        grasa_pct:grasaDia, cintura_cm:cintura, cadera_cm:cadera, biceps_cm:biceps,
+      });
+      if(!mErr){ okMedidas++; log(`📏 ${fecha}: ${pesoDia}kg | ${grasaDia}% grasa | cintura ${cintura}cm`, 'ok'); }
+      else { errCount++; log(`✗ Medidas ${fecha}: ${mErr.message}`, 'err'); }
+      updateStats();
+    }
+
+    // Macros (85-90% adherencia, menos fines de semana)
+    const esFinde = diaSemana >= 6;
+    if(!esHoy && Math.random() < (esFinde?0.75:0.88)){
+      const v = rnd(0.90,1.08);
+      for(const comida of comidas){
+        const pct = (dist[comida]||Math.round(100/numComidas))/100;
+        const vc = rnd(0.93,1.05);
+        const { error:rErr } = await sb.from('registro_macros').insert({
+          cliente_id:clienteId, fecha, comida,
+          proteina_g: Math.round(macroProt*v*pct*vc),
+          carbos_g:   Math.round(macroCarbs*v*pct*vc),
+          grasas_g:   Math.round(macroGrasas*v*pct*vc),
+          cumplido: true,
+        });
+        if(!rErr) okMacros++;
+        else if(!rErr?.message?.includes('duplicate')){ errCount++; log(`✗ Macro ${fecha} ${comida}: ${rErr.message}`,'err'); }
+      }
+      updateStats();
+    }
+
+    // Entrenamientos
+    if(!esHoy && diasPlanArr.includes(diaSemana) && Math.random()<(esFinde?0.80:0.92)){
+      const numEj = rndInt(3,4);
+      // Seleccionar IDs reales aleatorios sin repetir en el mismo día
+      const ejDelDia = [...ejerciciosIds].sort(()=>Math.random()-0.5).slice(0, numEj);
+      for(let e=0;e<numEj;e++){
+        const numSeries = rndInt(3,4);
+        for(let s=1;s<=numSeries;s++){
+          const { error:eErr } = await sb.from('entrenamientos').insert({
+            cliente_id:clienteId, fecha,
+            ejercicio_id: ejDelDia[e], serie:s,
+            reps:[8,10,12,6,15][rndInt(0,4)],
+            peso:[50,60,70,80,40,100,120][rndInt(0,6)]+rndInt(-5,10),
+          });
+          if(!eErr && s===1) okEntrenos++;
+          else if(eErr && !eErr.message?.includes('duplicate')) errCount++;
+        }
+      }
+      log(`💪 ${fecha} (${NOMBRE_DIA[diaSemana]}): ${numEj} ejercicios`, 'ok');
+      updateStats();
+    }
+
+    setProgress(12 + Math.round((totalDias-i)/totalDias*85));
+    if((totalDias-i) % 3 === 0) await new Promise(r=>setTimeout(r,50));
+  }
+
+  setProgress(100);
+  log('', 'info');
+  log('════════════════════════════════', 'info');
+  log('✅ COMPLETADO', 'ok');
+  log(`   📊 ${okMacros} registros de macros`, 'ok');
+  log(`   💪 ${okEntrenos} días de entreno`, 'ok');
+  log(`   📏 ${okMedidas} registros de medidas`, 'ok');
+  if(errCount) log(`   ⚠️  ${errCount} errores`, 'warn');
+  log('════════════════════════════════', 'info');
+  document.getElementById('btn-generar').disabled=false;
+}
+</script>
+</body>
+</html>
