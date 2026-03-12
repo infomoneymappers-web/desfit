@@ -1242,22 +1242,29 @@
 
   <!-- ══ TAB VIDEOS ══ -->
   <div class="tab-panel" id="tab-videos" style="padding:0 20px 20px">
-    <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <select id="vid-filtro-grupo" onchange="vidFiltrar()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
-        <option value="">— Todos los grupos —</option>
-        <option>Pecho</option><option>Espalda</option><option>Hombro</option>
-        <option>Cuádriceps</option><option>Femoral</option><option>Glúteo</option>
-        <option>Bíceps</option><option>Tríceps</option><option>Core</option>
-        <option>Pantorrilla</option>
-      </select>
-      <select id="vid-filtro-estado" onchange="vidFiltrar()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
+    <!-- Header -->
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px">
+        <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">🎬 Catálogo de videos</span>
+        <span id="vid-contador" style="margin-left:8px;font-size:11px;background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:10px;color:var(--muted)">0 ejercicios</span>
+      </div>
+      <select id="vid-filtro-estado" onchange="vidFiltrar()" style="padding:7px 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
         <option value="">— Todos —</option>
         <option value="con">Con video</option>
         <option value="sin">Sin video</option>
       </select>
-      <span id="vid-contador" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
     </div>
-    <div id="vid-lista" style="display:flex;flex-direction:column;gap:8px"></div>
+
+    <!-- Two-column layout -->
+    <div style="display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:start">
+      <!-- Left: muscle groups -->
+      <div class="card" style="padding:12px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Grupos</div>
+        <div id="vid-grupos" style="display:flex;flex-direction:column;gap:3px"></div>
+      </div>
+      <!-- Right: exercises list -->
+      <div id="vid-lista" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
 
     <!-- Modal editar URL -->
     <div id="vid-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center">
@@ -6711,6 +6718,7 @@ async function bibDeshacerPlan() {
 // ══════════════════════════════════════════
 let vidCatalogo = [];
 let vidEditando = null;
+let vidGrupoActivo = 'Todos';
 
 async function vidCargar() {
   const { data, error } = await sb
@@ -6719,14 +6727,38 @@ async function vidCargar() {
     .order('grupo').order('nombre');
   if (error) { showToast('Error cargando catálogo'); return; }
   vidCatalogo = data || [];
+  vidRenderGrupos();
+  vidFiltrar();
+}
+
+function vidRenderGrupos() {
+  const grupos = ['Todos', ...[...new Set(vidCatalogo.map(e => e.grupo).filter(Boolean))].sort()];
+  const el = document.getElementById('vid-grupos');
+  el.innerHTML = grupos.map(g => {
+    const count = g === 'Todos' ? vidCatalogo.length : vidCatalogo.filter(e => e.grupo === g).length;
+    const active = g === vidGrupoActivo;
+    return `<button onclick="vidSeleccionarGrupo('${g}')"
+      style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;border:none;
+             background:${active ? 'var(--accent)' : 'transparent'};
+             color:${active ? '#0a0a0a' : 'var(--text)'};
+             cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;font-weight:${active ? '700' : '400'};width:100%;text-align:left">
+      <span>${g}</span>
+      <span style="font-size:11px;background:${active ? 'rgba(0,0,0,0.15)' : 'var(--surface)'};
+                   padding:1px 7px;border-radius:10px;color:${active ? '#0a0a0a' : 'var(--muted)'}">${count}</span>
+    </button>`;
+  }).join('');
+}
+
+function vidSeleccionarGrupo(g) {
+  vidGrupoActivo = g;
+  vidRenderGrupos();
   vidFiltrar();
 }
 
 function vidFiltrar() {
-  const grupo  = document.getElementById('vid-filtro-grupo').value;
   const estado = document.getElementById('vid-filtro-estado').value;
   let lista = vidCatalogo;
-  if (grupo)  lista = lista.filter(e => e.grupo === grupo);
+  if (vidGrupoActivo !== 'Todos') lista = lista.filter(e => e.grupo === vidGrupoActivo);
   if (estado === 'con') lista = lista.filter(e => e.video_url);
   if (estado === 'sin') lista = lista.filter(e => !e.video_url);
   document.getElementById('vid-contador').textContent = `${lista.length} ejercicios`;
@@ -6739,12 +6771,23 @@ function vidFiltrar() {
         <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.nombre}</div>
         <div style="font-size:11px;color:var(--muted)">${e.grupo} ${e.video_url ? '· <span style="color:#48bb78">Con video</span>' : '· <span style="color:#e53e3e">Sin video</span>'}</div>
       </div>
-      ${e.video_url ? `<a href="${e.video_url}" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;flex-shrink:0">▶ Ver</a>` : ''}
+      ${e.video_url ? `<a href="${e.video_url}" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;flex-shrink:0;padding:5px 10px;border-radius:6px;border:1px solid var(--border)">▶ Ver</a>` : ''}
       <button onclick="vidModalAbrir(${e.id})" style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:12px;flex-shrink:0;font-family:'Inter',sans-serif">
         ${e.video_url ? 'Editar' : 'Agregar'}
       </button>
+      ${e.video_url ? `<button onclick="vidBorrarUrl(${e.id})" title="Quitar video" style="padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:#e53e3e;cursor:pointer;font-size:12px;flex-shrink:0;font-family:'Inter',sans-serif">✕</button>` : ''}
     </div>
   `).join('');
+}
+
+async function vidBorrarUrl(id) {
+  if (!confirm('¿Quitar el link del video de este ejercicio?')) return;
+  const { error } = await sb.from('bd_ejercicios_catalogo').update({ video_url: null }).eq('id', id);
+  if (error) { showToast('Error al borrar'); return; }
+  const ej = vidCatalogo.find(e => e.id === id);
+  if (ej) ej.video_url = null;
+  vidFiltrar();
+  showToast('✓ Video eliminado');
 }
 
 function vidModalAbrir(id) {
