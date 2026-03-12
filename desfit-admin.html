@@ -1255,6 +1255,17 @@
       </select>
     </div>
 
+    <!-- Barra de progreso general -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:11px;color:var(--muted)">Videos completados</span>
+        <span id="vid-prog-label" style="font-size:11px;font-weight:700;color:var(--muted)">0 / 0</span>
+      </div>
+      <div style="height:8px;border-radius:6px;background:var(--surface);overflow:hidden">
+        <div id="vid-prog-bar" style="height:100%;border-radius:6px;width:0%;background:#e53e3e;transition:width .4s,background .4s"></div>
+      </div>
+    </div>
+
     <!-- Two-column layout -->
     <div style="display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:start">
       <!-- Left: muscle groups -->
@@ -6731,20 +6742,29 @@ async function vidCargar() {
   vidFiltrar();
 }
 
+function vidColorProgreso(pct) {
+  if (pct >= 80) return '#48bb78';   // verde
+  if (pct >= 50) return '#ECC94B';   // amarillo
+  return '#e53e3e';                   // rojo
+}
+
 function vidRenderGrupos() {
   const grupos = ['Todos', ...[...new Set(vidCatalogo.map(e => e.grupo).filter(Boolean))].sort()];
   const el = document.getElementById('vid-grupos');
   el.innerHTML = grupos.map(g => {
-    const count = g === 'Todos' ? vidCatalogo.length : vidCatalogo.filter(e => e.grupo === g).length;
+    const total  = g === 'Todos' ? vidCatalogo.length : vidCatalogo.filter(e => e.grupo === g).length;
+    const conVid = g === 'Todos' ? vidCatalogo.filter(e => e.video_url).length : vidCatalogo.filter(e => e.grupo === g && e.video_url).length;
+    const pct    = total ? Math.round(conVid / total * 100) : 0;
+    const color  = vidColorProgreso(pct);
     const active = g === vidGrupoActivo;
     return `<button onclick="vidSeleccionarGrupo('${g}')"
       style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;border:none;
              background:${active ? 'var(--accent)' : 'transparent'};
              color:${active ? '#0a0a0a' : 'var(--text)'};
              cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;font-weight:${active ? '700' : '400'};width:100%;text-align:left">
-      <span>${g}</span>
+      <span style="color:${active ? '#0a0a0a' : (g === 'Todos' ? 'var(--text)' : color)}">${g}</span>
       <span style="font-size:11px;background:${active ? 'rgba(0,0,0,0.15)' : 'var(--surface)'};
-                   padding:1px 7px;border-radius:10px;color:${active ? '#0a0a0a' : 'var(--muted)'}">${count}</span>
+                   padding:1px 7px;border-radius:10px;color:${active ? '#0a0a0a' : color};font-weight:600">${conVid}/${total}</span>
     </button>`;
   }).join('');
 }
@@ -6755,6 +6775,17 @@ function vidSeleccionarGrupo(g) {
   vidFiltrar();
 }
 
+function vidActualizarBarra() {
+  const total  = vidCatalogo.length;
+  const conVid = vidCatalogo.filter(e => e.video_url).length;
+  const pct    = total ? Math.round(conVid / total * 100) : 0;
+  const color  = vidColorProgreso(pct);
+  document.getElementById('vid-prog-bar').style.width = pct + '%';
+  document.getElementById('vid-prog-bar').style.background = color;
+  document.getElementById('vid-prog-label').textContent = `${conVid} / ${total} (${pct}%)`;
+  document.getElementById('vid-prog-label').style.color = color;
+}
+
 function vidFiltrar() {
   const estado = document.getElementById('vid-filtro-estado').value;
   let lista = vidCatalogo;
@@ -6762,6 +6793,7 @@ function vidFiltrar() {
   if (estado === 'con') lista = lista.filter(e => e.video_url);
   if (estado === 'sin') lista = lista.filter(e => !e.video_url);
   document.getElementById('vid-contador').textContent = `${lista.length} ejercicios`;
+  vidActualizarBarra();
   const el = document.getElementById('vid-lista');
   if (!lista.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0">Sin resultados</div>'; return; }
   el.innerHTML = lista.map(e => `
@@ -6786,6 +6818,7 @@ async function vidBorrarUrl(id) {
   if (error) { showToast('Error al borrar'); return; }
   const ej = vidCatalogo.find(e => e.id === id);
   if (ej) ej.video_url = null;
+  vidRenderGrupos();
   vidFiltrar();
   showToast('✓ Video eliminado');
 }
@@ -6816,6 +6849,7 @@ async function vidGuardar() {
   if (error) { showToast('Error al guardar'); return; }
   vidEditando.video_url = url || null;
   vidModalCerrar();
+  vidRenderGrupos();
   vidFiltrar();
   showToast('✓ Video actualizado');
 }
