@@ -6758,13 +6758,12 @@ function vidRenderGrupos() {
     const color  = vidColorProgreso(pct);
     const active = g === vidGrupoActivo;
     return `<button onclick="vidSeleccionarGrupo('${g}')"
-      style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;border:none;
-             background:${active ? 'var(--accent)' : 'transparent'};
-             color:${active ? '#0a0a0a' : 'var(--text)'};
+      style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;border:1px solid ${active ? color : 'transparent'};
+             background:${active ? color + '22' : 'transparent'};
              cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;font-weight:${active ? '700' : '400'};width:100%;text-align:left">
-      <span style="color:${active ? '#0a0a0a' : (g === 'Todos' ? 'var(--text)' : color)}">${g}</span>
-      <span style="font-size:11px;background:${active ? 'rgba(0,0,0,0.15)' : 'var(--surface)'};
-                   padding:1px 7px;border-radius:10px;color:${active ? '#0a0a0a' : color};font-weight:600">${conVid}/${total}</span>
+      <span style="color:${g === 'Todos' ? 'var(--text)' : color}">${g}</span>
+      <span style="font-size:11px;background:var(--surface);
+                   padding:1px 7px;border-radius:10px;color:${color};font-weight:600">${conVid}/${total}</span>
     </button>`;
   }).join('');
 }
