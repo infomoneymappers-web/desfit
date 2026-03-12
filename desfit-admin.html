@@ -1667,6 +1667,7 @@ async function cargarClienteGlobal() {
   await Promise.all([
     cargarResumen(_clienteSelId),
     iniciarConfig(),
+    iniciarEntreno(),
   ]);
 
   btn.textContent = 'Cargar cliente'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
