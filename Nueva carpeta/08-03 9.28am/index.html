@@ -1177,16 +1177,31 @@ document.getElementById('login-password').addEventListener('keydown', e => {
 sb.auth.getSession().then(({ data: { session } }) => { if (session) initApp(session.user); });
 
 async function initApp(user) {
+  // Verificar que el usuario tiene rol 'cliente' — bloquear si es admin
+  const { data: perfil } = await sb.from('usuarios')
+    .select('nombre, rol').eq('id', user.id).maybeSingle();
+
+  if (!perfil) {
+    // No existe en tabla usuarios — puede ser el primer login, esperamos el trigger
+    // Crear fila si no la creó el trigger todavía
+    await sb.from('usuarios').upsert({ id: user.id, email: user.email, rol: 'cliente' });
+  } else if (perfil.rol === 'admin') {
+    // Es admin — cerrar sesión y mostrar error
+    await sb.auth.signOut();
+    const err = document.getElementById('login-error');
+    err.textContent = '⛔ Esta app es para clientes. El admin usa el panel admin.';
+    err.style.display = 'block';
+    return;
+  }
+
   currentUser = user;
   document.getElementById('screen-login').style.display = 'none';
   document.getElementById('screen-app').style.display = 'flex';
   document.getElementById('screen-app').style.flexDirection = 'column';
-  // start on alimentos (page 1) - wait for layout
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       goToPage(1, false);
       loadAlimentos();
-      // preload catalog in background so Buscar is ready instantly
       setTimeout(() => loadCatalogoAlimentos(), 1500);
     });
   });

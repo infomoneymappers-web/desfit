@@ -435,6 +435,7 @@
     .prog-opcion .op-meta{font-size:10px;color:var(--muted)}
     .prog-opcion .op-badge{display:inline-block;font-size:9px;background:#1a2a00;color:var(--accent);border-radius:10px;padding:2px 8px;margin-top:4px;font-weight:600}
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -470,7 +471,6 @@
     <button class="tab-btn" data-tab="cliente" onclick="switchTab('cliente',this)">👤 Cliente</button>
     <button class="tab-btn" data-tab="evolucion" onclick="switchTab('evolucion',this)">📈 Evolución</button>
     <button class="tab-btn" data-tab="pendientes" onclick="switchTab('pendientes',this)">🔔 Pendientes <span id="badge-pendientes" style="display:none;background:#e53e3e;color:#fff;border-radius:50%;padding:1px 6px;font-size:11px;font-weight:700;margin-left:2px">0</span></button>
-    <button class="tab-btn" data-tab="videos" onclick="switchTab('videos',this)">🎬 Videos</button>
     <button class="tab-btn" data-tab="alimentos" onclick="switchTab('alimentos',this)">🥦 Alimentos</button>
 
   </div>
@@ -1240,41 +1240,6 @@
 
   </div><!-- /admin-content -->
 
-  <!-- ══ TAB VIDEOS ══ -->
-  <div class="tab-panel" id="tab-videos" style="padding:0 20px 20px">
-    <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <select id="vid-filtro-grupo" onchange="vidFiltrar()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
-        <option value="">— Todos los grupos —</option>
-        <option>Pecho</option><option>Espalda</option><option>Hombro</option>
-        <option>Cuádriceps</option><option>Femoral</option><option>Glúteo</option>
-        <option>Bíceps</option><option>Tríceps</option><option>Core</option>
-        <option>Pantorrilla</option>
-      </select>
-      <select id="vid-filtro-estado" onchange="vidFiltrar()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
-        <option value="">— Todos —</option>
-        <option value="con">Con video</option>
-        <option value="sin">Sin video</option>
-      </select>
-      <span id="vid-contador" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
-    </div>
-    <div id="vid-lista" style="display:flex;flex-direction:column;gap:8px"></div>
-
-    <!-- Modal editar URL -->
-    <div id="vid-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center">
-      <div style="background:var(--card);border-radius:14px;padding:24px;width:min(480px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.4)">
-        <div style="font-weight:700;font-size:15px;margin-bottom:4px" id="vid-modal-nombre"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:16px" id="vid-modal-grupo"></div>
-        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">URL del video (Vimeo / YouTube)</label>
-        <input id="vid-modal-url" type="text" placeholder="https://vimeo.com/123456789"
-          style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:16px;font-family:'Inter',sans-serif;outline:none">
-        <div style="display:flex;gap:8px;justify-content:flex-end">
-          <button onclick="vidModalCerrar()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">Cancelar</button>
-          <button onclick="vidGuardar()" style="padding:8px 16px;border-radius:8px;border:none;background:var(--accent);color:#0a0a0a;cursor:pointer;font-size:13px;font-weight:700;font-family:'Inter',sans-serif">Guardar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- ══ TAB ALIMENTOS ══ -->
   <div class="tab-panel" id="tab-alimentos" style="padding:0 20px 20px">
     <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
@@ -1349,23 +1314,16 @@
 
 <script>
 window.addEventListener('error', function(e) {
-  // Ignorar errores de scripts externos (supabase, chart.js, cdn)
-  var src = e.filename || '';
-  if (src && !src.includes('desfit-admin') && !src.includes('fluyelibre')) return;
-  // Ignorar SyntaxErrors internos de supabase-js
-  if (e.message && e.message.includes('Invalid or unexpected token')) return;
-  var p = document.getElementById('error-panel');
+  const p = document.getElementById('error-panel');
   if (!p) return;
   p.style.display = 'block';
-  p.innerHTML += '<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ff4d4d">❌ ' + e.message + '</b><br><span style="color:#888">' + e.filename + ':' + e.lineno + '</span></div>';
+  p.innerHTML += `<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ff4d4d">❌ ${e.message}</b><br><span style="color:#888">${e.filename}:${e.lineno}</span></div>`;
 });
 window.addEventListener('unhandledrejection', function(e) {
-  var msg = (e.reason && e.reason.message) ? e.reason.message : String(e.reason || '');
-  if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('WebSocket')) return;
-  var p = document.getElementById('error-panel');
+  const p = document.getElementById('error-panel');
   if (!p) return;
   p.style.display = 'block';
-  p.innerHTML += '<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ffb74d">⚠️ ' + msg + '</b></div>';
+  p.innerHTML += `<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ffb74d">⚠️ Promise: ${e.reason?.message || e.reason}</b></div>`;
 });
 </script>
 
@@ -1481,7 +1439,6 @@ function switchTab(tab, btn) {
   if(tab==='resumen' && clienteActivo) cargarResumen(clienteActivo.id);
   if(tab==='pendientes') cargarPendientes();
   if(tab==='alimentos') cargarAdminAlimentos();
-  if(tab==='videos') vidCargar();
 }
 
 // ── EVOLUCIÓN SUB-TABS ──
@@ -3090,7 +3047,10 @@ async function cargarHistorialDietas(clienteId) {
           <div style="font-size:10px;color:var(--muted);margin-top:1px">Desde ${fecha} · ${duracion}</div>
         </div>
       </div>
-      ${!d.activo ? '<div style="display:flex;gap:6px;align-items:center"><button onclick="activarDietaHistorial(\'' + d.id + '\')" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif">Activar</button><button onclick="eliminarDietaHistorial(\'' + d.id + '\')" style="background:none;border:none;color:#555;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px">✕</button></div>' : ''}
+      ${!d.activo ? `<div style="display:flex;gap:6px;align-items:center">
+        <button onclick="activarDietaHistorial('${d.id}')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#666'">Activar</button>
+        <button onclick="eliminarDietaHistorial('${d.id}')" style="background:none;border:none;color:#333;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='#333'">✕</button>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
@@ -3759,61 +3719,19 @@ async function cargarHistorialRutinas(clienteId) {
     const nameColor = mc.activo ? 'var(--accent)' : 'var(--text)';
     const barColor  = mc.activo ? 'var(--accent)' : '#444';
     const activoBadge = mc.activo ? '<span style="font-size:9px;color:var(--accent);background:#1a2a00;border-radius:10px;padding:1px 7px;margin-left:4px">ACTIVO</span>' : '';
-    const btnAcciones = mc.activo ? '' :
-      '<button onclick="activarMacrociclo(' + mc.id + ')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif" onmouseover="this.style.borderColor=\'var(--accent)\';this.style.color=\'var(--accent)\'" onmouseout="this.style.borderColor=\'#2a2a2a\';this.style.color=\'#666\'">Activar</button>' +
-      '<button onclick="eliminarMacrociclo(' + mc.id + ')" title="Eliminar" style="background:none;border:none;color:#333;font-size:15px;cursor:pointer;padding:2px 5px;border-radius:5px;line-height:1" onmouseover="this.style.color=\'#e53e3e\'" onmouseout="this.style.color=\'#333\'">✕</button>';
     return `<div style="padding:10px 12px;background:${bgColor};border:1px solid ${border};border-radius:10px;margin-bottom:6px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div style="min-width:0;flex:1">
           <div style="font-size:12px;font-weight:700;color:${nameColor}">${prog.nombre || 'Programa'}${activoBadge}</div>
           <div style="font-size:10px;color:var(--muted);margin-top:1px">${prog.punto_partida || ''} · ${prog.dias_semana || ''}d/sem · ${fechaI} → ${fechaF} · ${dias} días</div>
         </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:8px">
-          <span style="font-size:11px;color:var(--muted)">${mc.semanas_completadas}/${prog.duracion_sem || '?'} sem</span>
-          ${btnAcciones}
-        </div>
+        <span style="font-size:11px;color:var(--muted);white-space:nowrap;margin-left:8px">${mc.semanas_completadas}/${prog.duracion_sem || '?'} sem</span>
       </div>
       <div style="background:#1a1a1a;border-radius:20px;height:4px;overflow:hidden">
         <div style="height:4px;width:${pct}%;background:${barColor};border-radius:20px"></div>
       </div>
     </div>`;
   }).join('');
-}
-
-async function eliminarMacrociclo(macroId) {
-  if (!confirm('¿Eliminar este macrociclo del historial? No se puede deshacer.')) return;
-  await sb.from('macrociclos').delete().eq('id', macroId);
-  showToast('✓ Macrociclo eliminado');
-  await cargarHistorialRutinas(entClienteId);
-}
-
-async function activarMacrociclo(macroId) {
-  if (!confirm('¿Activar este macrociclo? El actual quedará archivado.')) return;
-  const hoy = new Date().toISOString().split('T')[0];
-  // Archivar todos los macrociclos activos
-  await sb.from('macrociclos').update({ activo: false, fecha_fin: hoy }).eq('cliente_id', entClienteId).eq('activo', true);
-  // Activar el seleccionado
-  const { error } = await sb.from('macrociclos').update({ activo: true, fecha_fin: null }).eq('id', macroId);
-  if (error) { showToast('❌ ' + error.message); return; }
-  // Cargar el plan_entreno vinculado y sincronizar con app
-  const { data: mc } = await sb.from('macrociclos').select('programa_id').eq('id', macroId).single();
-  if (mc?.programa_id) {
-    const { data: exs } = await sb.from('bd_ejercicios').select('*').eq('programa_id', mc.programa_id).order('dia').order('orden');
-    if (exs?.length) {
-      await sb.from('plan_entreno').update({ activo: false }).eq('cliente_id', entClienteId);
-      const { data: plan } = await sb.from('plan_entreno').insert({ cliente_id: entClienteId, nivel: 'Biblioteca', activo: true }).select().single();
-      if (plan) {
-        const items = exs.map(e => ({ plan_id: plan.id, dia: e.dia, sesion: e.sesion, grupo: e.grupo, nombre: e.nombre, series: e.series, reps: e.reps, descanso: e.descanso, descanso_seg: parsearDescanso(e.descanso), orden: e.orden, indicacion: e.indicacion || '' }));
-        await sb.from('plan_entreno_items').insert(items);
-        await sincronizarPlanClienteApp(entClienteId, items);
-      }
-    }
-  }
-  showToast('✓ Macrociclo activado y sincronizado');
-  await progCargar(entClienteId);
-  await cargarPlanEntrenoGuardado(entClienteId);
-  await cargarHistorialRutinas(entClienteId);
-  if (clienteActivo?.id) await cargarResumen(clienteActivo.id);
 }
 
 async function activarRutinaHistorial() { /* legacy - no-op */ }
@@ -6702,81 +6620,6 @@ async function bibDeshacerPlan() {
 </div>
 
 <script>
-// ══════════════════════════════════════════
-// 🎬 VIDEOS — bd_ejercicios_catalogo
-// ══════════════════════════════════════════
-let vidCatalogo = [];
-let vidEditando = null;
-
-async function vidCargar() {
-  const { data, error } = await sb
-    .from('bd_ejercicios_catalogo')
-    .select('id, grupo, nombre, indicacion, video_url')
-    .order('grupo').order('nombre');
-  if (error) { showToast('Error cargando catálogo'); return; }
-  vidCatalogo = data || [];
-  vidFiltrar();
-}
-
-function vidFiltrar() {
-  const grupo  = document.getElementById('vid-filtro-grupo').value;
-  const estado = document.getElementById('vid-filtro-estado').value;
-  let lista = vidCatalogo;
-  if (grupo)  lista = lista.filter(e => e.grupo === grupo);
-  if (estado === 'con') lista = lista.filter(e => e.video_url);
-  if (estado === 'sin') lista = lista.filter(e => !e.video_url);
-  document.getElementById('vid-contador').textContent = `${lista.length} ejercicios`;
-  const el = document.getElementById('vid-lista');
-  if (!lista.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0">Sin resultados</div>'; return; }
-  el.innerHTML = lista.map(e => `
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--card);border-radius:10px;border:1px solid var(--border)">
-      <div style="width:8px;height:8px;border-radius:50%;background:${e.video_url ? '#48bb78' : '#e53e3e'};flex-shrink:0"></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.nombre}</div>
-        <div style="font-size:11px;color:var(--muted)">${e.grupo} ${e.video_url ? '· <span style="color:#48bb78">Con video</span>' : '· <span style="color:#e53e3e">Sin video</span>'}</div>
-      </div>
-      ${e.video_url ? `<a href="${e.video_url}" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;flex-shrink:0">▶ Ver</a>` : ''}
-      <button onclick="vidModalAbrir(${e.id})" style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:12px;flex-shrink:0;font-family:'Inter',sans-serif">
-        ${e.video_url ? 'Editar' : 'Agregar'}
-      </button>
-    </div>
-  `).join('');
-}
-
-function vidModalAbrir(id) {
-  const ej = vidCatalogo.find(e => e.id === id);
-  if (!ej) return;
-  vidEditando = ej;
-  document.getElementById('vid-modal-nombre').textContent = ej.nombre;
-  document.getElementById('vid-modal-grupo').textContent  = ej.grupo;
-  document.getElementById('vid-modal-url').value = ej.video_url || '';
-  const m = document.getElementById('vid-modal');
-  m.style.display = 'flex';
-  setTimeout(() => document.getElementById('vid-modal-url').focus(), 100);
-}
-
-function vidModalCerrar() {
-  document.getElementById('vid-modal').style.display = 'none';
-  vidEditando = null;
-}
-
-async function vidGuardar() {
-  if (!vidEditando) return;
-  const url = document.getElementById('vid-modal-url').value.trim();
-  const { error } = await sb.from('bd_ejercicios_catalogo')
-    .update({ video_url: url || null })
-    .eq('id', vidEditando.id);
-  if (error) { showToast('Error al guardar'); return; }
-  vidEditando.video_url = url || null;
-  vidModalCerrar();
-  vidFiltrar();
-  showToast('✓ Video actualizado');
-}
-
-document.getElementById('vid-modal').addEventListener('click', function(e) {
-  if (e.target === this) vidModalCerrar();
-});
-
 // ══════════════════════════════════════════
 // 🥦 ADMIN ALIMENTOS
 // ══════════════════════════════════════════

@@ -435,6 +435,7 @@
     .prog-opcion .op-meta{font-size:10px;color:var(--muted)}
     .prog-opcion .op-badge{display:inline-block;font-size:9px;background:#1a2a00;color:var(--accent);border-radius:10px;padding:2px 8px;margin-top:4px;font-weight:600}
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -1349,23 +1350,16 @@
 
 <script>
 window.addEventListener('error', function(e) {
-  // Ignorar errores de scripts externos (supabase, chart.js, cdn)
-  var src = e.filename || '';
-  if (src && !src.includes('desfit-admin') && !src.includes('fluyelibre')) return;
-  // Ignorar SyntaxErrors internos de supabase-js
-  if (e.message && e.message.includes('Invalid or unexpected token')) return;
-  var p = document.getElementById('error-panel');
+  const p = document.getElementById('error-panel');
   if (!p) return;
   p.style.display = 'block';
-  p.innerHTML += '<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ff4d4d">❌ ' + e.message + '</b><br><span style="color:#888">' + e.filename + ':' + e.lineno + '</span></div>';
+  p.innerHTML += `<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ff4d4d">❌ ${e.message}</b><br><span style="color:#888">${e.filename}:${e.lineno}</span></div>`;
 });
 window.addEventListener('unhandledrejection', function(e) {
-  var msg = (e.reason && e.reason.message) ? e.reason.message : String(e.reason || '');
-  if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('WebSocket')) return;
-  var p = document.getElementById('error-panel');
+  const p = document.getElementById('error-panel');
   if (!p) return;
   p.style.display = 'block';
-  p.innerHTML += '<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ffb74d">⚠️ ' + msg + '</b></div>';
+  p.innerHTML += `<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ffb74d">⚠️ Promise: ${e.reason?.message || e.reason}</b></div>`;
 });
 </script>
 
@@ -3090,7 +3084,10 @@ async function cargarHistorialDietas(clienteId) {
           <div style="font-size:10px;color:var(--muted);margin-top:1px">Desde ${fecha} · ${duracion}</div>
         </div>
       </div>
-      ${!d.activo ? '<div style="display:flex;gap:6px;align-items:center"><button onclick="activarDietaHistorial(\'' + d.id + '\')" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif">Activar</button><button onclick="eliminarDietaHistorial(\'' + d.id + '\')" style="background:none;border:none;color:#555;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px">✕</button></div>' : ''}
+      ${!d.activo ? `<div style="display:flex;gap:6px;align-items:center">
+        <button onclick="activarDietaHistorial('${d.id}')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#666'">Activar</button>
+        <button onclick="eliminarDietaHistorial('${d.id}')" style="background:none;border:none;color:#333;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='#333'">✕</button>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
@@ -3759,9 +3756,6 @@ async function cargarHistorialRutinas(clienteId) {
     const nameColor = mc.activo ? 'var(--accent)' : 'var(--text)';
     const barColor  = mc.activo ? 'var(--accent)' : '#444';
     const activoBadge = mc.activo ? '<span style="font-size:9px;color:var(--accent);background:#1a2a00;border-radius:10px;padding:1px 7px;margin-left:4px">ACTIVO</span>' : '';
-    const btnAcciones = mc.activo ? '' :
-      '<button onclick="activarMacrociclo(' + mc.id + ')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif" onmouseover="this.style.borderColor=\'var(--accent)\';this.style.color=\'var(--accent)\'" onmouseout="this.style.borderColor=\'#2a2a2a\';this.style.color=\'#666\'">Activar</button>' +
-      '<button onclick="eliminarMacrociclo(' + mc.id + ')" title="Eliminar" style="background:none;border:none;color:#333;font-size:15px;cursor:pointer;padding:2px 5px;border-radius:5px;line-height:1" onmouseover="this.style.color=\'#e53e3e\'" onmouseout="this.style.color=\'#333\'">✕</button>';
     return `<div style="padding:10px 12px;background:${bgColor};border:1px solid ${border};border-radius:10px;margin-bottom:6px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div style="min-width:0;flex:1">
@@ -3770,7 +3764,7 @@ async function cargarHistorialRutinas(clienteId) {
         </div>
         <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:8px">
           <span style="font-size:11px;color:var(--muted)">${mc.semanas_completadas}/${prog.duracion_sem || '?'} sem</span>
-          ${btnAcciones}
+          ${!mc.activo ? `<button onclick="eliminarMacrociclo(${mc.id})" title="Eliminar" style="background:none;border:none;color:#333;font-size:15px;cursor:pointer;padding:2px 5px;border-radius:5px;line-height:1" onmouseover="this.style.color='#e53e3e'" onmouseout="this.style.color='#333'">✕</button>` : ''}
         </div>
       </div>
       <div style="background:#1a1a1a;border-radius:20px;height:4px;overflow:hidden">
@@ -3782,38 +3776,11 @@ async function cargarHistorialRutinas(clienteId) {
 
 async function eliminarMacrociclo(macroId) {
   if (!confirm('¿Eliminar este macrociclo del historial? No se puede deshacer.')) return;
+  // Primero desactivar el plan_entreno asociado si existe
+  await sb.from('plan_entreno').update({ activo: false }).eq('cliente_id', entClienteId);
   await sb.from('macrociclos').delete().eq('id', macroId);
   showToast('✓ Macrociclo eliminado');
   await cargarHistorialRutinas(entClienteId);
-}
-
-async function activarMacrociclo(macroId) {
-  if (!confirm('¿Activar este macrociclo? El actual quedará archivado.')) return;
-  const hoy = new Date().toISOString().split('T')[0];
-  // Archivar todos los macrociclos activos
-  await sb.from('macrociclos').update({ activo: false, fecha_fin: hoy }).eq('cliente_id', entClienteId).eq('activo', true);
-  // Activar el seleccionado
-  const { error } = await sb.from('macrociclos').update({ activo: true, fecha_fin: null }).eq('id', macroId);
-  if (error) { showToast('❌ ' + error.message); return; }
-  // Cargar el plan_entreno vinculado y sincronizar con app
-  const { data: mc } = await sb.from('macrociclos').select('programa_id').eq('id', macroId).single();
-  if (mc?.programa_id) {
-    const { data: exs } = await sb.from('bd_ejercicios').select('*').eq('programa_id', mc.programa_id).order('dia').order('orden');
-    if (exs?.length) {
-      await sb.from('plan_entreno').update({ activo: false }).eq('cliente_id', entClienteId);
-      const { data: plan } = await sb.from('plan_entreno').insert({ cliente_id: entClienteId, nivel: 'Biblioteca', activo: true }).select().single();
-      if (plan) {
-        const items = exs.map(e => ({ plan_id: plan.id, dia: e.dia, sesion: e.sesion, grupo: e.grupo, nombre: e.nombre, series: e.series, reps: e.reps, descanso: e.descanso, descanso_seg: parsearDescanso(e.descanso), orden: e.orden, indicacion: e.indicacion || '' }));
-        await sb.from('plan_entreno_items').insert(items);
-        await sincronizarPlanClienteApp(entClienteId, items);
-      }
-    }
-  }
-  showToast('✓ Macrociclo activado y sincronizado');
-  await progCargar(entClienteId);
-  await cargarPlanEntrenoGuardado(entClienteId);
-  await cargarHistorialRutinas(entClienteId);
-  if (clienteActivo?.id) await cargarResumen(clienteActivo.id);
 }
 
 async function activarRutinaHistorial() { /* legacy - no-op */ }

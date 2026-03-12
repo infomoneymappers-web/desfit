@@ -293,6 +293,8 @@
   
     /* ── TAB ENTRENO ── */
     .nivel-btn{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;text-align:left;transition:all 0.15s;width:100%;}
+    .bib-dia-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+    .bib-dia-btn.activo{border-color:var(--accent);background:rgba(169,243,56,0.1);color:var(--accent);}
     .nivel-btn:hover{border-color:var(--accent);}
     .nivel-btn.activo{border-color:var(--accent);background:#1a2a00;}
     .nivel-badge{font-size:13px;font-weight:700;margin-bottom:4px;}
@@ -413,28 +415,8 @@
 
     @media(max-width:800px){#cfg-grid{grid-template-columns:1fr;}}
 
-
-    /* Biblioteca JC - botones días */
-    .bib-dia-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
-    .bib-dia-btn:hover{border-color:var(--accent);color:var(--accent)}
-    .bib-dia-btn.activo{background:var(--accent);color:#0a0a0a;border-color:var(--accent)}
-    .prog-dia-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
-    .prog-dia-btn:hover{border-color:var(--accent);color:var(--accent)}
-    .prog-dia-btn.active{background:var(--accent);color:#0a0a0a;border-color:var(--accent)}
-    /* Progresión */
-    .prog-crit{background:var(--bg);border-radius:8px;padding:10px;font-size:11px}
-    .prog-crit .crit-label{color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;font-size:10px}
-    .prog-crit .crit-val{font-size:13px;font-weight:700}
-    .prog-crit .crit-ok{color:var(--accent)}
-    .prog-crit .crit-no{color:var(--muted)}
-    .prog-opcion{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:all .15s}
-    .prog-opcion:hover{border-color:var(--accent)}
-    .prog-opcion-rec{border-color:#A9F33855}
-    .prog-opcion .op-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-    .prog-opcion .op-nombre{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
-    .prog-opcion .op-meta{font-size:10px;color:var(--muted)}
-    .prog-opcion .op-badge{display:inline-block;font-size:9px;background:#1a2a00;color:var(--accent);border-radius:10px;padding:2px 8px;margin-top:4px;font-weight:600}
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -860,129 +842,105 @@
     <div id="tab-entreno">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
         <div>
-          <!-- ── INDICADOR MACROCICLO ACTIVO ── -->
-          <div id="bib-macrociclo-activo" style="display:none;background:#0d1a00;border:1px solid rgba(169,243,56,0.25);border-radius:10px;padding:10px 14px;margin-top:12px;display:none;align-items:center;justify-content:space-between;gap:10px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <span style="font-size:16px">🚀</span>
-              <div>
-                <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Programa activo</div>
-                <div id="bib-mc-nombre" style="font-size:13px;font-weight:700;color:var(--accent)"></div>
-                <div id="bib-mc-meta" style="font-size:10px;color:var(--muted);margin-top:1px"></div>
-              </div>
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">📚 Biblioteca JC Muscle · Metodología Periodizada</span>
             </div>
-            <span id="bib-mc-semana" style="font-size:11px;background:#1a2a00;color:var(--accent);border-radius:20px;padding:3px 10px;font-weight:600;white-space:nowrap"></span>
-          </div>
 
-          <!-- ── BIBLIOTECA JC MUSCLE ── -->
-          <div class="card" style="margin-top:12px" id="bib-card">
-            <div class="card-title" style="display:flex;align-items:center;gap:8px">
-              📚 Biblioteca JC Muscle
-              <span style="font-size:10px;font-weight:400;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Metodología periodizada</span>
+            <!-- Objetivo del cliente -->
+            <div style="margin-bottom:10px">
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:6px">Objetivo del cliente</label>
+              <select id="bib-objetivo" onchange="bibActualizarNiveles()" style="width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
+                <option value="">— Seleccionar objetivo —</option>
+                <option value="Ganancia muscular">💪 Ganancia muscular</option>
+                <option value="Pérdida de grasa">🔥 Pérdida de grasa</option>
+                <option value="Recomposición">⚡ Recomposición</option>
+                <option value="Mantenimiento">🎯 Mantenimiento</option>
+              </select>
             </div>
-            <div style="display:grid;gap:10px">
-              <div>
-                <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px">Objetivo del cliente</label>
-                <select id="bib-objetivo" class="sel" style="width:100%" onchange="bibFiltrar()">
-                  <option value="">— Seleccionar objetivo —</option>
-                  <option value="Ganancia muscular">💪 Ganancia muscular</option>
-                  <option value="Pérdida de grasa">🔥 Pérdida de grasa</option>
-                  <option value="Recomposición">⚡ Recomposición</option>
-                  <option value="Mantenimiento">⚖️ Mantenimiento</option>
-                </select>
-              </div>
-              <div>
-                <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px">Punto de partida</label>
-                <select id="bib-partida" class="sel" style="width:100%" onchange="bibFiltrar()">
-                  <option value="">— Seleccionar —</option>
-                  <option value="Novato">🟢 Novato — sin experiencia o +6 meses sin entrenar</option>
-                  <option value="Con base">🔵 Con base — 6 meses a 2 años entrenando</option>
-                  <option value="Avanzado">🔴 Avanzado — más de 2 años serios</option>
-                </select>
-              </div>
-              <div>
-                <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px">Días disponibles por semana</label>
-                <div style="display:flex;gap:6px;flex-wrap:wrap" id="bib-dias-btns">
-                  <button class="bib-dia-btn" onclick="bibSelDias(2,this)">2</button>
-                  <button class="bib-dia-btn" onclick="bibSelDias(3,this)">3</button>
-                  <button class="bib-dia-btn" onclick="bibSelDias(4,this)">4</button>
-                  <button class="bib-dia-btn" onclick="bibSelDias(5,this)">5</button>
-                  <button class="bib-dia-btn" onclick="bibSelDias(6,this)">6</button>
-                  <button class="bib-dia-btn" onclick="bibSelDias(7,this)">7</button>
-                </div>
-              </div>
-              <div id="bib-resultado" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px">
-                <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Programa encontrado</div>
-                <div id="bib-programa-card"></div>
-                <button onclick="bibVerPreview()" style="margin-top:12px;width:100%;background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">👁 Ver preview completo</button>
-              </div>
-              <div id="bib-no-resultado" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;color:var(--muted);font-size:12px">
-                No hay programa para esa combinación todavía.<br><span style="font-size:11px">Usa el selector de nivel manual.</span>
-              </div>
-            </div>
-          </div>
-          <!-- ── FIN BIBLIOTECA ── -->
 
-          <!-- Botones edición manual — visibles cuando hay plan activo -->
-          <div id="ent-editor-actions" style="display:none;justify-content:flex-end;gap:6px;align-items:center;margin-bottom:10px">
-            <button class="btn-ghost" onclick="agregarEjPersonalizado()">+ Ejercicio</button>
-            <button class="btn-ghost" onclick="limpiarPlanPersonalizado()" style="color:var(--danger);border-color:var(--danger)">🗑 Limpiar</button>
+            <!-- Punto de partida -->
+            <div style="margin-bottom:10px">
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:6px">Punto de partida</label>
+              <select id="bib-nivel" onchange="bibActualizarDias()" style="width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
+                <option value="">— Seleccionar —</option>
+                <option value="Novato">🟢 Novato</option>
+                <option value="Con base">🔵 Con base</option>
+                <option value="Avanzado">🔴 Avanzado</option>
+              </select>
+            </div>
+
+            <!-- Días disponibles -->
+            <div style="margin-bottom:14px">
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:8px">Días disponibles por semana</label>
+              <div style="display:flex;gap:6px" id="bib-dias-btns">
+                <button class="bib-dia-btn" data-dias="3" onclick="bibSelDias(3)">3</button>
+                <button class="bib-dia-btn" data-dias="4" onclick="bibSelDias(4)">4</button>
+                <button class="bib-dia-btn" data-dias="5" onclick="bibSelDias(5)">5</button>
+                <button class="bib-dia-btn" data-dias="6" onclick="bibSelDias(6)">6</button>
+              </div>
+            </div>
+
+            <!-- Info del programa encontrado -->
+            <div id="bib-programa-info" style="display:none;background:rgba(169,243,56,0.06);border:1px solid rgba(169,243,56,0.2);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--text)"></div>
+
+            <button class="btn-accent" id="btn-cargar-nivel" style="display:none;width:100%" onclick="cargarPlanDesdeBiblioteca()">⚡ Cargar plan base</button>
+          </div>
+          <!-- Botones siempre visibles cuando hay plan -->
+          <div id="ent-editor-actions" style="display:none;flex-direction:column;gap:6px;margin-bottom:10px">
+            <div style="display:flex;justify-content:flex-end;gap:6px;align-items:center">
+              <button id="btn-guardar-nuevo-entreno" style="padding:7px 13px;font-size:12px;font-weight:600;white-space:nowrap;background:#1a1200;border:1px solid #ffb74d55;color:#ffb74d;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif">📦 Archivar y crear nuevo</button>
+              <button class="btn-accent" id="btn-guardar-entreno" style="padding:9px 18px;font-size:13px;font-weight:700;white-space:nowrap">💾 Guardar</button>
+              <button class="btn-ghost" onclick="agregarEjPersonalizado()">+ Ejercicio</button>
+              <button class="btn-ghost" onclick="limpiarPlanPersonalizado()" style="color:var(--danger);border-color:var(--danger)">🗑 Limpiar</button>
+            </div>
+            <span class="lbl" style="margin-bottom:0">Plan personalizado</span>
           </div>
           <div id="ent-editor-wrap" style="display:none">
             <div id="ent-dias-wrap"></div>
           </div>
           <div id="ent-editor-vacio" style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px">
-            Selecciona un programa desde la Biblioteca JC Muscle
+            Selecciona objetivo, nivel y días, luego hacé clic en "Cargar plan base"
           </div>
         </div>
         <div>
-
-          <!-- ── PROGRESIÓN JC MUSCLE ── -->
-          <!-- ══ MACROCICLO ACTIVO ══ -->
-          <div id="prog-card" style="display:none;margin-bottom:16px">
-            <div class="card" style="border:1px solid rgba(169,243,56,0.3)">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-                <div class="card-title" style="margin-bottom:0">🚀 Macrociclo activo</div>
-                <span id="prog-semana-badge" style="font-size:11px;background:#1a2a00;color:var(--accent);border-radius:20px;padding:3px 10px;font-weight:600"></span>
-              </div>
-
-              <!-- Programa + barra progreso -->
-              <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:10px">
-                <div id="prog-nombre-actual" style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:2px"></div>
-                <div id="prog-meta-actual" style="font-size:11px;color:var(--muted);margin-bottom:8px"></div>
-                <div style="background:#1a1a1a;border-radius:20px;height:6px;overflow:hidden">
-                  <div id="prog-barra" style="height:6px;background:var(--accent);border-radius:20px;transition:width .4s;width:0%"></div>
-                </div>
-              </div>
-
-              <!-- 4 criterios -->
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-                <div id="prog-crit-semanas" class="prog-crit"></div>
-                <div id="prog-crit-cargas" class="prog-crit"></div>
-                <div id="prog-crit-reps" class="prog-crit"></div>
-                <div id="prog-crit-adherencia" class="prog-crit"></div>
-              </div>
-
-              <!-- CTA avanzar -->
-              <div id="prog-opciones" style="display:none">
-                <button onclick="progMostrarModalAvance()" style="width:100%;background:var(--accent);color:#0a0a0a;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">
-                  ✅ Listo para avanzar →
-                </button>
-              </div>
-              <div id="prog-no-listo" style="display:none;text-align:center;padding:8px;font-size:11px;color:var(--muted)">
-                Sigue en progreso — revisa al completar más semanas
-              </div>
-            </div>
-          </div>
-
-          <!-- ══ PLAN ACTUAL ══ -->
           <span class="lbl">📋 Plan actual del cliente</span>
           <div id="ent-plan-guardado">
             <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px">El plan guardado aparecerá aquí</div>
           </div>
 
-          <!-- ══ HISTORIAL DE MACROCICLOS ══ -->
+          <!-- Historial de rutinas -->
           <div style="margin-top:20px">
-            <span class="lbl" style="margin-bottom:10px;display:block">📦 Historial de macrociclos</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <span class="lbl" style="margin-bottom:0">📚 Historial de rutinas</span>
+              <button class="btn-ghost" onclick="toggleFormAgregarRutina()" id="btn-toggle-add-rutina" style="font-size:11px;padding:4px 10px">+ Agregar anterior</button>
+            </div>
+
+            <!-- Form para agregar rutina anterior -->
+            <div id="form-agregar-rutina" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px">Registrar rutina anterior</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                <div>
+                  <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px">Nivel</label>
+                  <select id="add-rutina-nivel" class="sel" style="padding:8px 10px;font-size:13px">
+                    <option value="">Seleccionar...</option>
+                    <option value="Principiante">🟢 Principiante</option>
+                    <option value="Intermedio">🔵 Intermedio</option>
+                    <option value="Avanzado 5">🟠 Avanzado 5</option>
+                    <option value="Avanzado 6">🔴 Avanzado 6</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px">Fecha de inicio aprox.</label>
+                  <input type="date" id="add-rutina-fecha" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none" />
+                </div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button onclick="guardarRutinaAnterior()" style="flex:1;background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Guardar</button>
+                <button onclick="toggleFormAgregarRutina()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Cancelar</button>
+              </div>
+            </div>
+
             <div id="ent-historial-rutinas">
               <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">—</div>
             </div>
@@ -1146,10 +1104,11 @@
                 </div>
               </div>
               <select id="cfg-nivel-select" class="sel" onchange="cfgCambiarNivel(this.value)">
-                <option value="">— Seleccionar —</option>
-                <option value="Novato">🟢 Novato · Sin experiencia o +6 meses sin entrenar</option>
-                <option value="Con base">🔵 Con base · 6 meses a 2 años entrenando</option>
-                <option value="Avanzado">🔴 Avanzado · Más de 2 años serios</option>
+                <option value="">— Seleccionar nivel —</option>
+                <option value="Principiante">🟢 Principiante · 3 días (Lun/Mié/Vie)</option>
+                <option value="Intermedio">🔵 Intermedio · 4 días (Lun/Mar/Jue/Vie)</option>
+                <option value="Avanzado 5">🟠 Avanzado 5 días · FST-7</option>
+                <option value="Avanzado 6">🔴 Avanzado 6 días · PPL doble split</option>
               </select>
               <div id="cfg-nivel-hint" style="font-size:11px;color:var(--muted);margin-top:5px"></div>
             </div>
@@ -1239,107 +1198,6 @@
     </div>
 
   </div><!-- /admin-content -->
-
-  <!-- ══ TAB VIDEOS ══ -->
-  <div class="tab-panel" id="tab-videos" style="padding:0 20px 20px">
-    <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <select id="vid-filtro-grupo" onchange="vidFiltrar()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
-        <option value="">— Todos los grupos —</option>
-        <option>Pecho</option><option>Espalda</option><option>Hombro</option>
-        <option>Cuádriceps</option><option>Femoral</option><option>Glúteo</option>
-        <option>Bíceps</option><option>Tríceps</option><option>Core</option>
-        <option>Pantorrilla</option>
-      </select>
-      <select id="vid-filtro-estado" onchange="vidFiltrar()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
-        <option value="">— Todos —</option>
-        <option value="con">Con video</option>
-        <option value="sin">Sin video</option>
-      </select>
-      <span id="vid-contador" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
-    </div>
-    <div id="vid-lista" style="display:flex;flex-direction:column;gap:8px"></div>
-
-    <!-- Modal editar URL -->
-    <div id="vid-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center">
-      <div style="background:var(--card);border-radius:14px;padding:24px;width:min(480px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.4)">
-        <div style="font-weight:700;font-size:15px;margin-bottom:4px" id="vid-modal-nombre"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:16px" id="vid-modal-grupo"></div>
-        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">URL del video (Vimeo / YouTube)</label>
-        <input id="vid-modal-url" type="text" placeholder="https://vimeo.com/123456789"
-          style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:16px;font-family:'Inter',sans-serif;outline:none">
-        <div style="display:flex;gap:8px;justify-content:flex-end">
-          <button onclick="vidModalCerrar()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">Cancelar</button>
-          <button onclick="vidGuardar()" style="padding:8px 16px;border-radius:8px;border:none;background:var(--accent);color:#0a0a0a;cursor:pointer;font-size:13px;font-weight:700;font-family:'Inter',sans-serif">Guardar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ TAB ALIMENTOS ══ -->
-  <div class="tab-panel" id="tab-alimentos" style="padding:0 20px 20px">
-    <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
-      <div style="flex:1;min-width:160px">
-        <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">🥦 Catálogo de alimentos</span>
-        <span id="alm-total" style="margin-left:8px;font-size:11px;background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:10px;color:var(--muted)">0</span>
-      </div>
-      <input id="alm-buscar" type="text" placeholder="Buscar alimento..." oninput="almFiltrar()"
-        style="padding:7px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;min-width:200px;font-family:'Inter',sans-serif;outline:none">
-      <button onclick="almAbrirModal(null)" style="padding:8px 18px;border-radius:10px;border:none;background:var(--accent);color:#0a0a0a;font-weight:700;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">+ Nuevo</button>
-    </div>
-    <div style="display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:start">
-      <div class="card" style="padding:12px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Categorías</div>
-        <div id="alm-cats" style="display:flex;flex-direction:column;gap:3px"></div>
-      </div>
-      <div id="alm-lista" style="display:flex;flex-direction:column;gap:6px"></div>
-    </div>
-
-    <!-- Modal -->
-    <div id="alm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center">
-      <div style="background:var(--card);border-radius:16px;padding:28px;width:min(440px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.5)">
-        <div style="font-weight:700;font-size:16px;margin-bottom:20px" id="alm-modal-titulo">Nuevo alimento</div>
-        <input type="hidden" id="alm-modal-id">
-        <div style="display:grid;gap:12px">
-          <div>
-            <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Nombre *</label>
-            <input id="alm-f-nombre" type="text" placeholder="Ej: Pechuga de pollo" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
-          </div>
-          <div>
-            <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Categoría</label>
-            <select id="alm-f-cat" style="width:100%;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
-              <option>Proteína</option><option>Carbohidrato</option><option>Grasa</option>
-              <option>Verdura</option><option>Fruta</option><option>Lácteo</option>
-              <option>Legumbre</option><option>Otro</option>
-            </select>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Proteína (g/100g)</label>
-              <input id="alm-f-prot" type="number" min="0" step="0.1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
-            </div>
-            <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Carbos (g/100g)</label>
-              <input id="alm-f-carbos" type="number" min="0" step="0.1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Lípidos (g/100g)</label>
-              <input id="alm-f-lip" type="number" min="0" step="0.1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
-            </div>
-            <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Kcal (por 100g)</label>
-              <input id="alm-f-kcal" type="number" min="0" step="1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
-            </div>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
-          <button onclick="almCerrarModal()" style="padding:9px 18px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">Cancelar</button>
-          <button onclick="almGuardar()" style="padding:9px 20px;border-radius:9px;border:none;background:var(--accent);color:#0a0a0a;cursor:pointer;font-size:13px;font-weight:700;font-family:'Inter',sans-serif">Guardar</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div><!-- /app -->
 
 <div class="toast" id="toast"></div>
@@ -1349,23 +1207,16 @@
 
 <script>
 window.addEventListener('error', function(e) {
-  // Ignorar errores de scripts externos (supabase, chart.js, cdn)
-  var src = e.filename || '';
-  if (src && !src.includes('desfit-admin') && !src.includes('fluyelibre')) return;
-  // Ignorar SyntaxErrors internos de supabase-js
-  if (e.message && e.message.includes('Invalid or unexpected token')) return;
-  var p = document.getElementById('error-panel');
+  const p = document.getElementById('error-panel');
   if (!p) return;
   p.style.display = 'block';
-  p.innerHTML += '<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ff4d4d">❌ ' + e.message + '</b><br><span style="color:#888">' + e.filename + ':' + e.lineno + '</span></div>';
+  p.innerHTML += `<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ff4d4d">❌ ${e.message}</b><br><span style="color:#888">${e.filename}:${e.lineno}</span></div>`;
 });
 window.addEventListener('unhandledrejection', function(e) {
-  var msg = (e.reason && e.reason.message) ? e.reason.message : String(e.reason || '');
-  if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('WebSocket')) return;
-  var p = document.getElementById('error-panel');
+  const p = document.getElementById('error-panel');
   if (!p) return;
   p.style.display = 'block';
-  p.innerHTML += '<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ffb74d">⚠️ ' + msg + '</b></div>';
+  p.innerHTML += `<div style="border-bottom:1px solid #3a0000;padding:4px 0"><b style="color:#ffb74d">⚠️ Promise: ${e.reason?.message || e.reason}</b></div>`;
 });
 </script>
 
@@ -1386,6 +1237,125 @@ window.addEventListener('unhandledrejection', function(e) {
       </button>
     </div>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB VIDEOS                                              -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-videos">
+    <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <select id="vid-filtro-grupo" onchange="vidFiltrar()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px">
+        <option value="">— Todos los grupos —</option>
+        <option>Pecho</option><option>Espalda</option><option>Hombro</option>
+        <option>Cuádriceps</option><option>Femoral</option><option>Glúteo</option>
+        <option>Bíceps</option><option>Tríceps</option><option>Core</option>
+        <option>Pantorrilla</option>
+      </select>
+      <select id="vid-filtro-estado" onchange="vidFiltrar()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px">
+        <option value="">— Todos —</option>
+        <option value="con">Con video</option>
+        <option value="sin">Sin video</option>
+      </select>
+      <span id="vid-contador" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
+    </div>
+
+    <div id="vid-lista" style="display:flex;flex-direction:column;gap:8px"></div>
+
+    <!-- Modal editar URL -->
+    <div id="vid-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center">
+      <div style="background:var(--card);border-radius:14px;padding:24px;width:min(480px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.4)">
+        <div style="font-weight:700;font-size:15px;margin-bottom:4px" id="vid-modal-nombre"></div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px" id="vid-modal-grupo"></div>
+        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">URL del video (Vimeo embed)</label>
+        <input id="vid-modal-url" type="text" placeholder="https://vimeo.com/123456789"
+          style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:16px">
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button onclick="vidModalCerrar()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px">Cancelar</button>
+          <button onclick="vidGuardar()" style="padding:8px 16px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-size:13px;font-weight:600">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB ALIMENTOS -->
+  <div class="tab-panel" id="tab-alimentos">
+    <div style="display:flex;gap:20px;align-items:center;margin-bottom:18px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">🥦 Catálogo de alimentos</span>
+        <span id="alm-total" style="margin-left:8px;font-size:11px;background:var(--card);border:1px solid var(--border);padding:2px 8px;border-radius:10px;color:var(--muted)">0 alimentos</span>
+      </div>
+      <input id="alm-buscar" type="text" placeholder="Buscar alimento..." oninput="almFiltrar()"
+        style="padding:7px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;min-width:200px">
+      <button onclick="almAbrirModal(null)" style="padding:8px 18px;border-radius:10px;border:none;background:var(--accent);color:#0a0a0a;font-weight:700;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">+ Nuevo</button>
+    </div>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start">
+      <!-- Sidebar categorías -->
+      <div class="card" style="padding:12px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Categorías</div>
+        <div id="alm-cats" style="display:flex;flex-direction:column;gap:4px"></div>
+      </div>
+      <!-- Lista alimentos -->
+      <div>
+        <div id="alm-lista" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+    </div>
+
+    <!-- Modal crear/editar alimento -->
+    <div id="alm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center">
+      <div style="background:var(--card);border-radius:16px;padding:28px;width:min(440px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+        <div style="font-weight:700;font-size:16px;margin-bottom:20px" id="alm-modal-titulo">Nuevo alimento</div>
+        <input type="hidden" id="alm-modal-id">
+        <div style="display:grid;gap:12px">
+          <div>
+            <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Nombre *</label>
+            <input id="alm-f-nombre" type="text" placeholder="Ej: Pechuga de pollo"
+              style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px">
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Categoría</label>
+            <select id="alm-f-cat" style="width:100%;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif">
+              <option value="Proteína">Proteína</option>
+              <option value="Carbohidrato">Carbohidrato</option>
+              <option value="Grasa">Grasa</option>
+              <option value="Verdura">Verdura</option>
+              <option value="Fruta">Fruta</option>
+              <option value="Lácteo">Lácteo</option>
+              <option value="Legumbre">Legumbre</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Proteína (g/100g)</label>
+              <input id="alm-f-prot" type="number" min="0" step="0.1" placeholder="0"
+                style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px">
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Carbos (g/100g)</label>
+              <input id="alm-f-carbos" type="number" min="0" step="0.1" placeholder="0"
+                style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Lípidos (g/100g)</label>
+              <input id="alm-f-lip" type="number" min="0" step="0.1" placeholder="0"
+                style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px">
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Calorías (kcal/100g)</label>
+              <input id="alm-f-kcal" type="number" min="0" step="1" placeholder="0"
+                style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px">
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
+          <button onclick="almCerrarModal()" style="padding:9px 18px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px">Cancelar</button>
+          <button onclick="almGuardar()" style="padding:9px 20px;border-radius:9px;border:none;background:var(--accent);color:#0a0a0a;cursor:pointer;font-size:13px;font-weight:700">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -1480,8 +1450,8 @@ function switchTab(tab, btn) {
   if(tab==='evolucion') requestAnimationFrame(()=>iniciarEvolucion());
   if(tab==='resumen' && clienteActivo) cargarResumen(clienteActivo.id);
   if(tab==='pendientes') cargarPendientes();
-  if(tab==='alimentos') cargarAdminAlimentos();
   if(tab==='videos') vidCargar();
+  if(tab==='alimentos') cargarAdminAlimentos();
 }
 
 // ── EVOLUCIÓN SUB-TABS ──
@@ -3090,7 +3060,10 @@ async function cargarHistorialDietas(clienteId) {
           <div style="font-size:10px;color:var(--muted);margin-top:1px">Desde ${fecha} · ${duracion}</div>
         </div>
       </div>
-      ${!d.activo ? '<div style="display:flex;gap:6px;align-items:center"><button onclick="activarDietaHistorial(\'' + d.id + '\')" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif">Activar</button><button onclick="eliminarDietaHistorial(\'' + d.id + '\')" style="background:none;border:none;color:#555;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px">✕</button></div>' : ''}
+      ${!d.activo ? `<div style="display:flex;gap:6px;align-items:center">
+        <button onclick="activarDietaHistorial('${d.id}')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#666'">Activar</button>
+        <button onclick="eliminarDietaHistorial('${d.id}')" style="background:none;border:none;color:#333;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='#333'">✕</button>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
@@ -3469,6 +3442,10 @@ window.seleccionarDietaEvo = async function(dietaId, clienteId) {
 // ══════════════════════════════════════
 let entClienteId = null;
 let entNivelActivo = null;
+let bibObjetivo = '';
+let bibNivel    = '';
+let bibDias     = null;
+let bibPrograma = null;
 let entEjercicios = [];     // ejercicios cargados desde bd_ejercicios
 let entPlanItems = [];      // ejercicios editables en el editor
 let entPlanGuardadoId = null;
@@ -3483,14 +3460,186 @@ const COLORES_GRUPO = {
 
 async function iniciarEntreno() {
   entClienteId = clienteActivo?.id || null;
+  renderNivelBtns();
   if (entClienteId) {
     await cargarPlanEntrenoGuardado(entClienteId);
     await cargarHistorialRutinas(entClienteId);
-    await progCargar(entClienteId);
+    // Pre-cargar selects de la biblioteca con los datos del cliente
+    const { data: cfg } = await sb.from('clientes_config')
+      .select('objetivo_fisico, objetivo, nivel_entreno, dias_entreno')
+      .eq('usuario_id', entClienteId).maybeSingle();
+    if (cfg) bibPrecargar(cfg);
   }
 }
 
-// [REMOVIDO] renderNivelBtns / seleccionarNivel / cargarPlanDesdeNivel — reemplazado por Biblioteca JC Muscle
+function renderNivelBtns() {
+  const wrap = document.getElementById('nivel-btns');
+  if (!wrap) return;
+  const niveles = [
+    { key: 'Principiante', cls: 'principiante', icon: '🟢', desc: '3 días · Lun/Mié/Vie' },
+    { key: 'Intermedio',   cls: 'intermedio',   icon: '🔵', desc: '4 días · Lun/Mar/Jue/Vie' },
+    { key: 'Avanzado 5',  cls: 'avanzado5',    icon: '🟠', desc: '5 días · FST-7' },
+    { key: 'Avanzado 6',  cls: 'avanzado6',    icon: '🔴', desc: '6 días · PPL doble split' },
+  ];
+  wrap.innerHTML = niveles.map(n => `
+    <button class="nivel-btn ${entNivelActivo===n.key?'activo':''}" onclick="seleccionarNivel('${n.key}')">
+      <div class="nivel-badge ${n.cls}">${n.icon} ${n.key}</div>
+      <div class="nivel-desc">${n.desc}</div>
+    </button>`).join('');
+}
+
+// ── BIBLIOTECA JC MUSCLE ──
+function bibActualizarNiveles() {
+  bibObjetivo = document.getElementById('bib-objetivo').value;
+  bibPrograma = null;
+  document.getElementById('bib-programa-info').style.display = 'none';
+  document.getElementById('btn-cargar-nivel').style.display = 'none';
+  bibBuscarPrograma();
+}
+
+function bibActualizarDias() {
+  bibNivel = document.getElementById('bib-nivel').value;
+  bibBuscarPrograma();
+}
+
+function bibSelDias(dias) {
+  bibDias = dias;
+  document.querySelectorAll('.bib-dia-btn').forEach(b => {
+    b.classList.toggle('activo', parseInt(b.dataset.dias) === dias);
+  });
+  bibBuscarPrograma();
+}
+
+async function bibBuscarPrograma() {
+  if (!bibObjetivo || !bibNivel || !bibDias) return;
+  const infoEl = document.getElementById('bib-programa-info');
+  const btnEl  = document.getElementById('btn-cargar-nivel');
+  infoEl.style.display = 'block';
+  infoEl.innerHTML = '<span style="color:var(--muted)">Buscando programa...</span>';
+  btnEl.style.display = 'none';
+  bibPrograma = null;
+
+  const { data, error } = await sb.from('bd_programas')
+    .select('id, nombre, descripcion, dias_semana, punto_partida, objetivo, fase, metodo_jc')
+    .eq('objetivo',      bibObjetivo)
+    .eq('punto_partida', bibNivel)
+    .eq('dias_semana',   bibDias)
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    infoEl.innerHTML = '<span style="color:#e53e3e">⚠ No se encontró programa para esta combinación</span>';
+    return;
+  }
+  bibPrograma = data;
+  infoEl.innerHTML = `
+    <strong style="color:var(--accent)">✓ ${data.nombre}</strong>
+    ${data.fase        ? `<span style="margin-left:8px;font-size:11px;background:var(--surface);border:1px solid var(--border);padding:1px 7px;border-radius:5px;color:var(--muted)">${data.fase}</span>` : ''}
+    ${data.descripcion ? `<br><span style="color:var(--muted);font-size:11px">${data.descripcion}</span>` : ''}
+    ${data.metodo_jc   ? `<br><span style="color:var(--muted);font-size:11px">Método: ${data.metodo_jc}</span>` : ''}`;
+  btnEl.style.display = 'block';
+  btnEl.textContent = `⚡ Cargar plan — ${data.nombre}`;
+}
+
+async function cargarPlanDesdeBiblioteca() {
+  if (!entClienteId) { showToast('⚠ Selecciona un cliente'); return; }
+  if (!bibPrograma)  { showToast('⚠ Selecciona objetivo, nivel y días'); return; }
+  const btn = document.getElementById('btn-cargar-nivel');
+  btn.disabled = true; btn.textContent = 'Cargando...';
+
+  const { data, error } = await sb.from('bd_ejercicios')
+    .select('*')
+    .eq('programa_id', bibPrograma.id)
+    .order('dia').order('orden');
+
+  btn.disabled = false; btn.textContent = `⚡ Cargar plan — ${bibPrograma.nombre}`;
+
+  if (error || !data?.length) {
+    showToast('⚠ No se encontraron ejercicios para este programa (programa_id: ' + bibPrograma.id + ')');
+    return;
+  }
+  entNivelActivo = bibNivel;
+  entEjercicios  = data;
+  entPlanItems   = data.map(e => ({ _id: ++entItemCnt, dia: e.dia, sesion: e.sesion, grupo: e.grupo, nombre: e.nombre, series: e.series, reps: e.reps, descanso: e.descanso, orden: e.orden }));
+  renderEditorEntreno();
+  showToast(`✓ ${data.length} ejercicios cargados — ${bibPrograma.nombre}`);
+}
+
+// Pre-cargar valores del cliente en la biblioteca
+function bibPrecargar(cfg) {
+  if (!cfg) return;
+  // Mapear valores internos → valores exactos en bd_programas.objetivo
+  const objMap = {
+    'ganar_musculo':    'Ganancia muscular', 'ganancia_muscular': 'Ganancia muscular',
+    'perder_grasa':     'Pérdida de grasa',  'perdida_grasa':     'Pérdida de grasa',
+    'recomposicion':    'Recomposición',     'ambos':             'Recomposición',
+    'mantenimiento':    'Mantenimiento',
+  };
+  // Mapear valores internos → valores exactos en bd_programas.punto_partida
+  const nivelMap = {
+    'Principiante': 'Novato',   'Novato':    'Novato',
+    'Intermedio':   'Con base', 'Con base':  'Con base',
+    'Avanzado 5':   'Avanzado', 'Avanzado 6':'Avanzado', 'Avanzado': 'Avanzado',
+  };
+  const obj = objMap[(cfg.objetivo_fisico || cfg.objetivo || '').toLowerCase().trim()] ||
+              objMap[(cfg.objetivo_fisico || cfg.objetivo || '')] || '';
+  if (obj) { document.getElementById('bib-objetivo').value = obj; bibObjetivo = obj; }
+  const niv = nivelMap[cfg.nivel_entreno || ''] || '';
+  if (niv) { document.getElementById('bib-nivel').value = niv; bibNivel = niv; }
+  const dias = cfg.dias_entreno || null;
+  if (dias) bibSelDias(parseInt(dias));
+  if (bibObjetivo && bibNivel && bibDias) bibBuscarPrograma();
+}
+
+function seleccionarNivel(nivel) {
+  entNivelActivo = nivel;
+  renderNivelBtns();
+  const btn = document.getElementById('btn-cargar-nivel');
+  if (btn) { btn.style.display = 'block'; btn.textContent = `⚡ Cargar plan ${nivel}`; }
+  // Autosave en clientes_config
+  const clienteIdEnt = entClienteId || clienteActivo?.id;
+  if (clienteIdEnt) {
+    sb.from('clientes_config').update({
+      nivel_entreno: nivel
+    }).eq('usuario_id', clienteIdEnt).then(({error}) => {
+      if (error) showToast('❌ Error guardando nivel: ' + error.message);
+      else showToast(`✓ Nivel ${nivel} guardado`);
+    });
+  }
+}
+
+async function cargarPlanDesdeNivel() {
+  // Legacy fallback — usar cargarPlanDesdeBiblioteca si hay bibPrograma
+  if (bibPrograma) { cargarPlanDesdeBiblioteca(); return; }
+  if (!entClienteId) { showToast('⚠ Selecciona un cliente'); return; }
+  if (!entNivelActivo) { showToast('⚠ Selecciona un nivel'); return; }
+  const btn = document.getElementById('btn-cargar-nivel');
+  btn.disabled = true; btn.textContent = 'Cargando...';
+
+  // Cargar ejercicios del nivel desde BD
+  const { data, error } = await sb.from('bd_ejercicios')
+    .select('*').eq('nivel', entNivelActivo).order('dia').order('orden');
+  btn.disabled = false; btn.textContent = `⚡ Cargar plan ${entNivelActivo}`;
+
+  if (error) {
+    console.error('bd_ejercicios error:', error.message);
+    showToast('❌ Error al cargar ejercicios: ' + error.message);
+    return;
+  }
+  if (!data || !data.length) {
+    showToast('⚠ No se encontraron ejercicios para el nivel ' + entNivelActivo + '. Verifica que la tabla bd_ejercicios exista y tenga datos.');
+    return;
+  }
+  entEjercicios = data;
+  entPlanItems = data.map(e => ({
+    _id: ++entItemCnt, dia: e.dia, sesion: e.sesion,
+    grupo: e.grupo, nombre: e.nombre,
+    series: e.series, reps: e.reps, descanso: e.descanso,
+    orden: e.orden
+  }));
+  renderEditorEntreno();
+  showToast(`✓ ${data.length} ejercicios cargados`);
+}
 
 function renderEditorEntreno() {
   const wrap = document.getElementById('ent-dias-wrap');
@@ -3612,6 +3761,98 @@ function agregarEjPersonalizado() {
   renderEditorEntreno();
 }
 
+// ── Guardar cambios en plan de entreno actual (sin archivar) ─────────────
+document.getElementById('btn-guardar-entreno')?.addEventListener('click', async () => {
+  if (!entClienteId || !entNivelActivo) { showToast('⚠ Selecciona cliente y nivel'); return; }
+  // Buscar plan activo existente
+  const { data: planActivo } = await sb.from('plan_entreno')
+    .select('id').eq('cliente_id', entClienteId).eq('activo', true)
+    .order('creado_en', { ascending: false }).limit(1).maybeSingle();
+  if (!planActivo) { showToast('⚠ No hay plan activo. Usa "Archivar y crear nueva version"'); return; }
+  const btn = document.getElementById('btn-guardar-entreno');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  // Sync valores del DOM
+  entPlanItems.forEach(ej => {
+    const row = document.getElementById('ejr-'+ej._id);
+    if (!row) return;
+    const inputs = row.querySelectorAll('.ej-input');
+    if (inputs[0]) ej.series = parseInt(inputs[0].value)||0;
+    if (inputs[1]) ej.reps = inputs[1].value;
+    if (inputs[2]) ej.descanso = inputs[2].value;
+  });
+  try {
+    // Borrar items actuales y reinsertar (update completo)
+    await sb.from('plan_entreno_items').delete().eq('plan_id', planActivo.id);
+    const items = entPlanItems.map(ej => ({
+      plan_id: planActivo.id, dia: ej.dia, sesion: ej.sesion,
+      grupo: ej.grupo, nombre: ej.nombre,
+      series: ej.series, reps: ej.reps, descanso: ej.descanso, orden: ej.orden
+    }));
+    if (items.length) {
+      const { error: e2 } = await sb.from('plan_entreno_items').insert(items);
+      if (e2) throw e2;
+    }
+    await sincronizarPlanClienteApp(entClienteId, entPlanItems);
+    showToast('✓ Cambios guardados en plan actual · ' + items.length + ' ejercicios');
+    await cargarPlanEntrenoGuardado(entClienteId);
+    if (clienteActivo?.id) await cargarFichaResumen(clienteActivo.id);
+  } catch(err) { showToast('❌ ' + err.message); console.error(err); }
+  finally { btn.disabled = false; btn.textContent = '💾 Guardar cambios en plan actual'; }
+});
+
+// ── Archivar y crear nueva versión de entreno ─────────────────────────────
+document.getElementById('btn-guardar-nuevo-entreno')?.addEventListener('click', async () => {
+  if (!entClienteId || !entNivelActivo) { showToast('⚠ Selecciona cliente y nivel'); return; }
+  if (!confirm('¿Archivar el plan actual y crear una nueva versión?')) return;
+  const btn = document.getElementById('btn-guardar-nuevo-entreno');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+
+  // Sync valores del DOM
+  entPlanItems.forEach(ej => {
+    const row = document.getElementById('ejr-'+ej._id);
+    if (!row) return;
+    const inputs = row.querySelectorAll('.ej-input');
+    if (inputs[0]) ej.series = parseInt(inputs[0].value)||0;
+    if (inputs[1]) ej.reps = inputs[1].value;
+    if (inputs[2]) ej.descanso = inputs[2].value;
+  });
+
+  try {
+    // Desactivar todos los planes anteriores (sin borrar — preservar historial para Evolución)
+    await sb.from('plan_entreno')
+      .update({ activo: false })
+      .eq('cliente_id', entClienteId);
+    // Crear nuevo plan activo
+    const { data: plan, error: e1 } = await sb.from('plan_entreno')
+      .insert({ cliente_id: entClienteId, nivel: entNivelActivo, activo: true })
+      .select().single();
+    if (e1) throw e1;
+    entPlanGuardadoId = plan.id;
+    // Insertar ejercicios
+    const items = entPlanItems.map(ej => ({
+      plan_id: plan.id, dia: ej.dia, sesion: ej.sesion,
+      grupo: ej.grupo, nombre: ej.nombre,
+      series: ej.series, reps: ej.reps, descanso: ej.descanso, orden: ej.orden
+    }));
+    if (items.length) {
+      const { error: e2 } = await sb.from('plan_entreno_items').insert(items);
+      if (e2) throw e2;
+    }
+    // ── Sincronizar con la app del cliente ──────────────────────────
+    await sincronizarPlanClienteApp(entClienteId, entPlanItems);
+    // ────────────────────────────────────────────────────────────────
+    showToast(`✓ Plan guardado · ${items.length} ejercicios · App sincronizada`);
+    await cargarPlanEntrenoGuardado(entClienteId);
+    await cargarHistorialRutinas(entClienteId);
+    if (clienteActivo?.id) await cargarFichaResumen(clienteActivo.id);
+  } catch(err) {
+    showToast('❌ ' + err.message);
+    console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = '📦 Archivar y crear nueva versión';
+  }
+});
+
 async function cargarPlanEntrenoGuardado(clienteId) {
   const { data: plan } = await sb.from('plan_entreno')
     .select('id,nivel,creado_en').eq('cliente_id', clienteId).eq('activo', true)
@@ -3640,7 +3881,7 @@ async function cargarPlanEntrenoGuardado(clienteId) {
     series: e.series, reps: e.reps, descanso: e.descanso, orden: e.orden
   }));
   entNivelActivo = plan.nivel;
-
+  renderNivelBtns();
   renderEditorEntreno();
 
   // Agrupar por día
@@ -3652,9 +3893,7 @@ async function cargarPlanEntrenoGuardado(clienteId) {
   const diasOrden = ['LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO','DOMINGO'];
   const dias = Object.keys(diasMap).sort((a,b) => diasOrden.indexOf(a) - diasOrden.indexOf(b));
 
-  const nivelMap = { 'Novato':'🟢','Con base':'🔵','Avanzado':'🔴',
-    'Principiante':'🟢','Intermedio':'🔵','Avanzado 5':'🟠','Avanzado 6':'🔴',
-    'Biblioteca JC Muscle':'📚','Biblioteca':'📚' };
+  const nivelMap = { 'Principiante':'🟢','Intermedio':'🔵','Avanzado 5':'🟠','Avanzado 6':'🔴' };
   const badge = `<div style="display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;margin-bottom:8px">${nivelMap[plan.nivel]||'💪'} ${plan.nivel} · ${items.length} ejercicios</div>`;
   const syncBadge = `<div style="display:inline-flex;align-items:center;gap:5px;background:#0d1f00;border:1px solid var(--accent);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--accent);margin-bottom:12px;margin-left:6px">📱 Sincronizado con app</div>`;
 
@@ -3734,195 +3973,163 @@ async function cargarHistorialRutinas(clienteId) {
   const wrap = document.getElementById('ent-historial-rutinas');
   if (!wrap) return;
 
-  const { data: mcs } = await sb.from('macrociclos')
-    .select('id, activo, fecha_inicio, fecha_fin, semanas_completadas, bd_programas(nombre, fase, dias_semana, duracion_sem, punto_partida)')
+  const { data: rutinas } = await sb.from('plan_entreno')
+    .select('id,nivel,activo,creado_en')
     .eq('cliente_id', clienteId)
-    .order('fecha_inicio', { ascending: false });
+    .order('creado_en', { ascending: false });
 
-  if (!mcs || !mcs.length) {
-    wrap.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Sin macrociclos registrados</div>';
+  if (!rutinas || !rutinas.length) {
+    wrap.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Sin rutinas registradas</div>';
     return;
   }
 
-  wrap.innerHTML = mcs.map(mc => {
-    const prog = mc.bd_programas || {};
-    const fechaI = new Date(mc.fecha_inicio).toLocaleDateString('es-PE', {day:'2-digit', month:'short', year:'numeric'});
-    const fechaF = mc.fecha_fin
-      ? new Date(mc.fecha_fin).toLocaleDateString('es-PE', {day:'2-digit', month:'short'})
-      : 'en curso';
-    const dias = mc.fecha_fin
-      ? Math.round((new Date(mc.fecha_fin) - new Date(mc.fecha_inicio)) / 86400000)
-      : Math.round((new Date() - new Date(mc.fecha_inicio)) / 86400000);
-    const pct = prog.duracion_sem ? Math.min(100, Math.round((mc.semanas_completadas / prog.duracion_sem) * 100)) : 0;
-    const bgColor = mc.activo ? 'rgba(169,243,56,0.05)' : 'var(--card)';
-    const border  = mc.activo ? 'rgba(169,243,56,0.25)' : 'var(--border)';
-    const nameColor = mc.activo ? 'var(--accent)' : 'var(--text)';
-    const barColor  = mc.activo ? 'var(--accent)' : '#444';
-    const activoBadge = mc.activo ? '<span style="font-size:9px;color:var(--accent);background:#1a2a00;border-radius:10px;padding:1px 7px;margin-left:4px">ACTIVO</span>' : '';
-    const btnAcciones = mc.activo ? '' :
-      '<button onclick="activarMacrociclo(' + mc.id + ')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif" onmouseover="this.style.borderColor=\'var(--accent)\';this.style.color=\'var(--accent)\'" onmouseout="this.style.borderColor=\'#2a2a2a\';this.style.color=\'#666\'">Activar</button>' +
-      '<button onclick="eliminarMacrociclo(' + mc.id + ')" title="Eliminar" style="background:none;border:none;color:#333;font-size:15px;cursor:pointer;padding:2px 5px;border-radius:5px;line-height:1" onmouseover="this.style.color=\'#e53e3e\'" onmouseout="this.style.color=\'#333\'">✕</button>';
-    return `<div style="padding:10px 12px;background:${bgColor};border:1px solid ${border};border-radius:10px;margin-bottom:6px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="min-width:0;flex:1">
-          <div style="font-size:12px;font-weight:700;color:${nameColor}">${prog.nombre || 'Programa'}${activoBadge}</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:1px">${prog.punto_partida || ''} · ${prog.dias_semana || ''}d/sem · ${fechaI} → ${fechaF} · ${dias} días</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:8px">
-          <span style="font-size:11px;color:var(--muted)">${mc.semanas_completadas}/${prog.duracion_sem || '?'} sem</span>
-          ${btnAcciones}
+  const nivelMap = { 'Principiante':'🟢','Intermedio':'🔵','Avanzado 5':'🟠','Avanzado 6':'🔴' };
+  wrap.innerHTML = rutinas.map((r, i) => {
+    const fecha = new Date(r.creado_en).toLocaleDateString('es-PE', {day:'2-digit', month:'short', year:'numeric'});
+    const icon = nivelMap[r.nivel] || '💪';
+    // Calcular duración hasta la siguiente rutina
+    const siguiente = rutinas[i - 1]; // lista desc → anterior en tiempo = i-1
+    let duracion = '';
+    if (siguiente) {
+      const dias = Math.round((new Date(siguiente.creado_en) - new Date(r.creado_en)) / 86400000);
+      duracion = `${dias} días`;
+    } else {
+      const dias = Math.round((new Date() - new Date(r.creado_en)) / 86400000);
+      duracion = `${dias} días (en curso)`;
+    }
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:${r.activo?'rgba(169,243,56,0.05)':'var(--card)'};border:1px solid ${r.activo?'rgba(169,243,56,0.2)':'var(--border)'};border-radius:10px;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:15px">${icon}</span>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:${r.activo?'var(--accent)':'var(--text)'}">${r.nivel}${r.activo?' <span style="font-size:9px;color:var(--accent);background:#1a2a00;border-radius:10px;padding:1px 7px;margin-left:4px">ACTIVA</span>':''}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px">Desde ${fecha} · ${duracion}</div>
         </div>
       </div>
-      <div style="background:#1a1a1a;border-radius:20px;height:4px;overflow:hidden">
-        <div style="height:4px;width:${pct}%;background:${barColor};border-radius:20px"></div>
-      </div>
+      ${!r.activo ? `<div style="display:flex;gap:6px;align-items:center">
+        <button onclick="activarRutinaHistorial('${r.id}')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#666'">Activar</button>
+        <button onclick="eliminarRutinaHistorial('${r.id}')" style="background:none;border:none;color:#333;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px" title="Eliminar" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='#333'">✕</button>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
 
-async function eliminarMacrociclo(macroId) {
-  if (!confirm('¿Eliminar este macrociclo del historial? No se puede deshacer.')) return;
-  await sb.from('macrociclos').delete().eq('id', macroId);
-  showToast('✓ Macrociclo eliminado');
-  await cargarHistorialRutinas(entClienteId);
-}
-
-async function activarMacrociclo(macroId) {
-  if (!confirm('¿Activar este macrociclo? El actual quedará archivado.')) return;
-  const hoy = new Date().toISOString().split('T')[0];
-  // Archivar todos los macrociclos activos
-  await sb.from('macrociclos').update({ activo: false, fecha_fin: hoy }).eq('cliente_id', entClienteId).eq('activo', true);
-  // Activar el seleccionado
-  const { error } = await sb.from('macrociclos').update({ activo: true, fecha_fin: null }).eq('id', macroId);
+async function activarRutinaHistorial(planId) {
+  if (!confirm('¿Activar esta rutina? La actual quedará archivada.')) return;
+  // Desactivar todas
+  await sb.from('plan_entreno').update({ activo: false }).eq('cliente_id', entClienteId);
+  // Activar la seleccionada
+  const { error } = await sb.from('plan_entreno').update({ activo: true }).eq('id', planId);
   if (error) { showToast('❌ ' + error.message); return; }
-  // Cargar el plan_entreno vinculado y sincronizar con app
-  const { data: mc } = await sb.from('macrociclos').select('programa_id').eq('id', macroId).single();
-  if (mc?.programa_id) {
-    const { data: exs } = await sb.from('bd_ejercicios').select('*').eq('programa_id', mc.programa_id).order('dia').order('orden');
-    if (exs?.length) {
-      await sb.from('plan_entreno').update({ activo: false }).eq('cliente_id', entClienteId);
-      const { data: plan } = await sb.from('plan_entreno').insert({ cliente_id: entClienteId, nivel: 'Biblioteca', activo: true }).select().single();
-      if (plan) {
-        const items = exs.map(e => ({ plan_id: plan.id, dia: e.dia, sesion: e.sesion, grupo: e.grupo, nombre: e.nombre, series: e.series, reps: e.reps, descanso: e.descanso, descanso_seg: parsearDescanso(e.descanso), orden: e.orden, indicacion: e.indicacion || '' }));
-        await sb.from('plan_entreno_items').insert(items);
-        await sincronizarPlanClienteApp(entClienteId, items);
-      }
-    }
-  }
-  showToast('✓ Macrociclo activado y sincronizado');
-  await progCargar(entClienteId);
+  // Sincronizar plan con la app del cliente
+  const { data: items } = await sb.from('plan_entreno_items').select('*').eq('plan_id', planId).order('dia').order('orden');
+  if (items?.length) await sincronizarPlanClienteApp(entClienteId, items.map(e => ({
+    dia: e.dia, sesion: e.sesion, grupo: e.grupo, nombre: e.nombre,
+    series: e.series, reps: e.reps, descanso: e.descanso, orden: e.orden
+  })));
+  showToast('✓ Rutina activada y sincronizada con la app');
   await cargarPlanEntrenoGuardado(entClienteId);
   await cargarHistorialRutinas(entClienteId);
-  if (clienteActivo?.id) await cargarResumen(clienteActivo.id);
+  if (clienteActivo?.id) await cargarFichaResumen(clienteActivo.id);
 }
 
-async function activarRutinaHistorial() { /* legacy - no-op */ }
-async function eliminarRutinaHistorial() { /* legacy - no-op */ }
-
+async function eliminarRutinaHistorial(planId) {
+  if (!confirm('¿Eliminar esta rutina del historial? No se puede deshacer.')) return;
+  await sb.from('plan_entreno_items').delete().eq('plan_id', planId);
+  await sb.from('plan_entreno').delete().eq('id', planId);
+  showToast('✓ Rutina eliminada');
+  await cargarHistorialRutinas(entClienteId);
+}
 // ─────────────────────────────────────────────────────────────────────
 // Puebla plan_semanal + plan_series + ejercicios
 // ══════════════════════════════════════════════
 async function sincronizarPlanClienteApp(clienteId, planItems) {
-  // ─────────────────────────────────────────────────────────────────
-  // Sincroniza el plan del admin con las tablas que lee index.html:
-  //   plan_semanal  → qué ejercicios hay por día/grupo
-  //   plan_series   → cuántas series, reps objetivo, descanso
-  //   ejercicios    → catálogo de ejercicios (bridge por nombre)
-  //
-  // Estrategia:
-  //   1. Upsert en 'ejercicios' por nombre (columna única)
-  //   2. Limpiar plan_semanal y plan_series del cliente
-  //   3. Insertar nuevas filas con los ejercicio_id correctos
-  // ─────────────────────────────────────────────────────────────────
   try {
+    // 1. Limpiar plan_semanal y plan_series del cliente
+    const { error: delSemErr } = await sb.from('plan_semanal').delete().eq('cliente_id', clienteId);
+    if (delSemErr) { console.error('❌ Error borrando plan_semanal:', delSemErr.message); showToast('❌ Error al limpiar plan anterior: ' + delSemErr.message); return; }
+    const { error: delSerErr } = await sb.from('plan_series').delete().eq('cliente_id', clienteId);
+    if (delSerErr) { console.error('❌ Error borrando plan_series:', delSerErr.message); }
+
     if (!planItems || !planItems.length) return;
 
-    // ── 1. Construir lista única de ejercicios a sincronizar ──────
+    // 2. Asegurar que todos los ejercicios existan en la tabla 'ejercicios'
+    //    (upsert por nombre + grupo, ya que el admin maneja nombre libre)
     const nombresUnicos = [...new Set(planItems.map(e => e.nombre))];
+    const { data: ejExistentes } = await sb.from('ejercicios')
+      .select('id, nombre').in('nombre', nombresUnicos);
+    const ejMap = {};  // nombre → id
+    (ejExistentes || []).forEach(e => { ejMap[e.nombre] = e.id; });
 
-    // ── 2. Upsert en tabla 'ejercicios' (onConflict por nombre) ──
-    //    Garantiza que todos existan sin importar RLS
-    const ejRows = planItems
-      .filter((e, i, arr) => arr.findIndex(x => x.nombre === e.nombre) === i)
-      .map(e => ({ nombre: e.nombre, grupo: e.grupo || '' }));
+    // Insertar los que faltan
+    const faltantes = planItems.filter(e => !ejMap[e.nombre])
+      .reduce((acc, e) => {
+        if (!acc.find(x => x.nombre === e.nombre))
+          acc.push({ nombre: e.nombre, grupo: e.grupo });
+        return acc;
+      }, []);
 
-    const { data: upserted, error: upsertErr } = await sb
-      .from('ejercicios')
-      .upsert(ejRows, { onConflict: 'nombre', ignoreDuplicates: false })
-      .select('id, nombre');
-
-    // Si el upsert falla, intentar solo leer los existentes
-    let ejMap = {};
-    if (upsertErr || !upserted?.length) {
-      console.warn('[SINC] upsert ejercicios falló, leyendo existentes:', upsertErr?.message);
-      const { data: existentes } = await sb
-        .from('ejercicios').select('id, nombre').in('nombre', nombresUnicos);
-      (existentes || []).forEach(e => { ejMap[e.nombre] = e.id; });
-    } else {
-      upserted.forEach(e => { ejMap[e.nombre] = e.id; });
-    }
-
-    // Re-leer para asegurar que tenemos todos (por si algunos ya existían)
-    if (Object.keys(ejMap).length < nombresUnicos.length) {
-      const faltanNombres = nombresUnicos.filter(n => !ejMap[n]);
-      if (faltanNombres.length) {
-        const { data: recheck } = await sb
-          .from('ejercicios').select('id, nombre').in('nombre', faltanNombres);
-        (recheck || []).forEach(e => { ejMap[e.nombre] = e.id; });
+    if (faltantes.length) {
+      // Intentar insertar — puede fallar por RLS si la política no permite INSERT
+      // En ese caso se continúa con los ejercicios que ya existían
+      try {
+        const { data: nuevos, error: ejInsErr } = await sb.from('ejercicios')
+          .insert(faltantes).select('id, nombre');
+        if (ejInsErr) {
+          // RLS bloqueó el insert — intentar upsert con onConflict por nombre
+          const { data: upserted } = await sb.from('ejercicios')
+            .upsert(faltantes, { onConflict: 'nombre', ignoreDuplicates: true })
+            .select('id, nombre');
+          (upserted || []).forEach(e => { ejMap[e.nombre] = e.id; });
+          // Re-leer por si ya existían con ese nombre
+          if (faltantes.length) {
+            const { data: recheck } = await sb.from('ejercicios')
+              .select('id, nombre').in('nombre', faltantes.map(f => f.nombre));
+            (recheck || []).forEach(e => { ejMap[e.nombre] = e.id; });
+          }
+        } else {
+          (nuevos || []).forEach(e => { ejMap[e.nombre] = e.id; });
+        }
+      } catch(ejErr) {
+        console.warn('No se pudieron insertar ejercicios nuevos (RLS):', ejErr.message);
+        // Continuar — plan_semanal usará ejercicio_id null para los nuevos
       }
     }
 
-    // ── 3. Limpiar tablas del cliente ─────────────────────────────
-    await sb.from('plan_semanal').delete().eq('cliente_id', clienteId);
-    await sb.from('plan_series').delete().eq('cliente_id', clienteId);
+    // 3. Construir plan_semanal (1 fila por ejercicio por día)
+    const planSemanalRows = planItems.map((ej, idx) => ({
+      cliente_id: clienteId,
+      dia:        ej.dia,
+      grupo:      ej.grupo,
+      ejercicio_id: ejMap[ej.nombre] || null,
+      orden:      ej.orden ?? idx
+    }));
+    if (planSemanalRows.length)
+      await sb.from('plan_semanal').insert(planSemanalRows);
 
-    // ── 4. Insertar plan_semanal ──────────────────────────────────
-    //    Una fila por ejercicio por día — ejercicio_id obligatorio
-    const semanalRows = planItems
-      .filter(ej => ejMap[ej.nombre])   // solo los que tienen id resuelto
-      .map((ej, idx) => ({
-        cliente_id:   clienteId,
-        dia:          ej.dia,
-        grupo:        ej.grupo || '',
-        ejercicio_id: ejMap[ej.nombre],
-        orden:        ej.orden ?? idx
-      }));
-
-    if (semanalRows.length) {
-      const { error: semErr } = await sb.from('plan_semanal').insert(semanalRows);
-      if (semErr) console.error('[SINC] plan_semanal insert error:', semErr.message);
-    }
-
-    // ── 5. Insertar plan_series ───────────────────────────────────
-    //    N filas por ejercicio (una por serie) con reps_objetivo y descanso_seg
-    const seriesRows = [];
+    // 4. Construir plan_series (N series por ejercicio)
+    //    Usamos el campo 'series' (número) para generar filas individuales
+    const planSeriesRows = [];
     planItems.forEach(ej => {
       const ejId = ejMap[ej.nombre];
       if (!ejId) return;
-      const numSeries  = parseInt(ej.series) || 3;
-      const descSeg    = parsearDescanso(ej.descanso);
+      const numSeries = parseInt(ej.series) || 3;
+      // Parsear reps_objetivo del string (ej "10-12" → "10-12" como texto)
       for (let s = 1; s <= numSeries; s++) {
-        seriesRows.push({
+        planSeriesRows.push({
           cliente_id:    clienteId,
           ejercicio_id:  ejId,
           serie_num:     s,
           reps_objetivo: ej.reps || '',
-          descanso_seg:  descSeg,
-          indicacion:    ej.indicacion || null
+          indicacion:    ej.descanso ? `Descanso: ${ej.descanso}` : null
         });
       }
     });
-
-    if (seriesRows.length) {
-      const { error: serErr } = await sb.from('plan_series').insert(seriesRows);
-      if (serErr) console.error('[SINC] plan_series insert error:', serErr.message);
-    }
-
-    console.log(`[SINC] OK — ${semanalRows.length} ejercicios / ${seriesRows.length} series sincronizadas`);
+    if (planSeriesRows.length)
+      await sb.from('plan_series').insert(planSeriesRows);
 
   } catch(err) {
-    console.error('[SINC] Error crítico:', err);
-    // No bloquear el flujo principal — el plan en plan_entreno ya se guardó
+    console.error('Error al sincronizar app cliente:', err);
+    // No bloquear el flujo principal — el plan admin ya se guardó
   }
 }
 
@@ -4718,56 +4925,49 @@ async function _cargarEvoNutricionalConDieta(clienteId) {
 // SUB-TAB: EVOLUCIÓN EJERCICIO
 // ══════════════════════════
 // Estado del selector de rutinas en Evolución Ejercicio
-let _evoRutinas = [];       // macrociclos del cliente
-let _evoRutinaSelId = null; // macrociclo actualmente seleccionado
+let _evoRutinas = [];       // todas las rutinas del cliente [{id, nivel, activo, creado_en}, ...]
+let _evoRutinaSelId = null; // id de la rutina actualmente seleccionada
 
 async function cargarRutinasSelector(clienteId) {
-  const { data: mcs } = await sb.from('macrociclos')
-    .select('id, activo, fecha_inicio, fecha_fin, semanas_completadas, bd_programas(nombre, fase, dias_semana, duracion_sem)')
+  const { data: rutinas } = await sb.from('plan_entreno')
+    .select('id,nivel,activo,creado_en')
     .eq('cliente_id', clienteId)
-    .order('fecha_inicio', { ascending: false });
+    .order('creado_en', { ascending: false });
 
-  _evoRutinas = (mcs || []).map(mc => ({
-    id:      mc.id,
-    activo:  mc.activo,
-    nivel:   mc.bd_programas?.nombre || 'Programa',
-    fase:    mc.bd_programas?.fase || '',
-    dias:    mc.bd_programas?.dias_semana || '',
-    duracion: mc.bd_programas?.duracion_sem || '',
-    creado_en: mc.fecha_inicio,
-    fecha_fin: mc.fecha_fin,
-    semanas:  mc.semanas_completadas || 0,
-  }));
-
+  _evoRutinas = rutinas || [];
   const bar  = document.getElementById('evo-ej-rutina-bar');
   const cont = document.getElementById('evo-ej-rutina-btns');
   if (!bar || !cont) return;
 
   if (_evoRutinas.length <= 1) {
+    // Solo una rutina o ninguna — no mostrar el selector
     bar.style.display = 'none';
     _evoRutinaSelId = _evoRutinas[0]?.id || null;
     return;
   }
 
   bar.style.display = 'flex';
-  const activo = _evoRutinas.find(r => r.activo) || _evoRutinas[0];
+  // Selección por defecto: la activa
+  const activa = _evoRutinas.find(r => r.activo) || _evoRutinas[0];
   if (!_evoRutinaSelId || !_evoRutinas.find(r => r.id === _evoRutinaSelId)) {
-    _evoRutinaSelId = activo.id;
+    _evoRutinaSelId = activa.id;
   }
 
+  const nivelMap = { 'Principiante':'🟢','Intermedio':'🔵','Avanzado 5':'🟡','Avanzado 6':'🔴' };
   cont.innerHTML = _evoRutinas.map(r => {
-    const fechaI = new Date(r.creado_en).toLocaleDateString('es-PE', {day:'2-digit', month:'short'});
-    const fechaF = r.fecha_fin
-      ? new Date(r.fecha_fin).toLocaleDateString('es-PE', {day:'2-digit', month:'short'})
-      : 'en curso';
+    const fecha = new Date(r.creado_en).toLocaleDateString('es-PE', {day:'2-digit', month:'2-digit', year:'2-digit'});
+    const icon  = nivelMap[r.nivel] || '💪';
     const sel   = r.id === _evoRutinaSelId;
-    const bg     = sel ? 'rgba(169,243,56,0.15)' : r.activo ? 'rgba(169,243,56,0.07)' : 'var(--card)';
-    const border = sel ? 'var(--accent)' : r.activo ? 'rgba(169,243,56,0.5)' : 'var(--border)';
-    const color  = sel ? 'var(--accent)' : r.activo ? 'var(--accent)' : 'var(--muted)';
-    const badge  = r.activo ? `<span style="background:rgba(169,243,56,0.2);color:#A9F338;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px">ACTIVO</span>` : '';
-    return `<button onclick="seleccionarRutinaEvo('${r.id}','${clienteId}')"
-      style="background:${bg};border:1px solid ${border};color:${color};border-radius:20px;padding:5px 14px;font-size:11px;font-weight:${sel||r.activo?'700':'500'};cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:5px">
-      💪 <span>${r.nivel}</span><span style="color:#555;font-size:10px">· ${fechaI}→${fechaF}</span>${badge}
+    const esActivo = r.activo;
+    const bg     = sel ? 'rgba(169,243,56,0.15)' : esActivo ? 'rgba(169,243,56,0.07)' : 'var(--card)';
+    const border = sel ? 'var(--accent)' : esActivo ? 'rgba(169,243,56,0.5)' : 'var(--border)';
+    const color  = sel ? 'var(--accent)' : esActivo ? 'var(--accent)' : 'var(--muted)';
+    const weight = sel || esActivo ? '700' : '500';
+    const badge  = esActivo ? `<span style="background:rgba(169,243,56,0.2);color:#A9F338;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;letter-spacing:0.5px">ACTIVO</span>` : '';
+    return `<button
+      onclick="seleccionarRutinaEvo('${r.id}','${clienteId}')"
+      style="background:${bg};border:1px solid ${border};color:${color};border-radius:20px;padding:5px 14px;font-size:11px;font-weight:${weight};cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px">
+      ${icon} <span>${r.nivel}</span><span style="color:${esActivo?'#A9F338':'#444'};font-size:10px">· ${fecha}</span>${badge}
     </button>`;
   }).join('');
 }
@@ -4797,40 +4997,23 @@ async function _cargarEvoEjercicioConRutina(clienteId) {
     .eq('cliente_id', clienteId)
     .order('fecha');
 
-  if (rutSel) {
-    // Filtrar por rango de fechas del macrociclo
-    query = query.gte('fecha', rutSel.creado_en);
-    if (rutSel.fecha_fin) {
-      query = query.lte('fecha', rutSel.fecha_fin);
-    } else if (rutSel.activo) {
-      // macrociclo activo: aplicar también el filtro de período del selector
-      query = query.gte('fecha', desdeStr);
+  if (_evoRutinaSelId && _evoRutinas.length > 1) {
+    if (rutSel?.activo) {
+      // Rutina activa: filtrar por plan_id Y por período seleccionado
+      query = query.eq('plan_id', _evoRutinaSelId).gte('fecha', desdeStr);
+    } else {
+      // Rutina archivada: filtrar solo por plan_id, sin límite de período
+      query = query.eq('plan_id', _evoRutinaSelId);
     }
   } else {
+    // Solo una rutina o ninguna seleccionada: usar período normal
     query = query.gte('fecha', desdeStr);
+    // Si hay plan seleccionado, también filtrar por él
+    if (_evoRutinaSelId) query = query.eq('plan_id', _evoRutinaSelId);
   }
 
   const { data: regEnt } = await query;
   wrap.innerHTML = '';
-
-  // ── Header de macrociclo seleccionado ──
-  if (rutSel) {
-    const fechaI = new Date(rutSel.creado_en).toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'});
-    const fechaF = rutSel.fecha_fin
-      ? new Date(rutSel.fecha_fin).toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'})
-      : 'en curso';
-    const mcHeader = document.createElement('div');
-    mcHeader.style.cssText = 'background:#0d1a00;border:1px solid rgba(169,243,56,0.2);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px';
-    mcHeader.innerHTML = `
-      <div>
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Macrociclo</div>
-        <div style="font-size:13px;font-weight:700;color:var(--accent)">${rutSel.nivel}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:2px">${rutSel.fase} · ${rutSel.dias} días/sem · ${fechaI} → ${fechaF}</div>
-      </div>
-      ${rutSel.activo ? '<span style="font-size:10px;background:#1a2a00;color:#A9F338;border-radius:20px;padding:3px 10px;font-weight:700">ACTIVO</span>' : `<span style="font-size:10px;color:var(--muted)">${rutSel.semanas} sem completadas</span>`}
-    `;
-    wrap.appendChild(mcHeader);
-  }
 
   if (!regEnt || !regEnt.length) {
     const el=document.createElement('div'); el.className='evo-card';
@@ -5325,7 +5508,6 @@ function setRIR(valor, save = true) {
 
 // Mapa días por nivel
 const NIVEL_DIAS = {
-  'Novato': 3, 'Con base': 4, 'Avanzado': 5,
   'Principiante': 3,
   'Intermedio':   4,
   'Avanzado 5':   5,
@@ -5341,7 +5523,7 @@ const NIVEL_COLOR = {
 function cfgCambiarNivel(nivel) {
   // Sincronizar con el editor de Entreno
   entNivelActivo = nivel;
-
+  renderNivelBtns();
 
   const dias = NIVEL_DIAS[nivel] || '';
 
@@ -5462,7 +5644,7 @@ document.getElementById('btn-guardar-config')?.addEventListener('click', async (
   if (nivelGuardado) {
     entClienteId = cfgClienteId;
     entNivelActivo = nivelGuardado;
-
+    renderNivelBtns(); // marca el botón correcto en la UI de Entreno
     // Si ya hay un plan guardado para este cliente, cargarlo
     await cargarPlanEntrenoGuardado(cfgClienteId);
   }
@@ -5962,749 +6144,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-// ══════════════════════════════════════════════════════
-// BIBLIOTECA JC MUSCLE
-// ══════════════════════════════════════════════════════
-let bibDiasActivo = null;
-let bibProgramaActual = null;
-let bibEjerciciosActual = [];
-
-function bibSelDias(dias, btn) {
-  if (dias === 7) {
-    document.querySelectorAll('.bib-dia-btn').forEach(b => b.classList.remove('activo'));
-    btn.classList.add('activo');
-    bibDiasActivo = 7;
-    document.getElementById('bib-resultado').style.display   = 'none';
-    document.getElementById('bib-no-resultado').style.display = 'block';
-    document.getElementById('bib-no-resultado').innerHTML = `
-      <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:6px">📋 Día 7 — Cardio / Recuperación activa</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.5">El 7° día no es un programa de pesas.<br>Selecciona 6 días para el programa base y el 7° día asígnalo a cardio suave, movilidad o descanso activo según el manual JC.</div>
-    `;
-    return;
-  }
-  bibDiasActivo = dias;
-  document.querySelectorAll('.bib-dia-btn').forEach(b => b.classList.remove('activo'));
-  btn.classList.add('activo');
-  bibFiltrar();
-}
-
-async function bibFiltrar() {
-  const objetivo = document.getElementById('bib-objetivo')?.value;
-  const partida  = document.getElementById('bib-partida')?.value;
-  const dias     = bibDiasActivo;
-  const resDiv   = document.getElementById('bib-resultado');
-  const noResDiv = document.getElementById('bib-no-resultado');
-
-  if (!objetivo || !partida || !dias || dias === 7) return;
-
-  const { data, error } = await sb.from('bd_programas')
-    .select('*')
-    .eq('objetivo', objetivo)
-    .eq('punto_partida', partida)
-    .eq('dias_semana', parseInt(dias))
-    .limit(1)
-    .maybeSingle();
-
-  if (error || !data) {
-    resDiv.style.display   = 'none';
-    noResDiv.style.display = 'block';
-    noResDiv.innerHTML     = 'No hay programa para esa combinación todavía.<br><span style="font-size:11px">Usa el selector de nivel manual.</span>';
-    bibProgramaActual = null;
-    return;
-  }
-
-  bibProgramaActual = data;
-  noResDiv.style.display = 'none';
-  resDiv.style.display   = 'block';
-
-  const objEmoji = { 'Ganancia muscular':'💪', 'Pérdida de grasa':'🔥', 'Recomposición':'⚡', 'Mantenimiento':'⚖️' };
-  document.getElementById('bib-programa-card').innerHTML = `
-    <div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:6px">${data.nombre}</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-      <span style="background:#1a2a00;color:var(--accent);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600">${objEmoji[data.objetivo]||''} ${data.objetivo}</span>
-      <span style="background:var(--surface);color:var(--muted);border-radius:20px;padding:2px 10px;font-size:11px">${data.punto_partida}</span>
-      <span style="background:var(--surface);color:var(--muted);border-radius:20px;padding:2px 10px;font-size:11px">${data.dias_semana} días/sem</span>
-      <span style="background:var(--surface);color:var(--muted);border-radius:20px;padding:2px 10px;font-size:11px">${data.fase}</span>
-      <span style="background:var(--surface);color:var(--muted);border-radius:20px;padding:2px 10px;font-size:11px">${data.duracion_sem} sem</span>
-    </div>
-    <div style="font-size:12px;color:var(--muted);line-height:1.5">${data.descripcion||''}</div>
-  `;
-}
-
-async function bibVerPreview() {
-  if (!bibProgramaActual) return;
-
-  const { data: ejercicios, error } = await sb.from('bd_ejercicios')
-    .select('*')
-    .eq('programa_id', bibProgramaActual.id)
-    .order('dia').order('orden');
-
-  if (error || !ejercicios || !ejercicios.length) {
-    showToast('⚠ Este programa no tiene ejercicios cargados todavía');
-    return;
-  }
-
-  bibEjerciciosActual = ejercicios;
-
-  document.getElementById('bib-modal-titulo').textContent = bibProgramaActual.nombre;
-  document.getElementById('bib-modal-meta').textContent =
-    `${bibProgramaActual.metodo_jc} · ${bibProgramaActual.fase} · ${bibProgramaActual.dias_semana} días/sem · ${bibProgramaActual.duracion_sem} semanas`;
-
-  document.getElementById('bib-modal-info').innerHTML = `
-    <div style="background:var(--bg);border-radius:10px;padding:10px">
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🏃 Cardio recomendado</div>
-      <div style="font-size:12px;color:var(--text)">${bibProgramaActual.cardio||'—'}</div>
-    </div>
-    <div style="background:var(--bg);border-radius:10px;padding:10px">
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">💊 Suplementación</div>
-      <div style="font-size:12px;color:var(--text)">${bibProgramaActual.suplementacion||'—'}</div>
-    </div>
-  `;
-
-  const ORDEN_DIAS = ['LUNES','MARTES','MIÉRCOLES','MIERCOLES','JUEVES','VIERNES','SÁBADO','SABADO','DOMINGO'];
-
-  const dias = {};
-  ejercicios.forEach(e => {
-    const key = e.dia + '||' + (e.sesion||'');
-    if (!dias[key]) dias[key] = { dia: e.dia, sesion: e.sesion, ejercicios: [],
-      _ord: ORDEN_DIAS.findIndex(x => e.dia.toUpperCase().startsWith(x.substring(0,5))) };
-    dias[key].ejercicios.push(e);
-  });
-
-  const diasOrdenados = Object.values(dias).sort((a,b) => {
-    if (a._ord !== b._ord) return a._ord - b._ord;
-    return (a.sesion||'').localeCompare(b.sesion||'');
-  });
-
-  const COLORES = { Pecho:'#e74c3c', Espalda:'#3498db', Hombro:'#f39c12', Cuádriceps:'#27ae60',
-    Femoral:'#16a085', Glúteo:'#8e44ad', Bíceps:'#e67e22', Tríceps:'#d35400',
-    Core:'#2ecc71', Pantorrilla:'#1abc9c', Trapecio:'#95a5a6' };
-
-  let html = '';
-  diasOrdenados.forEach(d => {
-    html += `
-      <div style="margin-bottom:16px">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">
-          ${d.dia} <span style="color:var(--muted);font-weight:400">· ${d.sesion||''}</span>
-        </div>
-        <div style="display:grid;gap:6px">
-    `;
-    d.ejercicios.forEach(e => {
-      const color = COLORES[e.grupo] || '#666';
-      html += `
-        <div style="display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--bg);border-radius:8px;padding:8px 10px">
-          <div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0"></div>
-          <div>
-            <div style="font-size:12px;font-weight:600;color:var(--text)">${e.nombre}</div>
-            ${e.indicacion ? `<div style="font-size:10px;color:var(--muted);margin-top:1px">${e.indicacion}</div>` : ''}
-          </div>
-          <div style="text-align:right;flex-shrink:0">
-            <div style="font-size:11px;font-weight:700;color:var(--accent)">${e.series}×${e.reps}</div>
-            <div style="font-size:10px;color:var(--muted)">${e.descanso||''} ${e.tempo ? '· '+e.tempo : ''} ${e.rir!=null ? '· RIR'+e.rir : ''}</div>
-          </div>
-        </div>
-      `;
-    });
-    // Cardio post-sesión
-    if (bibProgramaActual.cardio) {
-      html += `
-        <div style="display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:8px;padding:8px 10px;margin-top:4px">
-          <div style="font-size:14px">🏃</div>
-          <div>
-            <div style="font-size:11px;font-weight:600;color:var(--accent)">Post-sesión · Cardio</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:1px">${bibProgramaActual.cardio}</div>
-          </div>
-        </div>
-      `;
-    }
-    html += '</div></div>';
-  });
-
-  document.getElementById('bib-modal-ejercicios').innerHTML = html;
-  document.getElementById('bib-modal').style.display = 'block';
-  document.body.style.overflow = 'hidden';
-}
-
-function bibCerrarModal() {
-  document.getElementById('bib-modal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-// ── Helper: convierte string de descanso a segundos enteros ──
-// "90s" → 90 | "2 min" → 120 | "1:30" → 90 | "90" → 90
-function parsearDescanso(str) {
-  if (!str) return 60;
-  const s = String(str).trim().toLowerCase();
-  // formato "1:30"
-  const mmss = s.match(/^(\d+):(\d{2})$/);
-  if (mmss) return parseInt(mmss[1]) * 60 + parseInt(mmss[2]);
-  // formato "2 min" o "2min"
-  const minMatch = s.match(/(\d+)\s*min/);
-  if (minMatch) return parseInt(minMatch[1]) * 60;
-  // formato "90s" o "90 s" o "90seg"
-  const segMatch = s.match(/(\d+)/);
-  if (segMatch) return parseInt(segMatch[1]);
-  return 60;
-}
-
-async function bibAplicarPlan() {
-  if (!bibEjerciciosActual.length) return;
-  if (!entClienteId) { showToast('⚠ Selecciona un cliente primero'); return; }
-  if (!bibProgramaActual?.id) { showToast('⚠ No hay programa seleccionado'); return; }
-
-  // 🔒 Capturar snapshot ANTES de cerrar modal o cualquier operación async
-  // Evita que bibProgramaActual quede null si bibFiltrar() se re-ejecuta
-  const programaSnap = { ...bibProgramaActual };
-
-  bibCerrarModal();
-
-  // ── 1. Cargar ejercicios al editor (con descanso_seg calculado) ──
-  entPlanItems = bibEjerciciosActual.map(e => ({
-    _id:        ++entItemCnt,
-    dia:        e.dia,
-    sesion:     e.sesion,
-    grupo:      e.grupo,
-    nombre:     e.nombre,
-    series:     e.series,
-    reps:       e.reps,
-    descanso:   e.descanso,
-    descanso_seg: parsearDescanso(e.descanso),
-    orden:      e.orden,
-    tempo:      e.tempo      || '',
-    rir:        e.rir        != null ? e.rir : '',
-    indicacion: e.indicacion || ''
-  }));
-
-  renderEditorEntreno();
-
-  const editorWrap  = document.getElementById('ent-editor-wrap');
-  const editorVacio = document.getElementById('ent-editor-vacio');
-  if (editorWrap)  editorWrap.style.display  = 'block';
-  if (editorVacio) editorVacio.style.display = 'none';
-  const actions = document.getElementById('ent-editor-actions');
-  if (actions) actions.style.display = 'flex';
-
-  const hoy = new Date().toISOString().split('T')[0];
-
-  // ── 2. Cerrar macrociclo activo anterior ──
-  await sb.from('macrociclos')
-    .update({ activo: false, fecha_fin: hoy })
-    .eq('cliente_id', entClienteId)
-    .eq('activo', true);
-
-  // ── 3. Crear nuevo macrociclo ── (usa programaSnap, nunca será null aquí)
-  const { error: mcErr } = await sb.from('macrociclos').insert({
-    cliente_id:          entClienteId,
-    programa_id:         programaSnap.id,
-    fecha_inicio:        hoy,
-    semanas_completadas: 0,
-    activo:              true
-  });
-  if (mcErr) console.error('[BIB] macrociclo insert error:', mcErr.message);
-  else console.log('[BIB] macrociclo creado OK — programa_id:', programaSnap.id);
-
-  // ── 4. Guardar plan automáticamente (sin esperar 💾 manual) ──
-  try {
-    // Desactivar planes anteriores (preservar historial)
-    await sb.from('plan_entreno')
-      .update({ activo: false })
-      .eq('cliente_id', entClienteId);
-
-    // Crear nuevo plan activo
-    const nivel = programaSnap.punto_partida || 'Biblioteca';
-    const { data: plan, error: e1 } = await sb.from('plan_entreno')
-      .insert({ cliente_id: entClienteId, nivel, activo: true })
-      .select().single();
-    if (e1) throw e1;
-
-    entPlanGuardadoId = plan.id;
-    entNivelActivo    = nivel;
-
-    // Insertar items con descanso_seg incluido
-    const items = entPlanItems.map(ej => ({
-      plan_id:     plan.id,
-      dia:         ej.dia,
-      sesion:      ej.sesion,
-      grupo:       ej.grupo,
-      nombre:      ej.nombre,
-      series:      ej.series,
-      reps:        ej.reps,
-      descanso:    ej.descanso,
-      descanso_seg: ej.descanso_seg,
-      orden:       ej.orden,
-      indicacion:  ej.indicacion || ''
-    }));
-    if (items.length) {
-      const { error: e2 } = await sb.from('plan_entreno_items').insert(items);
-      if (e2) throw e2;
-    }
-
-    // Sincronizar con la app del cliente
-    await sincronizarPlanClienteApp(entClienteId, entPlanItems);
-
-    showToast(`✅ "${programaSnap.nombre}" — ${items.length} ejercicios guardados y sincronizados`);
-  } catch(err) {
-    console.error('[BIB] Error guardando plan:', err);
-    showToast('⚠ Plan cargado al editor — guarda manualmente con 💾');
-  }
-
-  // ── 5. Refrescar UI ──
-  await progCargar(entClienteId);
-  await cargarPlanEntrenoGuardado(entClienteId);
-  await cargarHistorialRutinas(entClienteId);
-
-}
-// ══ FIN BIBLIOTECA ══
-
-// ══════════════════════════════════════════════════════
-// SISTEMA DE PROGRESIÓN JC MUSCLE
-// ══════════════════════════════════════════════════════
-let progMacrocicloActual = null;
-let progProgramaActual   = null;
-let progRuta             = null;
-
-async function progCargar(clienteId) {
-  const card = document.getElementById('prog-card');
-  if (!clienteId) { card.style.display = 'none'; return; }
-
-  const { data: mc } = await sb.from('macrociclos')
-    .select('*, bd_programas(*)')
-    .eq('cliente_id', clienteId)
-    .eq('activo', true)
-    .maybeSingle();
-
-  if (!mc) { card.style.display = 'none'; return; }
-
-  progMacrocicloActual = mc;
-  progProgramaActual   = mc.bd_programas;
-  card.style.display   = 'block';
-
-  document.getElementById('prog-nombre-actual').textContent = progProgramaActual.nombre;
-  document.getElementById('prog-meta-actual').textContent =
-    `${progProgramaActual.fase} · ${progProgramaActual.metodo_jc} · ${progProgramaActual.dias_semana} días/sem`;
-
-  const fechaInicio  = new Date(mc.fecha_inicio);
-  const hoy          = new Date();
-  const semanasComp  = Math.floor((hoy - fechaInicio) / (7 * 24 * 60 * 60 * 1000));
-  const semanasTotal = progProgramaActual.duracion_sem;
-
-  document.getElementById('prog-semana-badge').textContent = `Semana ${semanasComp} / ${semanasTotal}`;
-
-  // Barra de progreso
-  const pct = semanasTotal ? Math.min(100, Math.round((semanasComp / semanasTotal) * 100)) : 0;
-  const barra = document.getElementById('prog-barra');
-  if (barra) barra.style.width = pct + '%';
-
-  // ── Indicador macrociclo en Biblioteca ──
-  const bibMc    = document.getElementById('bib-macrociclo-activo');
-  const bibNombre = document.getElementById('bib-mc-nombre');
-  const bibMeta   = document.getElementById('bib-mc-meta');
-  const bibSemana = document.getElementById('bib-mc-semana');
-  if (bibMc) {
-    bibMc.style.display = 'flex';
-    bibNombre.textContent = progProgramaActual.nombre;
-    bibMeta.textContent = `${progProgramaActual.fase} · ${progProgramaActual.dias_semana} días/sem · Inicio ${fechaInicio.toLocaleDateString('es-PE',{day:'2-digit',month:'short'})}`;
-    bibSemana.textContent = `Sem ${semanasComp}/${semanasTotal}`;
-  }
-
-  const [cargas, reps, adherencia] = await Promise.all([
-    progCalcCargas(clienteId, mc.fecha_inicio),
-    progCalcReps(clienteId, mc.fecha_inicio),
-    progCalcAdherencia(clienteId, mc.fecha_inicio, semanasComp, progProgramaActual.dias_semana)
-  ]);
-
-  const critSemanas    = semanasComp >= semanasTotal;
-  const critCargas     = cargas.pct >= 70;
-  const critReps       = reps.pct >= 70;
-  const critAdherencia = adherencia.pct >= 75;
-
-  progRenderCrit('prog-crit-semanas',    '📅 Semanas',    `${semanasComp} de ${semanasTotal}`,    critSemanas);
-  progRenderCrit('prog-crit-cargas',     '📈 Cargas',     `${cargas.pct}% subieron peso`,         critCargas);
-  progRenderCrit('prog-crit-reps',       '🎯 Reps',       `${reps.pct}% al tope del rango`,       critReps);
-  progRenderCrit('prog-crit-adherencia', '✅ Adherencia', `${adherencia.pct}% días completados`,  critAdherencia);
-
-  const cumple = [critSemanas, critCargas, critReps, critAdherencia].filter(Boolean).length;
-
-  if (cumple >= 3) {
-    document.getElementById('prog-no-listo').style.display = 'none';
-    document.getElementById('prog-opciones').style.display = 'block';
-  } else {
-    document.getElementById('prog-opciones').style.display = 'none';
-    document.getElementById('prog-no-listo').style.display = 'block';
-  }
-}
-
-function progRenderCrit(id, label, valor, ok) {
-  document.getElementById(id).innerHTML = `
-    <div class="crit-label">${label}</div>
-    <div class="crit-val ${ok ? 'crit-ok' : 'crit-no'}">${valor} ${ok ? '✅' : '—'}</div>
-  `;
-}
-
-async function progCalcCargas(clienteId, fechaInicio) {
-  const { data } = await sb.from('entrenamientos')
-    .select('ejercicio_id, peso_kg, fecha')
-    .eq('cliente_id', clienteId)
-    .gte('fecha', fechaInicio)
-    .order('fecha');
-
-  if (!data || !data.length) return { pct: 0 };
-
-  const ejercicios = {};
-  data.forEach(r => {
-    if (!ejercicios[r.ejercicio_id]) ejercicios[r.ejercicio_id] = [];
-    ejercicios[r.ejercicio_id].push({ fecha: new Date(r.fecha), peso: parseFloat(r.peso_kg)||0 });
-  });
-
-  let subieron = 0, total = 0;
-  Object.values(ejercicios).forEach(registros => {
-    if (registros.length < 2) return;
-    total++;
-    if (registros[registros.length-1].peso > registros[0].peso) subieron++;
-  });
-
-  return { pct: total > 0 ? Math.round((subieron/total)*100) : 0 };
-}
-
-async function progCalcReps(clienteId, fechaInicio) {
-  const { data } = await sb.from('entrenamientos')
-    .select('ejercicio_id, reps, fecha')
-    .eq('cliente_id', clienteId)
-    .gte('fecha', fechaInicio)
-    .order('fecha', { ascending: false });
-
-  if (!data || !data.length) return { pct: 50 };
-
-  const { data: items } = await sb.from('plan_entreno_items')
-    .select('id, reps')
-    .eq('plan_id', progMacrocicloActual?.id || '');
-
-  if (!items || !items.length) return { pct: 50 };
-
-  let alTope = 0, total = 0;
-  const ultimas = {};
-  data.forEach(r => { if (!ultimas[r.ejercicio_id]) ultimas[r.ejercicio_id] = r.reps; });
-
-  items.forEach(item => {
-    const match = (item.reps||'').match(/\d+/g);
-    if (!match) return;
-    const topeReps = parseInt(match[match.length-1]);
-    const repsReal = ultimas[item.id];
-    if (!repsReal) return;
-    total++;
-    if (repsReal >= topeReps) alTope++;
-  });
-
-  return { pct: total > 0 ? Math.round((alTope/total)*100) : 50 };
-}
-
-async function progCalcAdherencia(clienteId, fechaInicio, semanas, diasSemana) {
-  const { data } = await sb.from('entrenamientos')
-    .select('fecha')
-    .eq('cliente_id', clienteId)
-    .gte('fecha', fechaInicio);
-
-  if (!data) return { pct: 0 };
-  const diasUnicos    = new Set(data.map(r => r.fecha)).size;
-  const diasEsperados = semanas * diasSemana;
-  return { pct: diasEsperados > 0 ? Math.min(100, Math.round((diasUnicos/diasEsperados)*100)) : 0 };
-}
-
-function progSelDiasAvance(dias, btn) {
-  progAvanceDiasSel = dias;
-  document.querySelectorAll('.prog-dia-btn').forEach(b => b.classList.toggle('active', b === btn));
-  progBuscarSiguiente(dias);
-}
-
-function progMostrarModalAvance() {
-  if (!progProgramaActual) return;
-  const diasActual = progProgramaActual.dias_semana || 4;
-  const modal = document.getElementById('prog-avance-modal');
-  if (!modal) return;
-
-  // Reset selección de días al actual
-  progAvanceDiasSel = diasActual;
-  document.getElementById('prog-avance-dias-actual').textContent = diasActual;
-  const nombreEl = document.getElementById('prog-avance-actual-nombre');
-  if (nombreEl) nombreEl.textContent = progProgramaActual.nombre;
-  document.querySelectorAll('.prog-dia-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.dias) === diasActual);
-  });
-
-  document.getElementById('prog-avance-sugerido').innerHTML = '<div style="color:var(--muted);font-size:12px">Buscando programa...</div>';
-  modal.style.display = 'flex';
-  progBuscarSiguiente(diasActual);
-}
-
-let progAvanceDiasSel = 4;
-let progAvanceProgramaSig = null;
-
-async function progBuscarSiguiente(dias) {
-  const sugerido = document.getElementById('prog-avance-sugerido');
-  sugerido.innerHTML = '<div style="color:var(--muted);font-size:12px">Buscando...</div>';
-
-  // Buscar en progresion_rutas primero
-  const { data: ruta } = await sb.from('progresion_rutas')
-    .select('*, mismo:siguiente_mismo(id,nombre,fase,metodo_jc,dias_semana,duracion_sem,punto_partida), plus:siguiente_plus(id,nombre,fase,metodo_jc,dias_semana,duracion_sem,punto_partida)')
-    .eq('programa_id', progProgramaActual.id)
-    .maybeSingle();
-
-  let progSig = null;
-
-  if (ruta) {
-    progRuta = ruta;
-    // Elegir opción que mejor matchea los días seleccionados
-    const a = ruta.mismo;
-    const b = ruta.plus;
-    if (b && b.dias_semana === dias) progSig = b;
-    else if (a && a.dias_semana === dias) progSig = a;
-    else if (b && Math.abs(b.dias_semana - dias) < Math.abs((a?.dias_semana||99) - dias)) progSig = b;
-    else if (a) progSig = a;
-  }
-
-  // Si no hay ruta o no matchea días, buscar en biblioteca por nivel siguiente y días
-  if (!progSig) {
-    const nivelSig = { 'Novato': 'Con base', 'Con base': 'Avanzado', 'Avanzado': 'Avanzado' };
-    const nivelBuscar = nivelSig[progProgramaActual.punto_partida] || progProgramaActual.punto_partida;
-    const { data: candidatos } = await sb.from('bd_programas')
-      .select('id,nombre,fase,metodo_jc,dias_semana,duracion_sem,punto_partida')
-      .eq('punto_partida', nivelBuscar)
-      .eq('dias_semana', dias)
-      .limit(1);
-    progSig = candidatos?.[0] || null;
-
-    // Fallback: mismo nivel, mismos días
-    if (!progSig) {
-      const { data: fb } = await sb.from('bd_programas')
-        .select('id,nombre,fase,metodo_jc,dias_semana,duracion_sem,punto_partida')
-        .eq('dias_semana', dias)
-        .neq('id', progProgramaActual.id)
-        .limit(1);
-      progSig = fb?.[0] || null;
-    }
-  }
-
-  progAvanceProgramaSig = progSig;
-
-  if (progSig) {
-    sugerido.innerHTML = `
-      <div style="background:var(--bg);border-radius:10px;padding:12px">
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Programa sugerido</div>
-        <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:2px">${progSig.nombre}</div>
-        <div style="font-size:11px;color:var(--muted)">${progSig.punto_partida} · ${progSig.fase} · ${progSig.dias_semana} días/sem · ${progSig.duracion_sem} semanas</div>
-      </div>`;
-  } else {
-    sugerido.innerHTML = `<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">No hay programa disponible para ${dias} días en la biblioteca aún.</div>`;
-  }
-}
-
-async function progAvanzar() {
-  if (!progMacrocicloActual || !progAvanceProgramaSig) {
-    showToast('⚠ No hay programa siguiente disponible'); return;
-  }
-  const progSig = progAvanceProgramaSig;
-  document.getElementById('prog-avance-modal').style.display = 'none';
-
-  const hoy = new Date().toISOString().split('T')[0];
-  showToast('⏳ Avanzando programa...');
-
-  try {
-    // ── 1. Cerrar macrociclo actual ──
-    await sb.from('macrociclos')
-      .update({ activo: false, fecha_fin: hoy })
-      .eq('id', progMacrocicloActual.id);
-
-    // ── 2. Crear nuevo macrociclo ──
-    const { error: mcErr } = await sb.from('macrociclos').insert({
-      cliente_id:          entClienteId,
-      programa_id:         progSig.id,
-      fecha_inicio:        hoy,
-      semanas_completadas: 0,
-      activo:              true
-    });
-    if (mcErr) throw mcErr;
-
-    // ── 3. Cargar ejercicios del nuevo programa desde bd_ejercicios ──
-    const { data: ejercicios, error: ejErr } = await sb.from('bd_ejercicios')
-      .select('*')
-      .eq('programa_id', progSig.id)
-      .order('dia').order('orden');
-
-    if (ejErr) throw ejErr;
-
-    if (!ejercicios || !ejercicios.length) {
-      showToast(`✅ Avanzado a "${progSig.nombre}" — agrega ejercicios manualmente`);
-      await progCargar(entClienteId);
-      return;
-    }
-
-    // ── 4. Cargar al editor ──
-    entPlanItems = ejercicios.map(e => ({
-      _id:         ++entItemCnt,
-      dia:         e.dia,
-      sesion:      e.sesion,
-      grupo:       e.grupo,
-      nombre:      e.nombre,
-      series:      e.series,
-      reps:        e.reps,
-      descanso:    e.descanso,
-      descanso_seg: parsearDescanso(e.descanso),
-      orden:       e.orden,
-      tempo:       e.tempo      || '',
-      rir:         e.rir        != null ? e.rir : '',
-      indicacion:  e.indicacion || ''
-    }));
-
-    renderEditorEntreno();
-    const editorWrap  = document.getElementById('ent-editor-wrap');
-    const editorVacio = document.getElementById('ent-editor-vacio');
-    if (editorWrap)  editorWrap.style.display  = 'block';
-    if (editorVacio) editorVacio.style.display = 'none';
-    const actions = document.getElementById('ent-editor-actions');
-    if (actions) actions.style.display = 'flex';
-
-    // ── 5. Guardar en BD automáticamente ──
-    await sb.from('plan_entreno')
-      .update({ activo: false })
-      .eq('cliente_id', entClienteId);
-
-    const nivel = progSig.punto_partida || 'Biblioteca';
-    const { data: plan, error: planErr } = await sb.from('plan_entreno')
-      .insert({ cliente_id: entClienteId, nivel, activo: true })
-      .select().single();
-    if (planErr) throw planErr;
-
-    entPlanGuardadoId = plan.id;
-    entNivelActivo    = nivel;
-
-    const items = entPlanItems.map(ej => ({
-      plan_id:      plan.id,
-      dia:          ej.dia,
-      sesion:       ej.sesion,
-      grupo:        ej.grupo,
-      nombre:       ej.nombre,
-      series:       ej.series,
-      reps:         ej.reps,
-      descanso:     ej.descanso,
-      descanso_seg: ej.descanso_seg,
-      orden:        ej.orden,
-      indicacion:   ej.indicacion || ''
-    }));
-    if (items.length) {
-      const { error: itemsErr } = await sb.from('plan_entreno_items').insert(items);
-      if (itemsErr) throw itemsErr;
-    }
-
-    // ── 6. Sincronizar con app del cliente ──
-    await sincronizarPlanClienteApp(entClienteId, entPlanItems);
-
-    showToast(`✅ Avanzado a "${progSig.nombre}" — ${items.length} ejercicios cargados y sincronizados`);
-
-    // ── 7. Refrescar UI ──
-    await progCargar(entClienteId);
-    await cargarPlanEntrenoGuardado(entClienteId);
-    await cargarHistorialRutinas(entClienteId);
-
-  } catch(err) {
-    console.error('[PROG] progAvanzar error:', err);
-    showToast('❌ ' + err.message);
-  }
-}
-// ══ FIN PROGRESIÓN ══
-
-// Función de galería — pendiente de implementar (PEND-06)
-function evFisCargarGaleria() { /* TODO: implementar galería de fotos */ }
-
-
-async function bibDeshacerPlan() {
-  const confirmar = confirm('¿Cancelar el programa aplicado y volver a la biblioteca?');
-  if (!confirmar) return;
-
-  // Limpiar editor
-  entPlanItems = [];
-  renderEditorEntreno();
-
-  const editorWrap  = document.getElementById('ent-editor-wrap');
-  const editorVacio = document.getElementById('ent-editor-vacio');
-  const actions     = document.getElementById('ent-editor-actions');
-  if (editorWrap)  editorWrap.style.display  = 'none';
-  if (editorVacio) editorVacio.style.display = 'block';
-  if (actions)     actions.style.display     = 'none';
-  if (progCard)    progCard.style.display    = 'none';
-
-  // Cerrar macrociclo creado si existe
-  if (progMacrocicloActual) {
-    await sb.from('macrociclos')
-      .update({ activo: false, fecha_fin: new Date().toISOString().split('T')[0] })
-      .eq('id', progMacrocicloActual.id);
-    progMacrocicloActual = null;
-    progProgramaActual   = null;
-  }
-
-  // Reset biblioteca
-  bibProgramaActual    = null;
-  bibEjerciciosActual  = [];
-
-  showToast('↩ Programa cancelado — elige otro desde la biblioteca');
-}
-
-</script>
-
-<!-- ── MODAL BIBLIOTECA PREVIEW ── -->
-<div id="bib-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;padding:24px;overflow:hidden">
-  <div style="max-width:720px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;max-height:calc(100vh - 48px)">
-    <!-- Header sticky — botón siempre visible -->
-    <div style="position:sticky;top:0;z-index:10;background:var(--card);padding:16px 24px;border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-        <div style="min-width:0;flex:1">
-          <div id="bib-modal-titulo" style="font-size:16px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-          <div id="bib-modal-meta" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
-        </div>
-        <div style="display:flex;gap:8px;flex-shrink:0">
-          <button onclick="bibCerrarModal()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:10px 14px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif">✕</button>
-        </div>
-      </div>
-    </div>
-    <div id="bib-modal-info" style="padding:16px 24px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;flex-shrink:0"></div>
-    <div id="bib-modal-ejercicios" style="padding:16px 24px;overflow-y:auto;flex:1"></div>
-    <div style="padding:16px 24px;border-top:2px solid var(--accent);display:flex;gap:10px;flex-shrink:0;background:var(--card)">
-      <button onclick="bibAplicarPlan()" style="flex:1;background:var(--accent);color:#0a0a0a;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">✅ Aplicar al plan del cliente</button>
-      <button onclick="bibCerrarModal()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:14px 20px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── MODAL AVANCE DE PROGRAMA ── -->
-<div id="prog-avance-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:24px">
-  <div style="max-width:460px;width:100%;background:var(--card);border:1px solid rgba(169,243,56,0.3);border-radius:16px;padding:24px">
-    <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">✅ Listo para avanzar</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:20px">Programa actual: <strong id="prog-avance-actual-nombre" style="color:var(--text)"></strong> · <span id="prog-avance-dias-actual"></span> días/sem</div>
-
-    <div style="margin-bottom:16px">
-      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">¿Cuántos días entrena ahora?</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="prog-dia-btn" data-dias="2" onclick="progSelDiasAvance(2,this)">2</button>
-        <button class="prog-dia-btn" data-dias="3" onclick="progSelDiasAvance(3,this)">3</button>
-        <button class="prog-dia-btn" data-dias="4" onclick="progSelDiasAvance(4,this)">4</button>
-        <button class="prog-dia-btn" data-dias="5" onclick="progSelDiasAvance(5,this)">5</button>
-        <button class="prog-dia-btn" data-dias="6" onclick="progSelDiasAvance(6,this)">6</button>
-        <button class="prog-dia-btn" data-dias="7" onclick="progSelDiasAvance(7,this)">7</button>
-      </div>
-    </div>
-
-    <div id="prog-avance-sugerido" style="margin-bottom:20px"></div>
-
-    <div style="display:flex;gap:10px">
-      <button onclick="progAvanzar()" style="flex:1;background:var(--accent);color:#0a0a0a;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Confirmar avance →</button>
-      <button onclick="document.getElementById('prog-avance-modal').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:12px 16px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// ══════════════════════════════════════════
-// 🎬 VIDEOS — bd_ejercicios_catalogo
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// VIDEOS — Catálogo de ejercicios con video_url
+// Tabla: bd_ejercicios_catalogo (id, grupo, nombre, indicacion, video_url, activo)
+// ═══════════════════════════════════════════════════════════
 let vidCatalogo = [];
 let vidEditando = null;
 
@@ -6712,7 +6155,8 @@ async function vidCargar() {
   const { data, error } = await sb
     .from('bd_ejercicios_catalogo')
     .select('id, grupo, nombre, indicacion, video_url')
-    .order('grupo').order('nombre');
+    .order('grupo')
+    .order('nombre');
   if (error) { showToast('Error cargando catálogo'); return; }
   vidCatalogo = data || [];
   vidFiltrar();
@@ -6726,8 +6170,15 @@ function vidFiltrar() {
   if (estado === 'con') lista = lista.filter(e => e.video_url);
   if (estado === 'sin') lista = lista.filter(e => !e.video_url);
   document.getElementById('vid-contador').textContent = `${lista.length} ejercicios`;
+  vidRenderizar(lista);
+}
+
+function vidRenderizar(lista) {
   const el = document.getElementById('vid-lista');
-  if (!lista.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0">Sin resultados</div>'; return; }
+  if (!lista.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0">Sin resultados</div>';
+    return;
+  }
   el.innerHTML = lista.map(e => `
     <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--card);border-radius:10px;border:1px solid var(--border)">
       <div style="width:8px;height:8px;border-radius:50%;background:${e.video_url ? '#48bb78' : '#e53e3e'};flex-shrink:0"></div>
@@ -6736,7 +6187,7 @@ function vidFiltrar() {
         <div style="font-size:11px;color:var(--muted)">${e.grupo} ${e.video_url ? '· <span style="color:#48bb78">Con video</span>' : '· <span style="color:#e53e3e">Sin video</span>'}</div>
       </div>
       ${e.video_url ? `<a href="${e.video_url}" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;flex-shrink:0">▶ Ver</a>` : ''}
-      <button onclick="vidModalAbrir(${e.id})" style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:12px;flex-shrink:0;font-family:'Inter',sans-serif">
+      <button onclick="vidModalAbrir(${e.id})" style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:12px;flex-shrink:0">
         ${e.video_url ? 'Editar' : 'Agregar'}
       </button>
     </div>
@@ -6748,7 +6199,7 @@ function vidModalAbrir(id) {
   if (!ej) return;
   vidEditando = ej;
   document.getElementById('vid-modal-nombre').textContent = ej.nombre;
-  document.getElementById('vid-modal-grupo').textContent  = ej.grupo;
+  document.getElementById('vid-modal-grupo').textContent = ej.grupo;
   document.getElementById('vid-modal-url').value = ej.video_url || '';
   const m = document.getElementById('vid-modal');
   m.style.display = 'flex';
@@ -6763,16 +6214,18 @@ function vidModalCerrar() {
 async function vidGuardar() {
   if (!vidEditando) return;
   const url = document.getElementById('vid-modal-url').value.trim();
-  const { error } = await sb.from('bd_ejercicios_catalogo')
+  const { error } = await sb
+    .from('bd_ejercicios_catalogo')
     .update({ video_url: url || null })
     .eq('id', vidEditando.id);
   if (error) { showToast('Error al guardar'); return; }
   vidEditando.video_url = url || null;
   vidModalCerrar();
   vidFiltrar();
-  showToast('✓ Video actualizado');
+  showToast('Video actualizado ✓');
 }
 
+// Cerrar modal al clicar fuera
 document.getElementById('vid-modal').addEventListener('click', function(e) {
   if (e.target === this) vidModalCerrar();
 });
@@ -6786,46 +6239,53 @@ async function cargarAdminAlimentos() {
   const { data, error } = await sb.from('bd_alimentos').select('*').order('categoria').order('nombre');
   if (error) { showToast('Error cargando alimentos'); return; }
   almTodos = data || [];
-  document.getElementById('alm-total').textContent = almTodos.length + ' alimentos';
   almRenderCats();
   almFiltrar();
+  document.getElementById('alm-total').textContent = `${almTodos.length} alimentos`;
 }
 
 function almRenderCats() {
-  const cats = ['Todas', ...[...new Set(almTodos.map(a => a.categoria).filter(Boolean))].sort()];
+  const cats = ['Todas', ...new Set(almTodos.map(a => a.categoria).filter(Boolean))].sort((a,b) => a==='Todas'?-1:b==='Todas'?1:a.localeCompare(b));
   const el = document.getElementById('alm-cats');
   el.innerHTML = cats.map(cat => {
     const count = cat === 'Todas' ? almTodos.length : almTodos.filter(a => a.categoria === cat).length;
     const active = cat === almCatActiva;
-    return `<div onclick="almSelCat('${cat}')" style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:13px;background:${active?'rgba(169,243,56,0.1)':'transparent'};color:${active?'var(--accent)':'var(--text)'};border:1px solid ${active?'rgba(169,243,56,0.3)':'transparent'}">
+    return `<div onclick="almSelCat('${cat}')" style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:13px;background:${active?'rgba(169,243,56,0.12)':'transparent'};color:${active?'var(--accent)':'var(--text)'};border:1px solid ${active?'rgba(169,243,56,0.3)':'transparent'}">
       <span>${cat}</span>
-      <span style="font-size:11px;color:var(--muted);background:var(--surface);border-radius:6px;padding:1px 6px">${count}</span>
+      <span style="font-size:11px;color:var(--muted);background:var(--surface);border-radius:6px;padding:1px 7px">${count}</span>
     </div>`;
   }).join('');
 }
 
-function almSelCat(cat) { almCatActiva = cat; almRenderCats(); almFiltrar(); }
+function almSelCat(cat) {
+  almCatActiva = cat;
+  almRenderCats();
+  almFiltrar();
+}
 
 function almFiltrar() {
   const q = (document.getElementById('alm-buscar')?.value || '').toLowerCase();
   let lista = almCatActiva === 'Todas' ? almTodos : almTodos.filter(a => a.categoria === almCatActiva);
   if (q) lista = lista.filter(a => a.nombre?.toLowerCase().includes(q));
-  const CAT_COLOR = { 'Proteína':'#A9F338','Carbohidrato':'#60a5fa','Grasa':'#fbbf24','Verdura':'#34d399','Fruta':'#f472b6','Lácteo':'#a78bfa','Legumbre':'#fb923c','Otro':'#94a3b8' };
+
+  const CAT_COLORS = { 'Proteína':'#A9F338','Carbohidrato':'#60a5fa','Grasa':'#fbbf24','Verdura':'#34d399','Fruta':'#f472b6','Lácteo':'#a78bfa','Legumbre':'#fb923c','Otro':'#94a3b8' };
+
   const el = document.getElementById('alm-lista');
-  if (!lista.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">Sin alimentos en esta categoría</div>'; return; }
+  if (!lista.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">No hay alimentos en esta categoría</div>'; return; }
+
   el.innerHTML = lista.map(a => {
-    const c = CAT_COLOR[a.categoria] || '#94a3b8';
-    return `<div class="card" style="display:flex;align-items:center;gap:12px;padding:11px 14px">
-      <span style="font-size:10px;font-weight:700;background:${c}22;color:${c};border:1px solid ${c}44;border-radius:6px;padding:2px 8px;white-space:nowrap;min-width:80px;text-align:center">${a.categoria||'—'}</span>
+    const color = CAT_COLORS[a.categoria] || '#94a3b8';
+    return `<div class="card" style="display:flex;align-items:center;gap:12px;padding:12px 16px">
+      <span style="font-size:10px;font-weight:700;background:${color}22;color:${color};border:1px solid ${color}44;border-radius:6px;padding:2px 8px;white-space:nowrap;min-width:80px;text-align:center">${a.categoria||'—'}</span>
       <div style="flex:1;font-size:13px;font-weight:600">${a.nombre}</div>
-      <div style="display:flex;gap:12px;font-size:12px;color:var(--muted)">
-        <span><b style="color:#A9F338">${a.proteina??'—'}</b>g P</span>
-        <span><b style="color:#60a5fa">${a.carbos??'—'}</b>g C</span>
-        <span><b style="color:#fbbf24">${a.lipidos??'—'}</b>g G</span>
-        <span><b style="color:#f87171">${a.kcal??'—'}</b> kcal</span>
+      <div style="display:flex;gap:14px;font-size:12px;color:var(--muted)">
+        <span><span style="color:#A9F338;font-weight:600">${a.proteina??'—'}</span>g P</span>
+        <span><span style="color:#60a5fa;font-weight:600">${a.carbos??'—'}</span>g C</span>
+        <span><span style="color:#fbbf24;font-weight:600">${a.lipidos??'—'}</span>g G</span>
+        <span><span style="color:#f87171;font-weight:600">${a.kcal??'—'}</span> kcal</span>
       </div>
       <div style="display:flex;gap:6px">
-        <button onclick="almAbrirModal('${a.id}')" style="padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">Editar</button>
+        <button onclick="almAbrirModal('${a.id}')" style="padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:12px">Editar</button>
         <button onclick="almEliminar('${a.id}','${(a.nombre||'').replace(/'/g,"\\'")}')" style="padding:5px 10px;border-radius:7px;border:1px solid #e53e3e44;background:transparent;color:#e53e3e;cursor:pointer;font-size:13px">✕</button>
       </div>
     </div>`;
@@ -6835,53 +6295,60 @@ function almFiltrar() {
 function almAbrirModal(id) {
   const a = id ? almTodos.find(x => x.id === id) : null;
   document.getElementById('alm-modal-titulo').textContent = a ? 'Editar alimento' : 'Nuevo alimento';
-  document.getElementById('alm-modal-id').value   = a?.id || '';
-  document.getElementById('alm-f-nombre').value   = a?.nombre || '';
-  document.getElementById('alm-f-cat').value      = a?.categoria || 'Proteína';
-  document.getElementById('alm-f-prot').value     = a?.proteina ?? '';
-  document.getElementById('alm-f-carbos').value   = a?.carbos ?? '';
-  document.getElementById('alm-f-lip').value      = a?.lipidos ?? '';
-  document.getElementById('alm-f-kcal').value     = a?.kcal ?? '';
+  document.getElementById('alm-modal-id').value = a?.id || '';
+  document.getElementById('alm-f-nombre').value = a?.nombre || '';
+  document.getElementById('alm-f-cat').value = a?.categoria || 'Proteína';
+  document.getElementById('alm-f-prot').value = a?.proteina ?? '';
+  document.getElementById('alm-f-carbos').value = a?.carbos ?? '';
+  document.getElementById('alm-f-lip').value = a?.lipidos ?? '';
+  document.getElementById('alm-f-kcal').value = a?.kcal ?? '';
   document.getElementById('alm-modal').style.display = 'flex';
 }
 
-function almCerrarModal() { document.getElementById('alm-modal').style.display = 'none'; }
+function almCerrarModal() {
+  document.getElementById('alm-modal').style.display = 'none';
+}
 
 async function almGuardar() {
   const id = document.getElementById('alm-modal-id').value;
   const payload = {
-    nombre:   document.getElementById('alm-f-nombre').value.trim(),
-    categoria:document.getElementById('alm-f-cat').value,
-    proteina: parseFloat(document.getElementById('alm-f-prot').value)  || 0,
-    carbos:   parseFloat(document.getElementById('alm-f-carbos').value) || 0,
-    lipidos:  parseFloat(document.getElementById('alm-f-lip').value)    || 0,
-    kcal:     parseFloat(document.getElementById('alm-f-kcal').value)   || 0,
+    nombre:    document.getElementById('alm-f-nombre').value.trim(),
+    categoria: document.getElementById('alm-f-cat').value,
+    proteina:  parseFloat(document.getElementById('alm-f-prot').value) || 0,
+    carbos:    parseFloat(document.getElementById('alm-f-carbos').value) || 0,
+    lipidos:   parseFloat(document.getElementById('alm-f-lip').value) || 0,
+    kcal:      parseFloat(document.getElementById('alm-f-kcal').value) || 0,
   };
   if (!payload.nombre) { showToast('⚠ El nombre es obligatorio'); return; }
   let error;
-  if (id) ({ error } = await sb.from('bd_alimentos').update(payload).eq('id', id));
-  else    ({ error } = await sb.from('bd_alimentos').insert(payload));
-  if (error) { showToast('Error: ' + error.message); return; }
+  if (id) {
+    ({ error } = await sb.from('bd_alimentos').update(payload).eq('id', id));
+  } else {
+    ({ error } = await sb.from('bd_alimentos').insert(payload));
+  }
+  if (error) { showToast('Error guardando: ' + error.message); return; }
   almCerrarModal();
   showToast(id ? '✓ Alimento actualizado' : '✓ Alimento creado');
   await cargarAdminAlimentos();
-  // Sync global bdAlimentos para el editor de dieta
-  const { data } = await sb.from('bd_alimentos').select('*').order('categoria').order('nombre');
-  if (data) bdAlimentos = data;
+  // Actualizar bdAlimentos global para el editor de dieta
+  bdAlimentos = almTodos;
 }
 
 async function almEliminar(id, nombre) {
-  if (!confirm(`¿Eliminar "${nombre}"?`)) return;
+  if (!confirm(`¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`)) return;
   const { error } = await sb.from('bd_alimentos').delete().eq('id', id);
-  if (error) { showToast('Error: ' + error.message); return; }
-  showToast('✓ Eliminado');
+  if (error) { showToast('Error eliminando: ' + error.message); return; }
+  showToast('✓ Alimento eliminado');
   await cargarAdminAlimentos();
+  bdAlimentos = almTodos;
 }
 
 document.getElementById('alm-modal').addEventListener('click', function(e) {
   if (e.target === this) almCerrarModal();
 });
-</script>
 
+// Cargar al abrir la pestaña
+
+</script>
 </body>
 </html>

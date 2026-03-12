@@ -2,8 +2,25 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>FLI</title>
+
+  <!-- ── PWA / iOS standalone ── -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FLI">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="description" content="FLI — Fluye Libre · Tu app de entrenamiento y nutrición">
+
+  <!-- Ícono para pantalla de inicio iOS -->
+  <link rel="apple-touch-icon" href="https://fluyelibre-club.vercel.app/icon-192.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="https://fluyelibre-club.vercel.app/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://fluyelibre-club.vercel.app/icon-192.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="https://fluyelibre-club.vercel.app/icon-192.png">
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="/manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@300;400;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -171,41 +188,134 @@
     .smenu-label { font-size: 14px; }
 
     /* ── BOTTOM NAV ── */
+    /* ── BOTTOM NAV ── */
     .bottom-nav {
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 480px;
-      background: rgba(10,10,10,0.97);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      background: rgba(14,14,14,0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid rgba(255,255,255,0.07);
-      display: flex; padding: 10px 0 20px; z-index: 100;
+      display: flex; align-items: center;
+      padding: 0 0 28px; z-index: 100;
+      height: 68px;
     }
+
+    /* Items laterales — triángulo y rombo */
     .bnav-item {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      cursor: pointer; padding: 4px 0 8px;
+      cursor: pointer; padding: 10px 0 0;
       position: relative; border: none; background: none;
       -webkit-tap-highlight-color: transparent; outline: none;
       gap: 4px;
     }
-    .bnav-icon {
+
+    /* Forma contenedor */
+    .bnav-shape {
+      width: 38px; height: 38px;
       display: flex; align-items: center; justify-content: center;
-      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
-      color: rgba(255,255,255,0.35);
-      position: relative;
+      border-radius: 10px;
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .bnav-icon .icon-on { display: none; }
-    .bnav-icon .icon-off { display: block; }
+    .bnav-shape svg {
+      transition: stroke 0.15s, filter 0.15s;
+      stroke: rgba(255,255,255,0.28);
+    }
+    /* Triángulo — glow azulado frío al activar */
+    #bnav-wod .bnav-shape svg  { stroke: rgba(255,255,255,0.28); }
+    #bnav-wod:active .bnav-shape { transform: scale(1.12); }
+    #bnav-wod:active .bnav-shape svg {
+      stroke: #7ee8ff;
+      filter: drop-shadow(0 3px 8px rgba(100,220,255,0.6));
+    }
+    #bnav-wod.active .bnav-shape { transform: scale(1.08); }
+    #bnav-wod.active .bnav-shape svg {
+      stroke: #7ee8ff;
+      filter: drop-shadow(0 2px 6px rgba(100,220,255,0.5));
+    }
+    #bnav-wod.active .bnav-label { color: #7ee8ff; }
+    #bnav-wod:active .bnav-label { color: #7ee8ff; }
+
+    /* Rombo — glow naranja cálido al activar */
+    #bnav-alimentos .bnav-shape svg { stroke: rgba(255,255,255,0.28); }
+    #bnav-alimentos:active .bnav-shape { transform: scale(1.12); }
+    #bnav-alimentos:active .bnav-shape svg {
+      stroke: #ffb347;
+      filter: drop-shadow(0 3px 8px rgba(255,160,50,0.6));
+    }
+    #bnav-alimentos.active .bnav-shape { transform: scale(1.08); }
+    #bnav-alimentos.active .bnav-shape svg {
+      stroke: #ffb347;
+      filter: drop-shadow(0 2px 6px rgba(255,160,50,0.5));
+    }
+    #bnav-alimentos.active .bnav-label { color: #ffb347; }
+    #bnav-alimentos:active .bnav-label { color: #ffb347; }
+
     .bnav-label {
-      font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
-      text-transform: uppercase; color: rgba(255,255,255,0.35);
-      opacity: 0; transform: translateY(4px);
-      transition: all 0.18s ease;
+      font-size: 10px; font-weight: 500;
+      color: rgba(255,255,255,0.28);
+      transition: color 0.18s;
       white-space: nowrap; pointer-events: none;
     }
-    .bnav-item.active .bnav-icon { color: var(--accent); transform: scale(1.1); }
-    .bnav-item.active .bnav-icon .icon-on { display: block; }
-    .bnav-item.active .bnav-icon .icon-off { display: none; }
-    .bnav-item.active .bnav-label { opacity: 1; transform: translateY(0); color: var(--accent); }
+
+    /* ── Botón central — círculo Siri, queda DENTRO de la barra ── */
+    .bnav-center {
+      flex: 0 0 80px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      cursor: pointer; border: none; background: none;
+      -webkit-tap-highlight-color: transparent; outline: none;
+      padding: 8px 0 0; gap: 4px;
+      position: relative;
+    }
+    @keyframes siri-spin {
+      0%   { background: radial-gradient(circle at 36% 32%, rgba(255,255,255,0.55) 0%, rgba(169,243,56,0.95) 40%, rgba(110,185,10,0.9) 100%); }
+      25%  { background: radial-gradient(circle at 68% 32%, rgba(255,255,255,0.55) 0%, rgba(169,243,56,0.95) 40%, rgba(110,185,10,0.9) 100%); }
+      50%  { background: radial-gradient(circle at 68% 68%, rgba(255,255,255,0.55) 0%, rgba(169,243,56,0.95) 40%, rgba(110,185,10,0.9) 100%); }
+      75%  { background: radial-gradient(circle at 36% 68%, rgba(255,255,255,0.55) 0%, rgba(169,243,56,0.95) 40%, rgba(110,185,10,0.9) 100%); }
+      100% { background: radial-gradient(circle at 36% 32%, rgba(255,255,255,0.55) 0%, rgba(169,243,56,0.95) 40%, rgba(110,185,10,0.9) 100%); }
+    }
+    .bnav-center-ring {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 36% 32%,
+        rgba(255,255,255,0.22) 0%,
+        rgba(169,243,56,0.95) 45%,
+        rgba(110,185,10,0.9) 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow:
+        0 2px 10px rgba(169,243,56,0.3),
+        0 1px 3px rgba(0,0,0,0.5),
+        inset 0 1.5px 1px rgba(255,255,255,0.3),
+        inset 0 -1px 2px rgba(0,0,0,0.15);
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+    }
+    .bnav-center:active .bnav-center-ring {
+      transform: scale(1.14);
+      animation: siri-spin 0.6s ease-in-out 1;
+      box-shadow:
+        0 6px 22px rgba(169,243,56,0.45),
+        0 2px 6px rgba(0,0,0,0.4),
+        inset 0 1.5px 1px rgba(255,255,255,0.35);
+    }
+    .bnav-center-ring.active-state {
+      transform: scale(1.08);
+      box-shadow:
+        0 4px 16px rgba(169,243,56,0.4),
+        0 1px 4px rgba(0,0,0,0.35),
+        inset 0 1.5px 1px rgba(255,255,255,0.3);
+    }
+    .bnav-center-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15px; letter-spacing: 0.5px;
+      color: #0a0a0a; font-weight: 700; line-height: 1;
+    }
+    .bnav-center-label {
+      font-size: 10px; font-weight: 500;
+      color: rgba(255,255,255,0.32);
+      white-space: nowrap; transition: color 0.15s;
+    }
+    .bnav-center-ring.active-state ~ .bnav-center-label { color: var(--accent); }
 
     /* ── SWIPE CONTAINER ── */
     .swipe-wrap { flex: 1; position: relative; overflow: hidden; touch-action: pan-y; width: 100%; min-height: 0; }
@@ -417,15 +527,20 @@
     .wod-ej-body { display:none;padding:0 28px 16px;border-top:1px solid var(--border); }
     .wod-ej-body.open { display:block; }
     .wod-ref-line { font-size:12px;color:var(--muted);padding:10px 0 12px;display:flex;align-items:center;gap:6px; }
-    .wod-serie-row2 { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px; }
+    .wod-serie-row2 { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;margin-bottom:8px; }
     .wod-serie-row2.done { border-color:#2a3a1a;background:#0d1a06; }
-    .wod-serie-num2 { font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;width:44px;flex-shrink:0; }
+    .wod-serie-top { display:flex;align-items:center;justify-content:space-between; }
+    .wod-serie-fields { display:flex;gap:8px; }
+    .wod-serie-num2 { display:flex;flex-direction:column;align-items:center;justify-content:center;width:48px;height:48px;border-radius:8px;border:1px solid var(--border);background:var(--surface);flex-shrink:0; }
+    .wod-serie-num2.done { border-color:var(--accent);background:#1a2e0a; }
+    .wod-serie-num2 span.lbl { font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px; }
+    .wod-serie-num2 span.num { font-size:18px;font-weight:700;line-height:1; }
     .wod-field2 { flex:1;text-align:center; }
     .wod-field2 label { display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px; }
     .wod-field2-inner { display:flex;align-items:center;gap:4px;justify-content:center; }
-    .wod-pm { width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Inter',sans-serif; }
+    .wod-pm { width:32px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Inter',sans-serif; }
     .wod-pm:active { background:var(--accent);color:#0a0a0a;border-color:var(--accent); }
-    .wod-inp2 { width:48px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 4px;color:var(--text);font-size:16px;font-weight:700;font-family:'Inter',sans-serif;text-align:center;outline:none;-moz-appearance:textfield; }
+    .wod-inp2 { width:52px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 4px;color:var(--text);font-size:18px;font-weight:700;font-family:'Inter',sans-serif;text-align:center;outline:none;-moz-appearance:textfield; }
     .wod-inp2::-webkit-outer-spin-button,.wod-inp2::-webkit-inner-spin-button{-webkit-appearance:none;}
     .wod-inp2:focus { border-color:var(--accent); }
     .wod-check2 { width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0; }
@@ -735,7 +850,7 @@
       </div><!-- /page-evol -->
 
       <!-- ══ PAGE 1: ALIMENTOS ══ -->
-      <div class="swipe-page" id="page-alimentos">
+      <div class="swipe-page" id="page-wod">
       <!-- Navegación de fechas -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 28px 0;gap:8px">
         <button onclick="nutCambiarDia(-1)" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 14px;font-size:16px;cursor:pointer;font-family:'Inter',sans-serif">‹</button>
@@ -796,10 +911,10 @@
       <div style="padding:0 28px">
         <div id="comidas-list"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
       </div>
-    </div><!-- /page-alimentos -->
+    </div><!-- /page-wod -->
 
       <!-- ══ PAGE 2: ENTRENO ══ -->
-      <div class="swipe-page" id="page-wod">
+      <div class="swipe-page" id="page-alimentos">
       <!-- Navegación de día (igual que Alimentos) -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;gap:8px">
         <button onclick="wodCambiarDia(-1)" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 14px;font-size:16px;cursor:pointer;font-family:'Inter',sans-serif">‹</button>
@@ -821,15 +936,7 @@
         <div class="wod-empty">Selecciona un grupo muscular</div>
       </div>
 
-      <!-- Timer de descanso (overlay) -->
-      <div id="wod-timer-wrap" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--accent);border-radius:20px;padding:12px 24px;z-index:150;display:none;align-items:center;gap:14px;box-shadow:0 4px 24px rgba(0,0,0,0.5)">
-        <div style="text-align:center">
-          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Descanso</div>
-          <div id="wod-timer-val" style="font-size:32px;font-weight:700;color:var(--accent);font-family:'Bebas Neue',sans-serif;letter-spacing:2px">60</div>
-        </div>
-        <button onclick="wodTimerCancelar()" style="background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Saltar</button>
-      </div>
-    </div><!-- /page-wod -->
+    </div><!-- /page-alimentos -->
 
       <!-- ══ PAGE 3: BUSCAR ══ -->
       <div class="swipe-page" id="page-macros">
@@ -1057,33 +1164,45 @@
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
-    <button class="bnav-item active" id="bnav-perfil" onclick="bnavGo('perfil')">
-      <span class="bnav-icon">
-        <!-- Perfil: persona outline fino estilo IG -->
-        <svg class="icon-off" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/></svg>
-        <svg class="icon-on" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/></svg>
-      </span>
-      <span class="bnav-label">PERFIL</span>
-    </button>
+    <!-- IZQUIERDA: Nutrición — rombo (bnav-wod no se toca) -->
     <button class="bnav-item" id="bnav-wod" onclick="bnavGo('wod')">
-      <span class="bnav-icon">
-        <!-- Ejercicios: rayo estilo IG -->
-        <svg class="icon-off" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        <svg class="icon-on" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <span class="bnav-shape">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="4" width="16" height="16" rx="2" transform="rotate(45 12 12)"/>
+        </svg>
       </span>
-      <span class="bnav-label">EJERCICIOS</span>
+      <span class="bnav-label">Nutrición</span>
     </button>
+
+    <!-- CENTRO: círculo Siri -->
+    <button class="bnav-center" id="bnav-perfil" onclick="bnavGo('perfil')">
+      <div class="bnav-center-ring" id="bnav-center-ring">
+        <span class="bnav-center-logo" id="bnav-initial">?</span>
+      </div>
+      <span class="bnav-center-label">Perfil</span>
+    </button>
+
+    <!-- DERECHA: Ejercicios — triángulo (bnav-alimentos no se toca) -->
     <button class="bnav-item" id="bnav-alimentos" onclick="bnavGo('alimentos')">
-      <span class="bnav-icon">
-        <!-- Nutrición: bowl estilo IG -->
-        <svg class="icon-off" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9z"/><path d="M12 13V2"/><path d="M9 5h6"/></svg>
-        <svg class="icon-on" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9z"/><path d="M12 13V2" fill="none"/><path d="M9 5h6" fill="none"/></svg>
+      <span class="bnav-shape">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12,3 22,21 2,21"/>
+        </svg>
       </span>
-      <span class="bnav-label">NUTRICIÓN</span>
+      <span class="bnav-label">Ejercicios</span>
     </button>
   </nav>
 
 </div><!-- /screen-app -->
+
+<!-- Timer de descanso (overlay global) -->
+<div id="wod-timer-wrap" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--accent);border-radius:20px;padding:12px 24px;z-index:9999;align-items:center;gap:14px;box-shadow:0 4px 24px rgba(0,0,0,0.6)">
+  <div style="text-align:center">
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Descanso</div>
+    <div id="wod-timer-val" style="font-size:36px;font-weight:700;color:var(--accent);font-family:'Bebas Neue',sans-serif;letter-spacing:2px">60</div>
+  </div>
+  <button onclick="wodTimerCancelar()" style="background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Saltar</button>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -1213,12 +1332,16 @@ async function initApp(user) {
   }
 
   currentUser = user;
+  // Mostrar inicial del cliente en el hexágono
+  const _initLetter = (user.user_metadata?.nombre || user.email || '?')[0].toUpperCase();
+  const _initEl = document.getElementById('bnav-initial');
+  if (_initEl) _initEl.textContent = _initLetter;
   document.getElementById('screen-login').style.display = 'none';
   document.getElementById('screen-app').style.display = 'flex';
   document.getElementById('screen-app').style.flexDirection = 'column';
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      goToPage(1, false);
+      goToPage(2, false);
       loadAlimentos();
       setTimeout(() => loadCatalogoAlimentos(), 1500);
     });
@@ -1301,23 +1424,39 @@ window.addEventListener('resize', () => {
 });
 
 // ── BOTTOM NAV + SWIPE ──
-const PAGES = ['evol','alimentos','wod','macros'];
-let currentPage = 1; // start on alimentos
+// Páginas: 0=evol  1=alimentos  2=wod  3=macros
+// Nav:     alimentos→1  wod→2  (perfil=overlay, evol y macros accesibles por swipe)
+const PAGES = ['evol','wod','alimentos','macros'];
+let currentPage = 2; // arrancar en alimentos (idx=2)
 
 function bnavGo(tab) {
+  window.scrollTo(0, 0);
+  document.querySelectorAll('.swipe-page').forEach(p => p.scrollTop = 0);
   if (tab === 'perfil') {
     document.getElementById('screen-perfil').style.display = 'block';
-    document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
-    document.getElementById('bnav-perfil').classList.add('active');
+    syncBnavPerfil(true);
     perfilLoad();
     perfilLoadAvatar();
     return;
   }
   document.getElementById('screen-perfil').style.display = 'none';
+  syncBnavPerfil(false);
   const idx = PAGES.indexOf(tab);
   if (idx === -1) return;
   goToPage(idx);
   if (tab === 'wod') loadWOD();
+}
+
+function syncBnav(idx) {
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('bnav-center-ring')?.classList.remove('active-state');
+  if (idx === 1) document.getElementById('bnav-wod')?.classList.add('active');
+  else if (idx === 2) document.getElementById('bnav-alimentos')?.classList.add('active');
+  // evol(0) y macros(3) — sin botón, ninguno marcado
+}
+function syncBnavPerfil(on) {
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('bnav-center-ring')?.classList.toggle('active-state', on);
 }
 
 function goToPage(idx, animate) {
@@ -1326,31 +1465,25 @@ function goToPage(idx, animate) {
   if (animate === false) {
     track.style.transition = 'none';
     track.style.transform = `translateX(-${idx * 100}%)`;
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        track.style.transition = 'transform 0.32s cubic-bezier(0.4,0,0.2,1)';
-      });
-    });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      track.style.transition = 'transform 0.32s cubic-bezier(0.4,0,0.2,1)';
+    }));
   } else {
     track.style.transform = `translateX(-${idx * 100}%)`;
   }
-  // update dots
-  document.querySelectorAll('.sdot').forEach((d,i) => {
-    d.classList.toggle('active', i === idx);
-  });
-  // update bnav — only alimentos(1) and wod(2) have bnav buttons
-  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
-  if (idx === 1) document.getElementById('bnav-alimentos')?.classList.add('active');
-  if (idx === 2) document.getElementById('bnav-wod')?.classList.add('active');
-  // fire ev init when landing on evol
+  // dots
+  document.querySelectorAll('.sdot').forEach((d,i) => d.classList.toggle('active', i === idx));
+  // nav activo
+  syncBnav(idx);
+  // hooks por página
   if (idx === 0) {
-    const activePill = document.querySelector('.ev-pill.active');
-    const which = activePill ? activePill.textContent.trim() : '';
-    if (which.includes('Ejercicios')) evWodInit();
-    else if (which.includes('Nutrición')) evNutInit();
-    else if (which.includes('Progreso')) evFisInit();
+    const pill = document.querySelector('.ev-pill.active');
+    const t = pill ? pill.textContent.trim() : '';
+    if (t.includes('Ejercicios')) evWodInit();
+    else if (t.includes('Nutrición')) evNutInit();
+    else evFisInit();
   }
-  // fire buscar init when landing on page 3
+  if (idx === 1) loadWOD();
   if (idx === 3) initBuscar();
 }
 
@@ -1381,9 +1514,7 @@ function goToPage(idx, animate) {
       const next = dx < 0
         ? Math.min(currentPage + 1, PAGES.length - 1)
         : Math.max(currentPage - 1, 0);
-      goToPage(next);
-      if (next === 2) loadWOD();
-      if (next === 0) { const p = document.querySelector('.ev-pill.active'); if(p) p.click(); }
+      goToPage(next); // goToPage ya maneja todos los hooks
     }
   });
 })();
@@ -2382,7 +2513,14 @@ async function loadWOD() {
   const { data: ps } = await sb.from('plan_semanal').select('*').eq('cliente_id', currentUser.id);
   wodPlanSemanal = ps || [];
   const { data: ej } = await sb.from('ejercicios').select('*').order('nombre');
-  wodEjercicios = ej || [];
+  // Cruzar video_url desde catálogo maestro por nombre de ejercicio
+  const { data: cat } = await sb.from('bd_ejercicios_catalogo').select('nombre,video_url').not('video_url','is',null);
+  const videoMap = {};
+  (cat || []).forEach(c => { videoMap[c.nombre.trim().toLowerCase()] = c.video_url; });
+  wodEjercicios = (ej || []).map(e => ({
+    ...e,
+    video_url: videoMap[e.nombre.trim().toLowerCase()] || null
+  }));
   const { data: psr } = await sb.from('plan_series').select('*').eq('cliente_id', currentUser.id);
   wodPlanSeries = psr || [];
   // Cargar plan_id activo del cliente para taggear entrenamientos
@@ -2467,7 +2605,7 @@ async function wodRenderEjercicios() {
   const desdeRef = semanaPasada.toISOString().split('T')[0];
 
   const { data: refs } = await sb.from('entrenamientos')
-    .select('ejercicio_id, peso, reps, fecha')
+    .select('ejercicio_id, peso, reps, serie, fecha')
     .eq('cliente_id', currentUser.id)
     .in('ejercicio_id', ejIds)
     .lt('fecha', today)
@@ -2475,7 +2613,10 @@ async function wodRenderEjercicios() {
     .order('fecha', { ascending: false });
 
   const refMap = {};
-  (refs || []).forEach(r => { if (!refMap[r.ejercicio_id]) refMap[r.ejercicio_id] = r; });
+  (refs || []).forEach(r => {
+    const key = `${r.ejercicio_id}_${r.serie}`;
+    if (!refMap[key]) refMap[key] = r;
+  });
 
   wodRenderCards(ejercicios, refMap);
 }
@@ -2489,39 +2630,59 @@ function wodRenderCards(ejercicios, refMap) {
     const seriesDone = regsHoy.length;
     const totalSeries = series.length;
     const todoDone = totalSeries > 0 && seriesDone >= totalSeries;
-    const ref = refMap[ej.id];
+    const ref = refMap[ej.id]; // kept for fallback
     const isOpen = wodEjAbierto === ej.id && !todoDone;
 
     const seriesHtml = series.map(s => {
       const reg = regsHoy.find(r => r.serie === s.serie_num);
       const done = !!reg;
+      const refSerie = refMap[`${ej.id}_${s.serie_num}`];
+      const antLabel = refSerie
+        ? `<span style="font-size:11px;color:var(--muted);font-weight:400">ses. ant. <strong style="color:var(--accent)">${refSerie.peso || '—'}kg × ${refSerie.reps || '—'}</strong></span>`
+        : '';
       return `<div class="wod-serie-row2 ${done ? 'done' : ''}" id="wsr-${ej.id}-${s.serie_num}">
-        <div class="wod-serie-num2">Serie ${s.serie_num}</div>
-        <div class="wod-field2">
-          <label>Reps</label>
-          <div class="wod-field2-inner">
-            <button class="wod-pm" onclick="wodAdj('reps','${ej.id}',${s.serie_num},-1)" ${done ? 'disabled' : ''}>−</button>
-            <input class="wod-inp2" type="number" inputmode="numeric" id="wod-reps-${ej.id}-${s.serie_num}" value="${reg?.reps || ''}" placeholder="${s.reps_objetivo || '—'}" ${done ? 'readonly' : ''}>
-            <button class="wod-pm" onclick="wodAdj('reps','${ej.id}',${s.serie_num},1)" ${done ? 'disabled' : ''}>+</button>
+        <div class="wod-serie-top">
+          <div class="wod-serie-num2 ${done ? 'done' : ''}">
+            <span class="num" style="color:${done ? 'var(--accent)' : 'var(--text)'}">${s.serie_num}</span>
+            <span class="lbl">SERIE</span>
+          </div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center">
+            ${antLabel}
+          </div>
+          <button class="wod-check2 ${done ? 'done' : ''}" onclick="guardarSerie2('${ej.id}',${s.serie_num})" ${done ? 'disabled' : ''}>✓</button>
+        </div>
+        <div class="wod-serie-fields">
+          <div class="wod-field2" style="flex:1">
+            <label>Reps</label>
+            <div class="wod-field2-inner">
+              <button class="wod-pm" onclick="wodAdj('reps','${ej.id}',${s.serie_num},-1)" ${done ? 'disabled' : ''}>−</button>
+              <input class="wod-inp2" type="number" inputmode="numeric" id="wod-reps-${ej.id}-${s.serie_num}" value="${reg?.reps || ''}" placeholder="—" ${done ? 'readonly' : ''}>
+              <button class="wod-pm" onclick="wodAdj('reps','${ej.id}',${s.serie_num},1)" ${done ? 'disabled' : ''}>+</button>
+            </div>
+          </div>
+          <div class="wod-field2" style="flex:1">
+            <label>Peso kg</label>
+            <div class="wod-field2-inner">
+              <button class="wod-pm" onclick="wodAdj('peso','${ej.id}',${s.serie_num},-2.5)" ${done ? 'disabled' : ''}>−</button>
+              <input class="wod-inp2" type="number" inputmode="decimal" id="wod-peso-${ej.id}-${s.serie_num}" value="${reg?.peso || ''}" placeholder="0" ${done ? 'readonly' : ''}>
+              <button class="wod-pm" onclick="wodAdj('peso','${ej.id}',${s.serie_num},2.5)" ${done ? 'disabled' : ''}>+</button>
+            </div>
           </div>
         </div>
-        <div class="wod-field2">
-          <label>Peso kg</label>
-          <div class="wod-field2-inner">
-            <button class="wod-pm" onclick="wodAdj('peso','${ej.id}',${s.serie_num},-2.5)" ${done ? 'disabled' : ''}>−</button>
-            <input class="wod-inp2" type="number" inputmode="decimal" id="wod-peso-${ej.id}-${s.serie_num}" value="${reg?.peso || ''}" placeholder="0" ${done ? 'readonly' : ''}>
-            <button class="wod-pm" onclick="wodAdj('peso','${ej.id}',${s.serie_num},2.5)" ${done ? 'disabled' : ''}>+</button>
-          </div>
-        </div>
-        <button class="wod-check2 ${done ? 'done' : ''}" onclick="guardarSerie2('${ej.id}',${s.serie_num})" ${done ? 'disabled' : ''}>✓</button>
       </div>`;
     }).join('');
 
+    const videoBtn = ej.video_url
+      ? `<button onclick="event.stopPropagation();abrirVideoEj('${ej.video_url}','${ej.nombre}')" style="background:none;border:none;cursor:pointer;padding:4px 6px;margin-left:4px" title="Ver video">
+          <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='var(--accent)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polygon points='10 8 16 12 10 16 10 8' fill='var(--accent)' stroke='none'/></svg>
+         </button>`
+      : '';
+
     return `<div class="wod-ej-card ${todoDone ? 'done' : isOpen ? 'active' : ''}" id="wej-${ej.id}">
       <div class="wod-ej-header" onclick="wodToggleEj('${ej.id}')">
-        <div>
-          <div class="wod-ej-nombre">${ej.nombre}</div>
-          <div class="wod-ej-meta">${ej.grupo} · ${totalSeries} series · ${s => s.reps_objetivo}${series[0]?.reps_objetivo ? series[0].reps_objetivo + ' reps' : ''}</div>
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px">
+          <div class="wod-ej-nombre" style="display:inline">${ej.nombre}</div>${videoBtn}
+          <div class="wod-ej-meta" style="width:100%">${ej.grupo} · ${totalSeries} series</div>
         </div>
         <div style="text-align:right">
           <div class="wod-ej-prog" style="color:${todoDone ? 'var(--accent)' : seriesDone > 0 ? 'var(--fat)' : 'var(--muted)'}">${seriesDone}/${totalSeries} ✓</div>
@@ -2529,7 +2690,6 @@ function wodRenderCards(ejercicios, refMap) {
         </div>
       </div>
       <div class="wod-ej-body ${isOpen ? 'open' : ''}" id="wejb-${ej.id}">
-        ${ref ? `<div class="wod-ref-line">📊 Semana pasada: <strong style="color:var(--accent)">${ref.peso || '—'}kg × ${ref.reps || '—'} reps</strong></div>` : '<div class="wod-ref-line" style="color:var(--muted)">Sin referencia anterior</div>'}
         ${seriesHtml}
       </div>
     </div>`;
@@ -2605,10 +2765,21 @@ async function guardarSerie2(ejId, serieNum) {
       if (wodEjAbierto === ejId) wodEjAbierto = null;
     }
 
-    // Timer de descanso
-    const indicacion = wodPlanSeries.find(s => s.ejercicio_id === ejId && s.serie_num === serieNum)?.indicacion || '';
-    const match = indicacion.match(/(\d+)/);
-    const segs = match ? parseInt(match[1]) : 60;
+    // Timer de descanso — leer descanso_seg desde plan_series
+    // plan_series.indicacion puede tener "Descanso: 90s", pero preferimos
+    // el campo descanso_seg (número entero) si está disponible
+    const serieRef = wodPlanSeries.find(s => s.ejercicio_id === ejId && s.serie_num === serieNum);
+    let segs = 60; // fallback
+    if (serieRef) {
+      if (serieRef.descanso_seg && serieRef.descanso_seg > 0) {
+        // Campo directo (número entero en segundos)
+        segs = serieRef.descanso_seg;
+      } else if (serieRef.indicacion) {
+        // Fallback: parsear desde indicacion
+        const match = serieRef.indicacion.match(/(\d+)/);
+        if (match) segs = parseInt(match[1]);
+      }
+    }
     wodTimerIniciar(segs);
   } else {
     showToast('❌ Error al guardar');
@@ -4368,5 +4539,91 @@ function showToast(msg) {
       </div>
     </div>
   </div>
+
+<!-- ===== MODAL VIDEO EJERCICIO ===== -->
+<!-- ===== MODAL VIDEO EJERCICIO ===== -->
+<div id="video-modal" onclick="cerrarVideoEj()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.0);align-items:center;justify-content:center;flex-direction:column">
+
+  <!-- Fondo blur/oscuro clickeable -->
+  <div id="video-modal-bg" style="position:absolute;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)"></div>
+
+  <!-- Contenedor del video -->
+  <div onclick="event.stopPropagation()" id="video-modal-box" style="position:relative;z-index:1;border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,0.07),0 40px 100px rgba(0,0,0,0.9)">
+
+    <!-- Botón cerrar flotante -->
+    <button onclick="cerrarVideoEj()" style="position:absolute;top:10px;right:10px;z-index:10;background:rgba(0,0,0,0.5);border:none;color:rgba(255,255,255,0.7);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;line-height:30px;text-align:center;backdrop-filter:blur(4px)">×</button>
+
+    <!-- Nombre del ejercicio flotante abajo -->
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:20px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.7))">
+      <span id="video-modal-title" style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);letter-spacing:.02em"></span>
+    </div>
+
+    <!-- iframe -->
+    <iframe id="video-modal-iframe" src="" frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+      style="display:block;border:none">
+    </iframe>
+
+  </div>
+</div>
+
+<script>
+function abrirVideoEj(url, nombre) {
+  let embedUrl = url;
+  let esVertical = false;
+
+  const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?([0-9]+)/);
+  if (vimeoMatch) {
+    embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?background=1&autoplay=1&loop=1&muted=1`;
+    // Detectar si la URL contiene indicador de vertical, o asumir vertical por defecto
+    // para videos de ejercicio (formato portrait es el más común en estos videos)
+    esVertical = true;
+  }
+
+  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([\w-]{11})/);
+  if (ytMatch) {
+    embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&controls=0&modestbranding=1&rel=0`;
+    esVertical = url.includes('shorts');
+  }
+
+  // Dimensionar el iframe según orientación
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const iframe = document.getElementById('video-modal-iframe');
+  const box    = document.getElementById('video-modal-box');
+
+  if (esVertical) {
+    // Video 9:16 — ocupar el alto disponible dejando margen
+    const h = Math.min(vh * 0.50, 420);
+    const w = Math.round(h * 9 / 16);
+    iframe.style.width  = w + 'px';
+    iframe.style.height = h + 'px';
+    box.style.width     = w + 'px';
+    box.style.height    = h + 'px';
+  } else {
+    // Video 16:9 — ancho máximo
+    const w = Math.min(vw - 40, 460);
+    const h = Math.round(w * 9 / 16);
+    iframe.style.width  = w + 'px';
+    iframe.style.height = h + 'px';
+    box.style.width     = w + 'px';
+    box.style.height    = h + 'px';
+  }
+
+  iframe.src = embedUrl;
+  document.getElementById('video-modal-title').textContent = nombre;
+  const m = document.getElementById('video-modal');
+  m.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarVideoEj() {
+  document.getElementById('video-modal-iframe').src = '';
+  document.getElementById('video-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+</script>
+
 </body>
 </html>
