@@ -3783,38 +3783,41 @@ async function cargarHistorialRutinas(clienteId) {
 
 async function eliminarMacrociclo(macroId) {
   if (!confirm('¿Eliminar este macrociclo del historial? No se puede deshacer.')) return;
+  const { data: mcDel } = await sb.from('macrociclos').select('cliente_id').eq('id', macroId).single();
+  const cid = mcDel?.cliente_id || entClienteId;
   await sb.from('macrociclos').delete().eq('id', macroId);
   showToast('✓ Macrociclo eliminado');
-  await cargarHistorialRutinas(entClienteId);
+  await cargarHistorialRutinas(cid);
 }
 
 async function activarMacrociclo(macroId) {
   if (!confirm('¿Activar este macrociclo? El actual quedará archivado.')) return;
+  const { data: mcInfo } = await sb.from('macrociclos').select('cliente_id, programa_id').eq('id', macroId).single();
+  const cid = mcInfo?.cliente_id || entClienteId;
   const hoy = new Date().toISOString().split('T')[0];
   // Archivar todos los macrociclos activos
-  await sb.from('macrociclos').update({ activo: false, fecha_fin: hoy }).eq('cliente_id', entClienteId).eq('activo', true);
+  await sb.from('macrociclos').update({ activo: false, fecha_fin: hoy }).eq('cliente_id', cid).eq('activo', true);
   // Activar el seleccionado
   const { error } = await sb.from('macrociclos').update({ activo: true, fecha_fin: null }).eq('id', macroId);
   if (error) { showToast('❌ ' + error.message); return; }
   // Cargar el plan_entreno vinculado y sincronizar con app
-  const { data: mc } = await sb.from('macrociclos').select('programa_id').eq('id', macroId).single();
-  if (mc?.programa_id) {
-    const { data: exs } = await sb.from('bd_ejercicios').select('*').eq('programa_id', mc.programa_id).order('dia').order('orden');
+  if (mcInfo?.programa_id) {
+    const { data: exs } = await sb.from('bd_ejercicios').select('*').eq('programa_id', mcInfo.programa_id).order('dia').order('orden');
     if (exs?.length) {
-      await sb.from('plan_entreno').update({ activo: false }).eq('cliente_id', entClienteId);
-      const { data: plan } = await sb.from('plan_entreno').insert({ cliente_id: entClienteId, nivel: 'Biblioteca', activo: true }).select().single();
+      await sb.from('plan_entreno').update({ activo: false }).eq('cliente_id', cid);
+      const { data: plan } = await sb.from('plan_entreno').insert({ cliente_id: cid, nivel: 'Biblioteca', activo: true }).select().single();
       if (plan) {
         const items = exs.map(e => ({ plan_id: plan.id, dia: e.dia, sesion: e.sesion, grupo: e.grupo, nombre: e.nombre, series: e.series, reps: e.reps, descanso: e.descanso, descanso_seg: parsearDescanso(e.descanso), orden: e.orden, indicacion: e.indicacion || '' }));
         await sb.from('plan_entreno_items').insert(items);
-        await sincronizarPlanClienteApp(entClienteId, items);
+        await sincronizarPlanClienteApp(cid, items);
       }
     }
   }
   showToast('✓ Macrociclo activado y sincronizado');
-  await progCargar(entClienteId);
-  await cargarPlanEntrenoGuardado(entClienteId);
-  await cargarHistorialRutinas(entClienteId);
-  if (clienteActivo?.id) await cargarResumen(clienteActivo.id);
+  await progCargar(cid);
+  await cargarPlanEntrenoGuardado(cid);
+  await cargarHistorialRutinas(cid);
+  await cargarResumen(cid);
 }
 
 async function activarRutinaHistorial() { /* legacy - no-op */ }
