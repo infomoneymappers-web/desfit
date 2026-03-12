@@ -3761,8 +3761,8 @@ async function cargarHistorialRutinas(clienteId) {
     const barColor  = mc.activo ? 'var(--accent)' : '#444';
     const activoBadge = mc.activo ? '<span style="font-size:9px;color:var(--accent);background:#1a2a00;border-radius:10px;padding:1px 7px;margin-left:4px">ACTIVO</span>' : '';
     const btnAcciones = mc.activo ? '' :
-      '<button onclick="activarMacrociclo(' + mc.id + ')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif" onmouseover="this.style.borderColor=\'var(--accent)\';this.style.color=\'var(--accent)\'" onmouseout="this.style.borderColor=\'#2a2a2a\';this.style.color=\'#666\'">Activar</button>' +
-      '<button onclick="eliminarMacrociclo(' + mc.id + ')" title="Eliminar" style="background:none;border:none;color:#333;font-size:15px;cursor:pointer;padding:2px 5px;border-radius:5px;line-height:1" onmouseover="this.style.color=\'#e53e3e\'" onmouseout="this.style.color=\'#333\'">✕</button>';
+      '<button onclick="activarMacrociclo(\'' + mc.id + '\')" style="background:none;border:1px solid #2a2a2a;color:#666;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif" onmouseover="this.style.borderColor=\'var(--accent)\';this.style.color=\'var(--accent)\'" onmouseout="this.style.borderColor=\'#2a2a2a\';this.style.color=\'#666\'">Activar</button>' +
+      '<button onclick="eliminarMacrociclo(\'' + mc.id + '\')" title="Eliminar" style="background:none;border:none;color:#333;font-size:15px;cursor:pointer;padding:2px 5px;border-radius:5px;line-height:1" onmouseover="this.style.color=\'#e53e3e\'" onmouseout="this.style.color=\'#333\'">✕</button>';
     return `<div style="padding:10px 12px;background:${bgColor};border:1px solid ${border};border-radius:10px;margin-bottom:6px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div style="min-width:0;flex:1">
