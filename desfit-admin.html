@@ -1307,6 +1307,7 @@
       <div class="card" style="padding:12px">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Categorías</div>
         <div id="alm-cats" style="display:flex;flex-direction:column;gap:3px"></div>
+        <button onclick="almNuevaCatAbrir()" style="margin-top:10px;width:100%;padding:7px;border-radius:8px;border:1px dashed var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">+ Nueva categoría</button>
       </div>
       <div id="alm-lista" style="display:flex;flex-direction:column;gap:6px"></div>
     </div>
@@ -1356,6 +1357,19 @@
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
           <button onclick="almCerrarModal()" style="padding:9px 18px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">Cancelar</button>
           <button onclick="almGuardar()" style="padding:9px 20px;border-radius:9px;border:none;background:var(--accent);color:#0a0a0a;cursor:pointer;font-size:13px;font-weight:700;font-family:'Inter',sans-serif">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal nueva categoría -->
+    <div id="alm-cat-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center">
+      <div style="background:var(--card);border-radius:14px;padding:24px;width:min(340px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+        <div style="font-weight:700;font-size:15px;margin-bottom:16px">Nueva categoría</div>
+        <input id="alm-cat-nombre" type="text" placeholder="Ej: Bebida, Snack..."
+          style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:16px">
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button onclick="almNuevaCatCerrar()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">Cancelar</button>
+          <button onclick="almNuevaCatGuardar()" style="padding:8px 16px;border-radius:8px;border:none;background:var(--accent);color:#0a0a0a;cursor:pointer;font-size:13px;font-weight:700;font-family:'Inter',sans-serif">Crear</button>
         </div>
       </div>
     </div>
@@ -6862,7 +6876,7 @@ document.getElementById('vid-modal').addEventListener('click', function(e) {
 // ══════════════════════════════════════════
 // 🥦 ADMIN ALIMENTOS
 // ══════════════════════════════════════════
-let almTodos = [], almCatActiva = 'Todas';
+let almTodos = [], almCatActiva = 'Todas', almCatsExtra = [];
 
 async function cargarAdminAlimentos() {
   const { data, error } = await sb.from('bd_alimentos').select('*').order('categoria').order('nombre');
@@ -6874,7 +6888,8 @@ async function cargarAdminAlimentos() {
 }
 
 function almRenderCats() {
-  const cats = ['Todas', ...[...new Set(almTodos.map(a => a.categoria).filter(Boolean))].sort()];
+  const desdeDatos = [...new Set(almTodos.map(a => a.categoria).filter(Boolean))];
+  const cats = ['Todas', ...[...new Set([...desdeDatos, ...almCatsExtra])].sort()];
   const el = document.getElementById('alm-cats');
   el.innerHTML = cats.map(cat => {
     const count = cat === 'Todas' ? almTodos.length : almTodos.filter(a => a.categoria === cat).length;
@@ -6977,6 +6992,56 @@ async function almEliminar(id, nombre) {
 document.getElementById('alm-modal').addEventListener('click', function(e) {
   if (e.target === this) almCerrarModal();
 });
+
+document.getElementById('alm-cat-modal').addEventListener('click', function(e) {
+  if (e.target === this) almNuevaCatCerrar();
+});
+
+function almNuevaCatAbrir() {
+  document.getElementById('alm-cat-nombre').value = '';
+  const m = document.getElementById('alm-cat-modal');
+  m.style.display = 'flex';
+  setTimeout(() => document.getElementById('alm-cat-nombre').focus(), 100);
+}
+
+function almNuevaCatCerrar() {
+  document.getElementById('alm-cat-modal').style.display = 'none';
+}
+
+function almNuevaCatGuardar() {
+  const nombre = document.getElementById('alm-cat-nombre').value.trim();
+  if (!nombre) { showToast('⚠ Escribe un nombre'); return; }
+  // Verificar que no exista ya
+  const existentes = [...new Set(almTodos.map(a => a.categoria).filter(Boolean))];
+  if (existentes.map(c => c.toLowerCase()).includes(nombre.toLowerCase())) {
+    showToast('⚠ Esa categoría ya existe'); return;
+  }
+  // Agregar al select del modal de alimentos
+  almAgregarCatAlSelect(nombre);
+  almCatsExtra.push(nombre);
+  almNuevaCatCerrar();
+  showToast(`✓ Categoría "${nombre}" creada`);
+  // Seleccionar la nueva cat en el sidebar
+  almCatActiva = nombre;
+  almRenderCats();
+  almFiltrar();
+}
+
+function almAgregarCatAlSelect(cat) {
+  const sel = document.getElementById('alm-f-cat');
+  // Evitar duplicados
+  const opts = [...sel.options].map(o => o.value);
+  if (!opts.includes(cat)) {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    // Insertar antes de "Otro"
+    const otroIdx = opts.indexOf('Otro');
+    if (otroIdx >= 0) sel.insertBefore(opt, sel.options[otroIdx]);
+    else sel.appendChild(opt);
+  }
+  sel.value = cat;
+}
 </script>
 
 </body>
