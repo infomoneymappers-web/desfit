@@ -6906,8 +6906,7 @@ function almRenderCats() {
 }
 
 function almAbrirModalCat(cat) {
-  almAbrirModal(null);
-  setTimeout(() => { document.getElementById('alm-f-cat').value = cat; }, 10);
+  almAbrirModal(null, cat);
 }
 
 function almSelCat(cat) { almCatActiva = cat; almRenderCats(); almFiltrar(); }
@@ -6941,12 +6940,12 @@ function almFiltrar() {
   }).join('');
 }
 
-function almAbrirModal(id) {
+function almAbrirModal(id, catPrefill) {
   const a = id ? almTodos.find(x => x.id === id) : null;
   document.getElementById('alm-modal-titulo').textContent = a ? 'Editar alimento' : 'Nuevo alimento';
   document.getElementById('alm-modal-id').value   = a?.id || '';
   document.getElementById('alm-f-nombre').value   = a?.nombre || '';
-  document.getElementById('alm-f-cat').value      = a?.categoria || 'Proteína';
+  document.getElementById('alm-f-cat').value      = a?.categoria || catPrefill || 'Proteína';
   document.getElementById('alm-f-prot').value     = a?.proteina ?? '';
   document.getElementById('alm-f-carbos').value   = a?.carbos ?? '';
   document.getElementById('alm-f-lip').value      = a?.lipidos ?? '';
