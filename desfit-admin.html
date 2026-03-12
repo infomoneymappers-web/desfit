@@ -1302,7 +1302,6 @@
       </div>
       <input id="alm-buscar" type="text" placeholder="Buscar alimento..." oninput="almFiltrar()"
         style="padding:7px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;min-width:200px;font-family:'Inter',sans-serif;outline:none">
-      <button onclick="almAbrirModal(null)" style="padding:8px 18px;border-radius:10px;border:none;background:var(--accent);color:#0a0a0a;font-weight:700;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">+ Nuevo</button>
     </div>
     <div style="display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:start">
       <div class="card" style="padding:12px">
@@ -1327,29 +1326,32 @@
             <select id="alm-f-cat" style="width:100%;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
               <option>Proteína</option><option>Carbohidrato</option><option>Grasa</option>
               <option>Verdura</option><option>Fruta</option><option>Lácteo</option>
-              <option>Legumbre</option><option>Otro</option>
+              <option>Legumbre</option><option>Menú</option><option>Otro</option>
             </select>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Proteína (g/100g)</label>
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Proteína (g)</label>
               <input id="alm-f-prot" type="number" min="0" step="0.1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
             </div>
             <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Carbos (g/100g)</label>
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Carbos (g)</label>
               <input id="alm-f-carbos" type="number" min="0" step="0.1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Lípidos (g/100g)</label>
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Lípidos (g)</label>
               <input id="alm-f-lip" type="number" min="0" step="0.1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
             </div>
             <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Kcal (por 100g)</label>
+              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Kcal</label>
               <input id="alm-f-kcal" type="number" min="0" step="1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
             </div>
           </div>
+          <div>
+            <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Nota (opcional)</label>
+            <input id="alm-f-nota" type="text" placeholder="Ej: con arroz y ensalada" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
         </div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
           <button onclick="almCerrarModal()" style="padding:9px 18px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">Cancelar</button>
@@ -6877,11 +6879,20 @@ function almRenderCats() {
   el.innerHTML = cats.map(cat => {
     const count = cat === 'Todas' ? almTodos.length : almTodos.filter(a => a.categoria === cat).length;
     const active = cat === almCatActiva;
-    return `<div onclick="almSelCat('${cat}')" style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:13px;background:${active?'rgba(169,243,56,0.1)':'transparent'};color:${active?'var(--accent)':'var(--text)'};border:1px solid ${active?'rgba(169,243,56,0.3)':'transparent'}">
-      <span>${cat}</span>
-      <span style="font-size:11px;color:var(--muted);background:var(--surface);border-radius:6px;padding:1px 6px">${count}</span>
+    const showAdd = cat !== 'Todas';
+    return `<div style="display:flex;align-items:center;gap:4px">
+      <div onclick="almSelCat('${cat}')" style="flex:1;display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:13px;background:${active?'rgba(169,243,56,0.1)':'transparent'};color:${active?'var(--accent)':'var(--text)'};border:1px solid ${active?'rgba(169,243,56,0.3)':'transparent'}">
+        <span>${cat}</span>
+        <span style="font-size:11px;color:var(--muted);background:var(--surface);border-radius:6px;padding:1px 6px">${count}</span>
+      </div>
+      ${showAdd ? `<button onclick="almAbrirModalCat('${cat}')" title="Agregar en ${cat}" style="flex-shrink:0;width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--accent);cursor:pointer;font-size:14px;line-height:1;padding:0;font-family:'Inter',sans-serif">+</button>` : ''}
     </div>`;
   }).join('');
+}
+
+function almAbrirModalCat(cat) {
+  almAbrirModal(null);
+  setTimeout(() => { document.getElementById('alm-f-cat').value = cat; }, 10);
 }
 
 function almSelCat(cat) { almCatActiva = cat; almRenderCats(); almFiltrar(); }
@@ -6890,14 +6901,17 @@ function almFiltrar() {
   const q = (document.getElementById('alm-buscar')?.value || '').toLowerCase();
   let lista = almCatActiva === 'Todas' ? almTodos : almTodos.filter(a => a.categoria === almCatActiva);
   if (q) lista = lista.filter(a => a.nombre?.toLowerCase().includes(q));
-  const CAT_COLOR = { 'Proteína':'#A9F338','Carbohidrato':'#60a5fa','Grasa':'#fbbf24','Verdura':'#34d399','Fruta':'#f472b6','Lácteo':'#a78bfa','Legumbre':'#fb923c','Otro':'#94a3b8' };
+  const CAT_COLOR = { 'Proteína':'#A9F338','Carbohidrato':'#60a5fa','Grasa':'#fbbf24','Verdura':'#34d399','Fruta':'#f472b6','Lácteo':'#a78bfa','Legumbre':'#fb923c','Menú':'#e879f9','Otro':'#94a3b8' };
   const el = document.getElementById('alm-lista');
   if (!lista.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">Sin alimentos en esta categoría</div>'; return; }
   el.innerHTML = lista.map(a => {
     const c = CAT_COLOR[a.categoria] || '#94a3b8';
     return `<div class="card" style="display:flex;align-items:center;gap:12px;padding:11px 14px">
       <span style="font-size:10px;font-weight:700;background:${c}22;color:${c};border:1px solid ${c}44;border-radius:6px;padding:2px 8px;white-space:nowrap;min-width:80px;text-align:center">${a.categoria||'—'}</span>
-      <div style="flex:1;font-size:13px;font-weight:600">${a.nombre}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600">${a.nombre}</div>
+        ${a.nota ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">${a.nota}</div>` : ''}
+      </div>
       <div style="display:flex;gap:12px;font-size:12px;color:var(--muted)">
         <span><b style="color:#A9F338">${a.proteina??'—'}</b>g P</span>
         <span><b style="color:#60a5fa">${a.carbos??'—'}</b>g C</span>
@@ -6906,7 +6920,7 @@ function almFiltrar() {
       </div>
       <div style="display:flex;gap:6px">
         <button onclick="almAbrirModal('${a.id}')" style="padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">Editar</button>
-        <button onclick="almEliminar('${a.id}','${(a.nombre||'').replace(/'/g,"\\'")}')" style="padding:5px 10px;border-radius:7px;border:1px solid #e53e3e44;background:transparent;color:#e53e3e;cursor:pointer;font-size:13px">✕</button>
+        <button onclick="almEliminar('${a.id}','${(a.nombre||'').replace(/'/g,"\\'")}')\" style="padding:5px 10px;border-radius:7px;border:1px solid #e53e3e44;background:transparent;color:#e53e3e;cursor:pointer;font-size:13px">✕</button>
       </div>
     </div>`;
   }).join('');
@@ -6922,6 +6936,7 @@ function almAbrirModal(id) {
   document.getElementById('alm-f-carbos').value   = a?.carbos ?? '';
   document.getElementById('alm-f-lip').value      = a?.lipidos ?? '';
   document.getElementById('alm-f-kcal').value     = a?.kcal ?? '';
+  document.getElementById('alm-f-nota').value     = a?.nota || '';
   document.getElementById('alm-modal').style.display = 'flex';
 }
 
@@ -6936,6 +6951,7 @@ async function almGuardar() {
     carbos:   parseFloat(document.getElementById('alm-f-carbos').value) || 0,
     lipidos:  parseFloat(document.getElementById('alm-f-lip').value)    || 0,
     kcal:     parseFloat(document.getElementById('alm-f-kcal').value)   || 0,
+    nota:     document.getElementById('alm-f-nota').value.trim() || null,
   };
   if (!payload.nombre) { showToast('⚠ El nombre es obligatorio'); return; }
   let error;
