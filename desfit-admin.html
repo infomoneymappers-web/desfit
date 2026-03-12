@@ -1360,23 +1360,23 @@
         </div>
       </div>
     </div>
-
-    <!-- Modal nueva categoría -->
-    <div id="alm-cat-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center">
-      <div style="background:var(--card);border-radius:14px;padding:24px;width:min(340px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.5)">
-        <div style="font-weight:700;font-size:15px;margin-bottom:16px">Nueva categoría</div>
-        <input id="alm-cat-nombre" type="text" placeholder="Ej: Bebida, Snack..."
-          style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:16px">
-        <div style="display:flex;gap:8px;justify-content:flex-end">
-          <button onclick="almNuevaCatCerrar()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">Cancelar</button>
-          <button onclick="almNuevaCatGuardar()" style="padding:8px 16px;border-radius:8px;border:none;background:var(--accent);color:#0a0a0a;cursor:pointer;font-size:13px;font-weight:700;font-family:'Inter',sans-serif">Crear</button>
-        </div>
-      </div>
-    </div>
   </div>
 </div><!-- /app -->
 
 <div class="toast" id="toast"></div>
+
+<!-- Modal nueva categoría -->
+<div id="alm-cat-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:var(--card);border-radius:14px;padding:24px;width:min(340px,92vw);box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+    <div style="font-weight:700;font-size:15px;margin-bottom:16px">Nueva categoría</div>
+    <input id="alm-cat-nombre" type="text" placeholder="Ej: Bebida, Snack..."
+      style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:16px">
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="almNuevaCatCerrar()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif">Cancelar</button>
+      <button onclick="almNuevaCatGuardar()" style="padding:8px 16px;border-radius:8px;border:none;background:var(--accent);color:#0a0a0a;cursor:pointer;font-size:13px;font-weight:700;font-family:'Inter',sans-serif">Crear</button>
+    </div>
+  </div>
+</div>
 
 <!-- ERROR PANEL GLOBAL -->
 <div id="error-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;max-height:200px;overflow-y:auto;background:#1a0000;border-top:2px solid #ff4d4d;z-index:9999;padding:10px 16px;font-family:monospace;font-size:11px;color:#ff8888"></div>
@@ -6992,16 +6992,16 @@ document.getElementById('alm-modal').addEventListener('click', function(e) {
   if (e.target === this) almCerrarModal();
 });
 
-document.getElementById('alm-cat-modal').addEventListener('click', function(e) {
-  if (e.target === this) almNuevaCatCerrar();
-});
-
 function almNuevaCatAbrir() {
   document.getElementById('alm-cat-nombre').value = '';
   const m = document.getElementById('alm-cat-modal');
   m.style.display = 'flex';
   setTimeout(() => document.getElementById('alm-cat-nombre').focus(), 100);
 }
+
+document.getElementById('alm-cat-modal').addEventListener('click', function(e) {
+  if (e.target === this) almNuevaCatCerrar();
+});
 
 function almNuevaCatCerrar() {
   document.getElementById('alm-cat-modal').style.display = 'none';
