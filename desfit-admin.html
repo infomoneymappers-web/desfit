@@ -1345,9 +1345,8 @@
               <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Lípidos (g)</label>
               <input id="alm-f-lip" type="number" min="0" step="0.1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
             </div>
-            <div>
-              <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">Kcal</label>
-              <input id="alm-f-kcal" type="number" min="0" step="1" placeholder="0" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none">
+            <div style="display:flex;align-items:flex-end;padding-bottom:2px">
+              <div style="font-size:11px;color:var(--muted);font-style:italic">Kcal se calcula automáticamente</div>
             </div>
           </div>
           <div>
@@ -6949,7 +6948,6 @@ function almAbrirModal(id, catPrefill) {
   document.getElementById('alm-f-prot').value     = a?.proteina ?? '';
   document.getElementById('alm-f-carbos').value   = a?.carbos ?? '';
   document.getElementById('alm-f-lip').value      = a?.lipidos ?? '';
-  document.getElementById('alm-f-kcal').value     = a?.kcal ?? '';
   document.getElementById('alm-f-nota').value     = a?.nota || '';
   document.getElementById('alm-modal').style.display = 'flex';
 }
@@ -6964,7 +6962,6 @@ async function almGuardar() {
     proteina: parseFloat(document.getElementById('alm-f-prot').value)  || 0,
     carbos:   parseFloat(document.getElementById('alm-f-carbos').value) || 0,
     lipidos:  parseFloat(document.getElementById('alm-f-lip').value)    || 0,
-    kcal:     parseFloat(document.getElementById('alm-f-kcal').value)   || 0,
     nota:     document.getElementById('alm-f-nota').value.trim() || null,
   };
   if (!payload.nombre) { showToast('⚠ El nombre es obligatorio'); return; }
