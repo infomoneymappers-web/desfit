@@ -17,8 +17,3 @@
     }
   ]
 }
-```
-
-Luego en terminal:
-```
-git add . && git commit -m "rutas limpias" && git push
