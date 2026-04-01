@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluye Libre — Estás atrapado y lo sabes</title>
+<meta name="description" content="Fluye Libre es el sistema de transformación integral. Cuerpo, mente y economía en un solo sistema estructurado.">
+<meta property="og:title" content="Fluye Libre — Todo cambia cuando decides.">
+<meta property="og:description" content="No nacieron así. Se construyeron. Fluye Libre es el sistema para construirte.">
+<meta property="og:url" content="https://fluyelibre.club">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#000000;--bg1:#050505;--bg2:#090909;--bg3:#0d0d0d;
+  --green:#00FF87;--green2:#00E67A;--green3:#00CC6A;
+  --green-dim:rgba(0,255,135,0.1);--green-glow:rgba(0,255,135,0.06);
+  --white:#F0FFF8;--off:#A8C4B8;--muted:#4A6B5A;--muted2:#2A3D32;
+  --line:rgba(0,255,135,0.1);--line2:rgba(0,255,135,0.06);
+  --red:#FF3B5C;--blue:#00C8FF;
+  --font-head:'Unbounded',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+  --font-mono:'Space Mono',monospace;
+}
+@media(pointer:fine){body{cursor:none}}
+body{background:var(--bg);color:var(--white);font-family:var(--font-body);line-height:1.5;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:9000;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none}
+#cur{width:6px;height:6px;background:var(--green);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 10px var(--green),0 0 20px rgba(0,255,135,.4)}
+#curRing{width:32px;height:32px;border:1px solid rgba(0,255,135,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,border-color .2s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:68px;background:rgba(0,0,0,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(20px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:16px;letter-spacing:.06em;text-decoration:none;color:var(--white);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.logo-b{color:var(--green);font-size:20px}
+.nav-mid{display:flex;gap:40px;position:absolute;left:50%;transform:translateX(-50%)}
+.nav-mid a{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;position:relative}
+.nav-mid a::before{content:'>';position:absolute;left:-14px;color:var(--green);opacity:0;transition:opacity .2s}
+.nav-mid a:hover{color:var(--green)}
+.nav-mid a:hover::before{opacity:1}
+.nav-r{display:flex;gap:10px;align-items:center}
+.nav-ghost{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:9px 20px;color:var(--muted);border:1px solid var(--muted2);transition:all .2s}
+.nav-ghost:hover{color:var(--green);border-color:var(--green);box-shadow:0 0 12px rgba(0,255,135,.15)}
+.nav-cta{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:10px 24px;background:var(--green);color:var(--bg);transition:all .2s;position:relative;overflow:hidden}
+.nav-cta::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transform:translateX(-100%);transition:transform .4s}
+.nav-cta:hover::after{transform:translateX(100%)}
+.nav-cta:hover{background:var(--green2);box-shadow:0 0 20px rgba(0,255,135,.4)}
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:transparent;border:1px solid rgba(0,255,135,0.2);cursor:pointer;padding:8px;z-index:600}
+.nav-hamburger span{display:block;width:20px;height:1.5px;background:var(--green);transition:all 0.3s ease}
+.nav-hamburger.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-hamburger.active span:nth-child(2){opacity:0}
+.nav-hamburger.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.nav-mobile-menu{display:none;flex-direction:column;position:fixed;top:60px;left:0;right:0;background:rgba(0,0,0,0.97);border-bottom:1px solid rgba(0,255,135,0.15);z-index:499;padding:16px 0;backdrop-filter:blur(20px)}
+.nav-mobile-menu.open{display:flex}
+.nav-mobile-link{padding:14px 24px;font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:1px solid rgba(0,255,135,0.05);transition:color 0.2s,background 0.2s}
+.nav-mobile-link:hover{color:var(--green);background:rgba(0,255,135,0.04)}
+
+/* HERO */
+.hero{min-height:100vh;padding-top:68px;position:relative;overflow:hidden;display:grid;grid-template-rows:1fr auto}
+.hero-grid{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(0,255,135,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,135,.04) 1px,transparent 1px);background-size:60px 60px;animation:grid-move 20s linear infinite}
+@keyframes grid-move{0%{background-position:0 0}100%{background-position:60px 60px}}
+.orb1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,135,.08) 0%,transparent 70%);top:-100px;right:-100px;z-index:0;animation:orb-float 8s ease-in-out infinite}
+.orb2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,200,255,.05) 0%,transparent 70%);bottom:0;left:-50px;z-index:0;animation:orb-float 12s ease-in-out infinite reverse}
+@keyframes orb-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+.hero-diag{position:absolute;top:0;right:30%;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(0,255,135,.2),transparent);z-index:0;transform:skewX(-15deg)}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 440px;gap:0;padding:70px 56px 50px}
+.hero-l{padding-right:70px;border-right:1px solid var(--line)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:40px}
+.ey-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green),0 0 16px rgba(0,255,135,.4);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ey-line{width:36px;height:1px;background:linear-gradient(90deg,var(--green),transparent)}
+.hero-h1{font-family:var(--font-head);font-size:clamp(42px,5vw,76px);line-height:1.08;font-weight:900;letter-spacing:-.02em}
+.h1-g{color:var(--green);text-shadow:0 0 30px rgba(0,255,135,.4)}
+.h1-o{-webkit-text-stroke:1px rgba(0,255,135,.3);color:transparent}
+.h1-s{color:var(--green);font-size:.8em;margin:0 4px}
+.hero-sub{margin-top:32px;font-size:16px;color:var(--off);line-height:1.85;max-width:500px;font-weight:300}
+.hero-sub strong{color:var(--white);font-weight:600}
+.hero-btns{margin-top:44px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.btn-neon{display:inline-flex;align-items:center;gap:12px;background:var(--green);color:var(--bg);padding:16px 32px;font-family:var(--font-head);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:all .25s;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
+.btn-neon:hover{background:var(--green2);box-shadow:0 0 30px rgba(0,255,135,.5),0 0 60px rgba(0,255,135,.2);transform:translateY(-2px)}
+.btn-neon svg{transition:transform .2s;width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.5}
+.btn-neon:hover svg{transform:translateX(4px)}
+.btn-line{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);text-decoration:none;border:1px solid rgba(0,255,135,.3);padding:15px 28px;transition:all .2s}
+.btn-line:hover{border-color:var(--green);box-shadow:0 0 16px rgba(0,255,135,.15);background:rgba(0,255,135,.04)}
+.hero-r{padding:0 0 0 48px;display:flex;flex-direction:column;gap:2px}
+.stat-card{flex:1;background:var(--bg2);border:1px solid var(--line);padding:24px 28px;position:relative;overflow:hidden;transition:border-color .25s,background .25s}
+.stat-card:hover{border-color:rgba(0,255,135,.25);background:var(--bg3)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:0;transition:opacity .3s}
+.stat-card:hover::before{opacity:1}
+.stat-val{font-family:var(--font-head);font-weight:900;font-size:clamp(36px,3vw,52px);line-height:1;color:var(--green);letter-spacing:-.02em;text-shadow:0 0 20px rgba(0,255,135,.3)}
+.stat-val sup{font-size:.45em;vertical-align:super;margin-left:2px}
+.stat-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.stat-sub{font-size:12px;color:var(--off);margin-top:4px;font-weight:300;opacity:.7}
+.hero-bar{position:relative;z-index:2;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);background:rgba(0,0,0,.8);backdrop-filter:blur(20px)}
+.hb-item{padding:24px 32px;border-right:1px solid var(--line2);display:flex;gap:18px;align-items:center;transition:background .2s}
+.hb-item:last-child{border-right:none}
+.hb-item:hover{background:rgba(0,255,135,.03)}
+.hb-ico{width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--green-dim);clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,0 100%)}
+.hb-ico svg{width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:1.5}
+.hb-txt strong{display:block;font-size:12px;font-weight:700;color:var(--white);margin-bottom:3px;letter-spacing:.03em}
+.hb-txt span{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* SECTIONS */
+section{padding:120px 56px}
+.s-label{display:inline-flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:20px}
+.s-label::before{content:'//';margin-right:4px;opacity:.5}
+.s-h2{font-family:var(--font-head);font-size:clamp(36px,3.8vw,60px);line-height:1.1;font-weight:900;letter-spacing:-.02em}
+.s-h2 em{font-style:normal;color:var(--green);text-shadow:0 0 20px rgba(0,255,135,.3)}
+.s-h2 .out{-webkit-text-stroke:1px rgba(0,255,135,.25);color:transparent}
+
+/* PROBLEM */
+.problem{background:var(--bg1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.prob-layout{display:grid;grid-template-columns:5fr 4fr;gap:80px;margin-top:72px}
+.prob-items{display:flex;flex-direction:column}
+.prob-item{display:grid;grid-template-columns:64px 1fr;gap:28px;padding:36px 0;border-bottom:1px solid var(--line2);align-items:start}
+.prob-item:first-child{border-top:1px solid var(--line2)}
+.prob-num{font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--green);letter-spacing:.1em;padding-top:6px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.prob-num::after{content:'';width:24px;height:1px;background:var(--green);opacity:.4}
+.prob-item h3{font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:10px;letter-spacing:.01em}
+.prob-item p{font-size:14px;color:var(--off);line-height:1.8;font-weight:300}
+.prob-side{position:sticky;top:100px}
+.big-stat-box{background:var(--bg2);border:1px solid var(--line);padding:52px 44px;margin-bottom:2px;position:relative;overflow:hidden}
+.big-stat-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,255,135,.06) 0%,transparent 60%)}
+.big-stat-num{font-family:var(--font-head);font-size:88px;line-height:1;color:var(--green);letter-spacing:-.03em;text-shadow:0 0 60px rgba(0,255,135,.3);position:relative;z-index:1;margin-bottom:20px}
+.big-stat-box p{font-size:14px;color:var(--off);line-height:1.8;font-weight:300;position:relative;z-index:1}
+.big-stat-box p strong{color:var(--white);font-weight:600}
+.pull-quote{background:var(--bg2);border:1px solid var(--line);border-left:2px solid var(--green);padding:32px 40px}
+.pull-quote p{font-style:italic;font-size:16px;line-height:1.75;color:var(--off);font-weight:300}
+
+/* PILLARS */
+.pillars{background:var(--bg);position:relative;overflow:hidden}
+.pillars-bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(0,255,135,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,135,.025) 1px,transparent 1px);background-size:40px 40px}
+.pill-intro{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;margin-bottom:72px}
+.pill-intro p{font-size:16px;color:var(--off);line-height:1.85;margin-top:24px;font-weight:300;max-width:460px}
+.pill-quote{font-family:var(--font-mono);font-size:13px;line-height:2;color:var(--muted);padding:40px 44px;background:var(--bg2);border:1px solid var(--line);border-left:2px solid var(--green)}
+.pill-quote strong{color:var(--green);font-weight:400}
+.pill-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.pill-card{background:var(--bg2);padding:52px 40px;position:relative;overflow:hidden;border:1px solid var(--line2);transition:border-color .3s,background .3s,transform .3s}
+.pill-card:hover{border-color:var(--line);background:var(--bg3);transform:translateY(-4px)}
+.pc-corner{position:absolute;top:0;right:0;width:40px;height:40px;background:linear-gradient(225deg,var(--green-dim) 0%,transparent 60%);border-left:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:44px}
+.pc-num{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.2em}
+.pc-ico{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--bg);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%)}
+.pc-ico svg{width:22px;height:22px;fill:none;stroke-width:1.5}
+.pc-ico-g svg{stroke:var(--green)}
+.pc-ico-r svg{stroke:var(--red)}
+.pc-ico-b svg{stroke:var(--blue)}
+.pill-card h3{font-family:var(--font-head);font-size:28px;font-weight:900;margin-bottom:16px;line-height:1.1}
+.pc-g h3{color:var(--green);text-shadow:0 0 20px rgba(0,255,135,.2)}
+.pc-r h3{color:var(--red)}
+.pc-b h3{color:var(--blue)}
+.pill-card p{font-size:13px;color:var(--off);line-height:1.85;font-weight:300}
+.pc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:28px}
+.pc-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--line2);color:var(--muted);background:var(--bg)}
+.pc-bar{height:1px;width:100%;position:absolute;bottom:0;left:0;opacity:.6}
+
+/* APP SEC */
+.app-sec{background:var(--bg1);border-top:1px solid var(--line)}
+.app-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:72px;align-items:start}
+.app-feats{display:flex;flex-direction:column;gap:2px}
+.app-feat{padding:28px 32px;background:var(--bg2);border-left:2px solid transparent;transition:border-color .2s,background .2s}
+.app-feat:hover{border-left-color:var(--green);background:var(--bg3)}
+.app-feat-head{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.af-ico{width:36px;height:36px;min-width:36px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--green-dim)}
+.af-ico svg{width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:1.5}
+.app-feat h4{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.02em}
+.app-feat p{font-size:12px;color:var(--off);line-height:1.75;padding-left:50px;font-weight:300}
+.app-mock{background:var(--bg);border:1px solid var(--line);overflow:hidden;position:sticky;top:88px;box-shadow:0 0 0 1px rgba(0,255,135,.05),0 32px 80px rgba(0,0,0,.8)}
+.mock-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--line2)}
+.m-dot{width:10px;height:10px;border-radius:50%}
+.mock-title{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;color:var(--muted);margin-left:auto;text-transform:uppercase}
+.mock-body{padding:24px;font-family:var(--font-mono);font-size:12px}
+.mk-sec{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+.mk-sec::before{content:'';width:16px;height:1px;background:var(--green);opacity:.5}
+.mk-sec:first-child{margin-top:0}
+.mk-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(0,255,135,.04);font-size:11px;color:var(--muted)}
+.mk-row:last-child{border-bottom:none}
+.mk-v{color:var(--green);font-weight:700}
+.mk-vr{color:var(--red)}
+.mk-bars{margin:4px 0 10px}
+.mk-br{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.mk-bl{font-size:9px;color:var(--muted);min-width:68px}
+.mk-bt{flex:1;height:4px;background:rgba(255,255,255,.04);overflow:hidden}
+.mk-bf{height:100%}
+.mk-bv{font-size:9px;color:var(--muted);min-width:28px;text-align:right}
+
+/* PLANES NUEVO */
+.plans-benefits{margin-bottom:48px;background:var(--bg2);border:1px solid var(--line2);padding:40px 48px}
+.plans-benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.pb-item{display:flex;align-items:flex-start;gap:14px;padding:13px 16px 13px 0;border-bottom:1px solid rgba(0,255,135,.04);font-size:13px}
+.pb-item:nth-child(n+4){border-bottom:none}
+.plans-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.plans-carousel{display:none}
+.plan-card{background:var(--bg2);padding:40px 32px;border:1px solid var(--line2);position:relative;display:flex;flex-direction:column;transition:border-color .3s;cursor:pointer;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%)}
+.plan-card:hover{border-color:rgba(0,255,135,.25)}
+.plan-card-feat{border-color:var(--line2)}
+.plan-card-feat::before{display:none}
+.pc-badge{position:absolute;top:16px;right:-1px;background:var(--green);color:var(--bg);font-family:var(--font-mono);font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:4px 12px}
+.pc-badge-outline{background:transparent;color:var(--green);border:1px solid var(--green);right:0}
+.pc-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.pc-price{font-family:var(--font-head);font-weight:900;font-size:clamp(48px,4vw,68px);line-height:1;color:var(--white);letter-spacing:-.03em;display:flex;align-items:flex-start;gap:4px;margin-bottom:6px}
+.pc-curr{font-size:20px;font-weight:400;color:var(--muted);margin-top:8px}
+.pc-period{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:28px}
+.pc-divider{height:1px;background:var(--line2);margin-bottom:20px}
+.pc-desc{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.08em;flex:1;margin-bottom:28px}
+.pc-btn{display:block;text-align:center;padding:16px;font-family:var(--font-head);font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:all .25s}
+.pc-btn-green{background:var(--green);color:var(--bg);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%)}
+.pc-btn-green:hover{background:var(--green2);box-shadow:0 0 20px rgba(0,255,135,.4)}
+.pc-btn-outline{border:1px solid var(--line);color:var(--white)}
+.pc-btn-outline:hover{border-color:var(--green);color:var(--green)}
+.plans-carousel-track{display:flex;transition:transform .4s cubic-bezier(.4,0,.2,1)}
+.plans-carousel-slide{min-width:100%;padding:0 4px}
+.plans-carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:20px}
+.plans-carousel-dot{width:8px;height:8px;border-radius:50%;background:var(--muted2);border:none;cursor:pointer;transition:background .2s,transform .2s;padding:0}
+.plans-carousel-dot.active{background:var(--green);transform:scale(1.3)}
+@media(max-width:900px){.plans-row{display:none}.plans-carousel{display:block}.plans-benefits-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.plans-benefits{padding:28px 20px}.plans-benefits-grid{grid-template-columns:1fr}}
+
+/* PLANES NUEVO */
+.plans{background:var(--bg);position:relative;overflow:hidden}
+.plans-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 100%,rgba(0,255,135,.04) 0%,transparent 60%);pointer-events:none}
+.plans-head{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;margin-bottom:60px}
+.plans-note{font-size:14px;color:var(--off);line-height:1.85;font-weight:300}
+.plans-note strong{color:var(--white);font-weight:600}
+.plans-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.plan{background:var(--bg2);padding:56px 48px;border:1px solid var(--line2);position:relative;display:flex;flex-direction:column;transition:border-color .3s;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,0 100%)}
+.plan:hover{border-color:rgba(0,255,135,.2)}
+.plan-feat{background:var(--bg3);border-color:rgba(0,255,135,.3)!important}
+.plan-feat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.plan-badge{position:absolute;top:20px;right:-1px;background:var(--green);color:var(--bg);font-family:var(--font-mono);font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:5px 14px}
+.plan-tier{font-family:var(--font-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
+.plan-price{font-family:var(--font-head);font-weight:900;font-size:72px;line-height:1;color:var(--white);letter-spacing:-.03em;display:flex;align-items:flex-start;gap:4px;margin-bottom:6px}
+.plan-curr{font-size:24px;font-weight:400;color:var(--muted);margin-top:10px}
+.plan-period{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.1em;margin-bottom:40px}
+.plan-line{height:1px;background:var(--line2);margin-bottom:32px}
+.plan-items{flex:1;display:flex;flex-direction:column;margin-bottom:40px}
+.plan-item{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:1px solid rgba(0,255,135,.04);font-size:13px}
+.plan-item:last-child{border-bottom:none}
+.pi-check{width:18px;height:18px;min-width:18px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.pi-check svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2.5}
+.pi-txt{color:var(--off);line-height:1.5;font-weight:300}
+.pi-txt strong{color:var(--white);display:block;margin-bottom:2px;font-size:13px;font-weight:600}
+.plan-btn{display:block;text-align:center;padding:18px;font-family:var(--font-head);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:all .25s}
+.pb-green{background:var(--green);color:var(--bg);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
+.pb-green:hover{background:var(--green2);box-shadow:0 0 24px rgba(0,255,135,.4)}
+.pb-outline{border:1px solid var(--line);color:var(--white)}
+.pb-outline:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(0,255,135,.1)}
+.gtee{position:relative;z-index:1;margin-top:24px;display:flex;align-items:center;gap:24px;padding:28px 40px;background:var(--bg2);border:1px solid var(--line2)}
+.gt-ico{width:48px;height:48px;min-width:48px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--green-dim)}
+.gt-ico svg{width:22px;height:22px;stroke:var(--green);fill:none;stroke-width:1.5}
+.gtee p{font-size:13px;color:var(--off);line-height:1.75;font-weight:300}
+.gtee p strong{color:var(--white);font-weight:600}
+
+/* AFILIADOS */
+.aff{background:var(--bg1);border-top:1px solid var(--line)}
+.aff-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:72px}
+.aff-intro{font-size:15px;color:var(--off);line-height:1.9;margin-top:24px;font-weight:300}
+.aff-intro strong{color:var(--white);font-weight:600}
+.aff-box{margin-top:48px;background:var(--bg2);border:1px solid var(--line);border-left:2px solid var(--green);padding:44px;position:relative;overflow:hidden}
+.aff-box::after{content:'50%';position:absolute;right:-10px;bottom:-20px;font-family:var(--font-head);font-size:140px;font-weight:900;color:rgba(0,255,135,.03);line-height:1;pointer-events:none;user-select:none}
+.aff-num{font-family:var(--font-head);font-weight:900;font-size:80px;line-height:1;color:var(--green);text-shadow:0 0 40px rgba(0,255,135,.3);margin-bottom:14px;letter-spacing:-.02em}
+.aff-box h4{font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:12px}
+.aff-box p{font-size:13px;color:var(--off);line-height:1.8;font-weight:300}
+.aff-box p strong{color:var(--white);font-weight:600}
+.aff-calc{margin-top:28px;padding-top:28px;border-top:1px solid var(--line2);display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.c-num{font-family:var(--font-head);font-size:26px;font-weight:900;color:var(--white)}
+.c-num span{color:var(--green)}
+.c-lbl{font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:.12em;margin-top:4px}
+.aff-bens{display:flex;flex-direction:column;gap:2px}
+.aff-ben{padding:26px 32px;background:var(--bg2);display:flex;gap:18px;align-items:flex-start;border-left:2px solid transparent;transition:border-color .2s,background .2s}
+.aff-ben:hover{border-left-color:var(--green);background:var(--bg3)}
+.ab-ico{width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--green-dim)}
+.ab-ico svg{width:17px;height:17px;stroke:var(--green);fill:none;stroke-width:1.5}
+.aff-ben h4{font-family:var(--font-head);font-size:12px;font-weight:700;margin-bottom:5px;letter-spacing:.02em}
+.aff-ben p{font-size:12px;color:var(--off);line-height:1.65;font-weight:300}
+.aff-cta{margin-top:2px;display:flex;align-items:center;justify-content:center;gap:12px;padding:20px;font-family:var(--font-head);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;background:var(--green);color:var(--bg);transition:all .25s;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%)}
+.aff-cta:hover{background:var(--green2);box-shadow:0 0 28px rgba(0,255,135,.4)}
+.aff-cta svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5}
+
+/* CAROUSEL */
+.testi{background:var(--bg);border-top:1px solid var(--line)}
+.carousel-wrapper{position:relative;overflow:hidden;margin-top:72px;border:1px solid var(--line)}
+.carousel-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform}
+.slide{min-width:100%;box-sizing:border-box}
+.slide-inner{display:grid;grid-template-columns:1fr 1fr;min-height:480px}
+.slide-image{overflow:hidden;background:var(--bg2)}
+.slide-image img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;filter:grayscale(20%);transition:filter .4s}
+.slide-inner:hover .slide-image img{filter:grayscale(0%)}
+.slide-content{display:flex;flex-direction:column;justify-content:flex-end;padding:56px 52px;background:var(--bg2);border-left:1px solid var(--line)}
+.slide-content h3{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.highlight{font-family:var(--font-head);font-size:clamp(36px,4vw,60px);font-weight:900;line-height:1.1;color:var(--green);text-shadow:0 0 30px rgba(0,255,135,.3);letter-spacing:-.02em}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.7);border:1px solid var(--line);color:var(--green);font-size:28px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;z-index:10;line-height:1}
+.carousel-btn:hover{background:rgba(0,255,135,.1);border-color:var(--green);box-shadow:0 0 16px rgba(0,255,135,.2)}
+.carousel-btn.prev{left:20px}
+.carousel-btn.next{right:20px}
+.carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:20px}
+.carousel-dot{width:8px;height:8px;border-radius:50%;background:var(--muted2);border:none;cursor:pointer;transition:background .2s,transform .2s;padding:0}
+.carousel-dot.active{background:var(--green);transform:scale(1.3)}
+
+/* FAQ */
+.faq{background:var(--bg1);border-top:1px solid var(--line)}
+.faq-inner{max-width:800px}
+.faq-list{margin-top:60px;display:flex;flex-direction:column}
+.faq-item{border-bottom:1px solid var(--line2)}
+.faq-item:first-child{border-top:1px solid var(--line2)}
+.faq-q{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;cursor:pointer;font-size:15px;font-weight:500;color:var(--white);transition:color .2s}
+.faq-q:hover{color:var(--green)}
+.faq-icon{width:28px;height:28px;min-width:28px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;transition:border-color .2s,transform .3s}
+.faq-icon svg{width:12px;height:12px;stroke:var(--green);fill:none;stroke-width:2}
+.faq-a{max-height:0;overflow:hidden;font-size:14px;color:var(--off);line-height:1.85;font-weight:300;transition:max-height .4s ease,padding .4s ease}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:28px}
+.faq-item.open .faq-icon{transform:rotate(45deg);border-color:var(--green)}
+
+/* FINAL */
+.final{background:var(--bg);border-top:1px solid var(--line);position:relative;overflow:hidden;text-align:center;padding:160px 56px}
+.final-grid-bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(0,255,135,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,135,.03) 1px,transparent 1px);background-size:60px 60px}
+.final-glow{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(0,255,135,.06) 0%,transparent 60%);z-index:0}
+.final-rings{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;border-radius:50%;border:1px solid rgba(0,255,135,.04);z-index:0}
+.final-rings::before{content:'';position:absolute;inset:80px;border-radius:50%;border:1px solid rgba(0,255,135,.06)}
+.final-rings::after{content:'';position:absolute;inset:160px;border-radius:50%;border:1px solid rgba(0,255,135,.08)}
+.final-tag{position:relative;z-index:1;font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:28px}
+.final h2{position:relative;z-index:1;font-family:var(--font-head);font-size:clamp(48px,6vw,88px);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:28px}
+.final h2 em{font-style:normal;-webkit-text-stroke:1px rgba(0,255,135,.3);color:transparent}
+.final p{position:relative;z-index:1;font-size:16px;color:var(--off);line-height:1.85;max-width:500px;margin:0 auto 52px;font-weight:300}
+.final-btns{position:relative;z-index:1;display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+
+/* FOOTER */
+footer{background:var(--bg1);border-top:1px solid var(--line)}
+.footer-main{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;padding:80px 56px 60px}
+.fb-logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:-.01em;margin-bottom:16px;color:var(--white)}
+.fb-logo em{font-style:normal;color:var(--green)}
+.fb-p{font-size:13px;color:var(--muted);line-height:1.75;max-width:260px;font-weight:300}
+.fc h4{font-family:var(--font-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:20px}
+.fc a{display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:10px;transition:color .2s}
+.fc a:hover{color:var(--white)}
+.footer-bot{display:flex;justify-content:space-between;align-items:center;padding:20px 56px;border-top:1px solid var(--line2)}
+.fc-copy{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.1em}
+.fc-made{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.08em}
+.fc-made span{color:var(--green)}
+
+/* FLOAT BTN */
+#float-btn{position:fixed;bottom:80px;right:20px;z-index:9999;background:#25D366;color:#fff;padding:14px 20px;border-radius:100px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(37,211,102,0.45),0 2px 8px rgba(0,0,0,0.3);animation:floatPulse 2.5s ease-in-out infinite;letter-spacing:.2px}
+#float-btn:hover{background:#20c45e;transform:scale(1.04)}
+@keyframes floatPulse{0%,100%{box-shadow:0 4px 24px rgba(37,211,102,0.45),0 2px 8px rgba(0,0,0,0.3)}50%{box-shadow:0 4px 40px rgba(37,211,102,0.7),0 2px 8px rgba(0,0,0,0.3)}}
+
+/* ANIMATIONS */
+.anim{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.anim.vis{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  nav{padding:0 32px}
+  .nav-mid{display:none}
+  .nav-hamburger{display:flex}
+  .hero-inner{grid-template-columns:1fr;padding:50px 32px 40px}
+  .hero-l{border-right:none;padding-right:0;border-bottom:1px solid var(--line);padding-bottom:48px}
+  .hero-r{padding:40px 0 0;flex-direction:row;flex-wrap:wrap}
+  .stat-card{flex:calc(50% - 1px)}
+  .hero-bar{grid-template-columns:repeat(2,1fr)}
+  section{padding:80px 32px}
+  .prob-layout,.pill-intro,.app-layout,.plans-head,.plans-grid,.aff-layout{grid-template-columns:1fr}
+  .pill-grid{grid-template-columns:1fr}
+  .footer-main{grid-template-columns:1fr 1fr;gap:40px;padding:60px 32px 40px}
+  .footer-bot{padding:20px 32px;flex-direction:column;gap:12px;text-align:center}
+  .slide-inner{grid-template-columns:1fr}
+  .slide-image{height:280px}
+  .slide-content{padding:36px 32px}
+}
+@media(max-width:900px){.plans-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){
+  nav{padding:0 16px;height:60px}
+  .logo{font-size:13px}
+  .nav-ghost{display:none}
+  .nav-cta{font-size:9px;padding:8px 14px}
+  .hero-inner{padding:32px 16px 24px}
+  .hero-h1{font-size:clamp(36px,10vw,52px)}
+  .hero-sub{font-size:14px;margin-top:20px}
+  .hero-btns{margin-top:28px;flex-direction:column;gap:12px}
+  .btn-neon,.btn-line{width:100%;text-align:center;justify-content:center;padding:14px 24px}
+  .hero-r{flex-direction:column;gap:2px;padding:24px 0 0}
+  .stat-card{flex:1;width:100%;padding:20px 24px}
+  .hero-bar{grid-template-columns:1fr 1fr}
+  .hb-item{padding:16px 14px;gap:10px}
+  section{padding:60px 16px}
+  .s-h2{font-size:clamp(28px,8vw,40px)}
+  .big-stat-num{font-size:64px}
+  .plan{padding:36px 24px}
+  .plan-price{font-size:56px}
+  .aff-num{font-size:60px}
+  .aff-box{padding:28px 24px}
+  .aff-calc{grid-template-columns:1fr}
+  .pill-card{padding:36px 24px}
+  .pill-card h3{font-size:22px}
+  .final{padding:80px 16px}
+  .final h2{font-size:clamp(36px,9vw,52px)}
+  .final-btns{flex-direction:column;align-items:center}
+  .footer-main{grid-template-columns:1fr;padding:40px 16px;gap:32px}
+  .footer-bot{padding:16px;flex-direction:column;gap:10px;text-align:center}
+  .gtee{flex-direction:column;padding:24px;gap:16px}
+  .prob-item{grid-template-columns:40px 1fr;gap:16px}
+  .big-stat-box{padding:32px 24px}
+  .slide-image{height:220px}
+  .slide-content{padding:28px 20px}
+  .carousel-btn{width:40px;height:40px;font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="landing.html" class="logo"><span class="logo-b">⚡</span>Fluye<span style="color:var(--green)">Libre</span></a>
+  <div class="nav-mid">
+    <a href="#sistema">Sistema</a>
+    <a href="#planes">Planes</a>
+    <a href="#afiliados">Afiliados</a>
+    <a href="#problema">Por qué</a>
+  </div>
+  <div class="nav-r">
+    <a href="#planes" class="nav-cta">Empieza hoy</a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="#sistema" class="nav-mobile-link">Sistema</a>
+  <a href="#planes" class="nav-mobile-link">Planes</a>
+  <a href="#afiliados" class="nav-mobile-link">Afiliados</a>
+  <a href="#problema" class="nav-mobile-link">Por qué</a>
+
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+  <div class="hero-diag"></div>
+  <div class="hero-inner">
+    <div class="hero-l">
+      <div class="hero-eyebrow">
+        <span class="ey-dot"></span>
+        <span class="ey-line"></span>
+        Todo cambia cuando decides.
+      </div>
+      <h1 class="hero-h1">
+        <span class="h1-g">Fluye</span><br>
+        <span class="h1-o">Libre</span><span class="h1-s">—</span><br>
+        <span>Estás atrapado</span>
+        <span class="h1-o">y lo sabes</span>
+      </h1>
+      <p class="hero-sub">
+        Cada día que pasa sin cambiar nada es una decisión.
+        <strong>No es tu culpa, pero sí tu responsabilidad.</strong>
+        Hay personas que caminan diferente, que hablan diferente, que el mundo parece haber creado para ganar.
+        <strong>No nacieron así.</strong> Se construyeron.
+        Fluye Libre es el sistema para construirte.
+      </p>
+      <div class="hero-btns">
+        <a href="#planes" class="btn-neon">
+          Ver planes
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#sistema" class="btn-line">Ver cómo funciona →</a>
+      </div>
+    </div>
+    <div class="hero-r">
+      <div class="stat-card">
+        <div class="stat-val">3<sup>x</sup></div>
+        <div class="stat-lbl">Pilares integrados</div>
+        <div class="stat-sub">Cuerpo · Mente · Economía</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">50%</div>
+        <div class="stat-lbl">Comisión partners</div>
+        <div class="stat-sub">Desde la primera venta</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="font-size:clamp(28px,3vw,48px);line-height:1;letter-spacing:-.02em">
+          10<span style="font-size:.5em;color:var(--off)">%</span> · 20<span style="font-size:.5em;color:var(--off)">%</span> · 35<span style="font-size:.5em;color:var(--off)">%</span>
+        </div>
+        <div class="stat-lbl">Descuentos por plan</div>
+        <div class="stat-sub">Trimestral · Semestral · Anual</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-bar">
+    <div class="hb-item">
+      <div class="hb-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg></div>
+      <div class="hb-txt"><strong>Todo medido</strong><span>El esfuerzo que no se ve, no existe.</span></div>
+    </div>
+    <div class="hb-item">
+      <div class="hb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg></div>
+      <div class="hb-txt"><strong>Sistema estructurado</strong><span>El éxito no es un accidente. Es un sistema.</span></div>
+    </div>
+    <div class="hb-item">
+      <div class="hb-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="hb-txt"><strong>Comunidad activa</strong><span>Las personas correctas no te dejan abandonar.</span></div>
+    </div>
+    <div class="hb-item">
+      <div class="hb-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <div class="hb-txt"><strong>Genera ingresos</strong><span>El conocimiento que no produce dinero es un hobby.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="problem" id="problema">
+  <div class="s-label">Por qué fracasas.</div>
+  <h2 class="s-h2">No eres débil.<br><em>Nadie te explicó las reglas.</em></h2>
+  <div class="prob-layout">
+    <div class="prob-items">
+      <div class="prob-item anim">
+        <div class="prob-num">01</div>
+        <div><h3>Lo que no mides, no mejora</h3><p>Tu mente necesita evidencia. Si no percibe progreso, pierde impulso en semanas, no en meses. No es debilidad, es biología. Por eso los ganadores no esperan motivación: miden, ejecutan, ajustan y repiten.</p></div>
+      </div>
+      <div class="prob-item anim">
+        <div class="prob-num">02</div>
+        <div><h3>No tienes dirección</h3><p>Estás ocupado, pero no estás avanzando. Tu esfuerzo se diluye porque no tienes un norte claro ni una secuencia lógica. Sin dirección, cualquier camino parece correcto. Y por eso sigues en el mismo lugar.</p></div>
+      </div>
+      <div class="prob-item anim">
+        <div class="prob-num">03</div>
+        <div><h3>Estás solo</h3><p>El entorno lo determina todo. Si las personas que te rodean no tienen el estándar que quieres alcanzar, terminarás ajustándote al suyo. No es debilidad. Es pertenencia. Y la pertenencia siempre gana.</p></div>
+      </div>
+      <div class="prob-item anim">
+        <div class="prob-num">04</div>
+        <div><h3>Creces incompleto</h3><p>Trabajas tu cuerpo, pero tu mente sigue en piloto automático. Desarrollas tu mentalidad, pero tus finanzas no tienen estructura. El crecimiento real no ocurre por partes: todo avanza contigo o algo te mantiene pequeño.</p></div>
+      </div>
+    </div>
+    <div class="prob-side">
+      <div class="big-stat-box anim">
+        <div class="big-stat-num">9/10</div>
+        <p>La mayoría que intenta cambiar abandona antes de los 60 días. No porque sean débiles, sino porque nadie les dio un sistema que funcione cuando la motivación se apaga. Empiezan con esperanza. Siguen con dudas. Y terminan creyendo que el problema son ellos. Pero no es así. Es el método.</p>
+      </div>
+      <div class="pull-quote anim" style="margin-top:2px">
+        <p>"Fluye Libre cambia eso: progreso que puedes ver, dirección que elimina la confusión, una comunidad que eleva tu estándar y un sistema donde todo avanza contigo."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PILARES -->
+<section class="pillars" id="sistema">
+  <div class="pillars-bg"></div>
+  <div class="pill-intro">
+    <div style="position:relative;z-index:1">
+      <div class="s-label">El sistema</div>
+      <h2 class="s-h2">Un problema.<br><em>Tres frentes.</em><br><span class="out">Un sistema.</span></h2>
+      <p>No somos una app de fitness. No somos un curso de mentalidad. No somos un programa de ingresos. Somos los tres funcionando como un solo sistema. Porque los problemas reales no aparecen por separado, y el cambio real tampoco llega por partes.</p>
+    </div>
+    <div class="pill-quote anim">
+      <strong>// El cuerpo construye disciplina.</strong><br>
+      La mente construye dirección.<br>
+      La economía construye independencia.<br><br>
+      <strong>// No son caminos distintos.</strong><br>
+      Son tres dimensiones del mismo sistema.
+    </div>
+  </div>
+  <div class="pill-grid">
+    <div class="pill-card pc-g anim">
+      <div class="pc-corner"></div>
+      <div class="pc-top"><span class="pc-num">PILAR_01</span><div class="pc-ico pc-ico-g"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div></div>
+      <h3>Cuerpo</h3>
+      <p>El punto de entrada. El cuerpo no es vanidad, es evidencia. Evidencia de que puedes comprometerte y no abandonar cuando se vuelve incómodo. Cuando tu físico cambia, tu identidad cambia. Y cuando tu identidad cambia, todo lo demás se activa.</p>
+      <div class="pc-tags"><span class="pc-tag">Disciplina</span><span class="pc-tag">Nutrición</span><span class="pc-tag">Resultados</span></div>
+      <div class="pc-bar" style="background:var(--green)"></div>
+    </div>
+    <div class="pill-card pc-r anim">
+      <div class="pc-corner" style="background:linear-gradient(225deg,rgba(255,59,92,.1) 0%,transparent 60%);border-color:rgba(255,59,92,.15)"></div>
+      <div class="pc-top"><span class="pc-num">PILAR_02</span><div class="pc-ico pc-ico-r"><svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg></div></div>
+      <h3>Mente</h3>
+      <p>Tus resultados reflejan tus hábitos. Y tus hábitos nacen en tu mente. Tu mente aprendió a protegerte, no a impulsarte. Por eso reaccionas en automático y repites lo que ya conoces. Cuando cambias el patrón, construyes resultados que se sostienen incluso cuando la motivación desaparece.</p>
+      <div class="pc-tags"><span class="pc-tag">Hábitos</span><span class="pc-tag">Mindset</span><span class="pc-tag">Dirección</span></div>
+      <div class="pc-bar" style="background:var(--red)"></div>
+    </div>
+    <div class="pill-card pc-b anim">
+      <div class="pc-corner" style="background:linear-gradient(225deg,rgba(0,200,255,.08) 0%,transparent 60%);border-color:rgba(0,200,255,.12)"></div>
+      <div class="pc-top"><span class="pc-num">PILAR_03</span><div class="pc-ico pc-ico-b"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div></div>
+      <h3>Economía</h3>
+      <p>Sin independencia financiera, no eres libre. Si alguien más controla tus ingresos, controla tu vida. Aprendes habilidades reales para generar dinero. Construyes una marca. Monetizas lo que sabes hacer. Dejas de tener jefes.</p>
+      <div class="pc-tags"><span class="pc-tag">Ingresos digitales</span><span class="pc-tag">Marca personal</span></div>
+      <div class="pc-bar" style="background:var(--blue)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section class="app-sec">
+  <div class="s-label">La herramienta</div>
+  <h2 class="s-h2">Todo medido.<br><em>Nada improvisado.</em></h2>
+  <div class="app-layout">
+    <div class="app-feats">
+      <div class="app-feat anim">
+        <div class="app-feat-head"><div class="af-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg></div><h4>Evolución física con gráficas reales</h4></div>
+        <p>Cuando puedes ver tu progreso, tu mente deja de dudar. Lo que antes era intención se convierte en compromiso. Y el compromiso crea resultados que perduran.</p>
+      </div>
+      <div class="app-feat anim">
+        <div class="app-feat-head"><div class="af-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg></div><h4>Plan personalizado desde el día 1</h4></div>
+        <p>Comienzas con una sesión estratégica de briefing. Definimos tu entrenamiento y nutrición según tu objetivo real y tu punto de partida. Sin plantillas genéricas. Diseñado a tu medida.</p>
+      </div>
+      <div class="app-feat anim">
+        <div class="app-feat-head"><div class="af-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h4>Control nutricional</h4></div>
+        <p>Registras cada comida. Proteínas, carbohidratos, grasas y calorías alineadas a tu objetivo. Metas diarias automáticas. Sin improvisar. Sin adivinar.</p>
+      </div>
+      <div class="app-feat anim">
+        <div class="app-feat-head"><div class="af-ico"><svg viewBox="0 0 24 24"><path d="M2 10v4"/><path d="M6 8v8"/><line x1="6" y1="12" x2="18" y2="12"/><path d="M18 8v8"/><path d="M22 10v4"/></svg></div><h4>Entrenamiento con seguimiento</h4></div>
+        <p>Series, reps y peso registrado sesión a sesión. No adivinas si mejoraste. Lo ves.</p>
+      </div>
+      <div class="app-feat anim">
+        <div class="app-feat-head"><div class="af-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><h4>Panel de ingresos del programa</h4></div>
+        <p>Seguimiento de comisiones, rendimiento y crecimiento. Claridad total sobre lo que generas. Lo que no mides, no puedes escalar.</p>
+      </div>
+    </div>
+    <div class="app-mock">
+      <div class="mock-bar">
+        <div class="m-dot" style="background:#FF5F57"></div>
+        <div class="m-dot" style="background:#FEBC2E"></div>
+        <div class="m-dot" style="background:#28C840"></div>
+        <span class="mock-title">fluyelibre.club / app</span>
+      </div>
+      <div class="mock-body">
+        <div class="mk-sec">Evolución Física</div>
+        <div class="mk-row"><span>% Masa Magra</span><span class="mk-v">82%</span></div>
+        <div class="mk-row"><span>% Grasa Corporal</span><span class="mk-vr">18%</span></div>
+        <div class="mk-row"><span>Peso Corporal</span><span class="mk-v">63 kg</span></div>
+        <div class="mk-sec">Macros Hoy</div>
+        <div class="mk-bars">
+          <div class="mk-br"><span class="mk-bl">Proteína</span><div class="mk-bt"><div class="mk-bf" style="width:72%;background:var(--green)"></div></div><span class="mk-bv">108g</span></div>
+          <div class="mk-br"><span class="mk-bl">Carbos</span><div class="mk-bt"><div class="mk-bf" style="width:58%;background:var(--blue)"></div></div><span class="mk-bv">197g</span></div>
+          <div class="mk-br"><span class="mk-bl">Grasas</span><div class="mk-bt"><div class="mk-bf" style="width:45%;background:var(--red)"></div></div><span class="mk-bv">29g</span></div>
+        </div>
+        <div class="mk-sec">Entrenamiento del día</div>
+        <div class="mk-row"><span>Press Militar</span><span class="mk-v">3×10</span></div>
+        <div class="mk-row"><span>Press Arnold</span><span class="mk-v">4×12</span></div>
+        <div class="mk-row"><span>Elevaciones laterales</span><span class="mk-v">4×15</span></div>
+        <div class="mk-row" style="border-top:1px solid rgba(0,255,135,.08);margin-top:6px;padding-top:10px"><span>Volumen Total</span><span class="mk-v" style="font-size:14px">1,020 kg</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANES -->
+<section class="plans" id="planes">
+  <div class="plans-glow"></div>
+  <div class="plans-head">
+    <div style="position:relative;z-index:1">
+      <div class="s-label">Acceso al sistema</div>
+      <h2 class="s-h2">Elige tu<br><em>nivel de entrada.</em></h2>
+    </div>
+    <div class="plans-note">
+      Sin contratos. Sin permanencia mínima. Cancela cuando quieras.<br><br>
+      <strong>El precio no es el obstáculo.</strong> Cada día que pasa sin un sistema es un día que no recuperas.
+    </div>
+  </div>
+  <!-- BENEFICIOS COMUNES -->
+  <div class="plans-benefits anim">
+    <div class="plans-benefits-grid">
+      <div class="pb-item"><div class="pi-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="pi-txt"><strong>App Fitness Integral</strong>Entrenamiento, nutrición y seguimiento físico.</div></div>
+      <div class="pb-item"><div class="pi-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="pi-txt"><strong>Dashboard de Ingresos</strong>Ganancias y rendimiento en tiempo real.</div></div>
+      <div class="pb-item"><div class="pi-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="pi-txt"><strong>Plan Personalizado desde el Día 1</strong>Sesión estratégica inicial a tu medida.</div></div>
+      <div class="pb-item"><div class="pi-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="pi-txt"><strong>Mentoría grupal semanal</strong>Sesiones en vivo cada sábado.</div></div>
+      <div class="pb-item"><div class="pi-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="pi-txt"><strong>Aprende habilidades</strong>Marca personal, contenido y edición de video.</div></div>
+      <div class="pb-item"><div class="pi-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="pi-txt"><strong>Comunidad privada</strong>Personas con estándares altos y dirección clara.</div></div>
+    </div>
+  </div>
+
+  <!-- PLANES DESKTOP -->
+  <div class="plans-row">
+    <div class="plan-card anim" onclick="selectPlan('mensual',99)">
+      <div class="pc-label">// Mensual</div>
+      <div class="pc-price"><span class="pc-curr">S/.</span>99</div>
+      <div class="pc-period">/ mes · sin contrato</div>
+      <div class="pc-divider"></div>
+      <div class="pc-desc">Acceso completo · sin descuento</div>
+      <a href="#voucher" class="pc-btn pc-btn-outline" onclick="selectPlan('mensual',99)">Elegir Mensual</a>
+    </div>
+    <div class="plan-card plan-card-feat anim" onclick="selectPlan('trimestral',267)">
+      <div class="pc-badge">10% OFF</div>
+      <div class="pc-label">// Trimestral</div>
+      <div class="pc-price"><span class="pc-curr">S/.</span>267</div>
+      <div class="pc-period">/ 3 meses · ahorras S/. 30</div>
+      <div class="pc-divider"></div>
+      <div class="pc-desc">Acceso completo · 10% de descuento</div>
+      <a href="#voucher" class="pc-btn pc-btn-outline" onclick="selectPlan('trimestral',267)">Elegir Trimestral</a>
+    </div>
+    <div class="plan-card anim" onclick="selectPlan('semestral',475)">
+      <div class="pc-badge pc-badge-outline">20% OFF</div>
+      <div class="pc-label">// Semestral</div>
+      <div class="pc-price"><span class="pc-curr">S/.</span>475</div>
+      <div class="pc-period">/ 6 meses · ahorras S/. 119</div>
+      <div class="pc-divider"></div>
+      <div class="pc-desc">Acceso completo · 20% de descuento</div>
+      <a href="#voucher" class="pc-btn pc-btn-outline" onclick="selectPlan('semestral',475)">Elegir Semestral</a>
+    </div>
+    <div class="plan-card anim" onclick="selectPlan('anual',772)">
+      <div class="pc-badge pc-badge-outline">35% OFF</div>
+      <div class="pc-label">// Anual</div>
+      <div class="pc-price"><span class="pc-curr">S/.</span>772</div>
+      <div class="pc-period">/ año · ahorras S/. 416</div>
+      <div class="pc-divider"></div>
+      <div class="pc-desc">Acceso completo · 35% de descuento</div>
+      <a href="#voucher" class="pc-btn pc-btn-outline" onclick="selectPlan('anual',772)">Elegir Anual</a>
+    </div>
+  </div>
+
+  <!-- PLANES MOBILE CARRUSEL -->
+  <div class="plans-carousel">
+    <div class="plans-carousel-track" id="plansTrack">
+      <div class="plans-carousel-slide">
+        <div class="plan-card" onclick="selectPlan('mensual',99)">
+          <div class="pc-label">// Mensual</div>
+          <div class="pc-price"><span class="pc-curr">S/.</span>99</div>
+          <div class="pc-period">/ mes · sin contrato</div>
+          <div class="pc-divider"></div>
+          <div class="pc-desc">Acceso completo · sin descuento</div>
+          <a href="#voucher" class="pc-btn pc-btn-outline" onclick="selectPlan('mensual',99)">Elegir Mensual</a>
+        </div>
+      </div>
+      <div class="plans-carousel-slide">
+        <div class="plan-card plan-card-feat">
+          <div class="pc-badge">10% OFF</div>
+          <div class="pc-label">// Trimestral</div>
+          <div class="pc-price"><span class="pc-curr">S/.</span>267</div>
+          <div class="pc-period">/ 3 meses · ahorras S/. 30</div>
+          <div class="pc-divider"></div>
+          <div class="pc-desc">Acceso completo · 10% de descuento</div>
+          <a href="#voucher" class="pc-btn pc-btn-outline" onclick="selectPlan('trimestral',267)">Elegir Trimestral</a>
+        </div>
+      </div>
+      <div class="plans-carousel-slide">
+        <div class="plan-card">
+          <div class="pc-badge pc-badge-outline">20% OFF</div>
+          <div class="pc-label">// Semestral</div>
+          <div class="pc-price"><span class="pc-curr">S/.</span>475</div>
+          <div class="pc-period">/ 6 meses · ahorras S/. 119</div>
+          <div class="pc-divider"></div>
+          <div class="pc-desc">Acceso completo · 20% de descuento</div>
+          <a href="#voucher" class="pc-btn pc-btn-outline" onclick="selectPlan('semestral',475)">Elegir Semestral</a>
+        </div>
+      </div>
+      <div class="plans-carousel-slide">
+        <div class="plan-card">
+          <div class="pc-badge pc-badge-outline">35% OFF</div>
+          <div class="pc-label">// Anual</div>
+          <div class="pc-price"><span class="pc-curr">S/.</span>772</div>
+          <div class="pc-period">/ año · ahorras S/. 416</div>
+          <div class="pc-divider"></div>
+          <div class="pc-desc">Acceso completo · 35% de descuento</div>
+          <a href="#voucher" class="pc-btn pc-btn-outline" onclick="selectPlan('anual',772)">Elegir Anual</a>
+        </div>
+      </div>
+    </div>
+    <div class="plans-carousel-dots" id="plansDots"></div>
+  </div>
+  <div class="gtee anim">
+    <div class="gt-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <p><strong>Sin promesas vacías.</strong> No prometemos resultados mágicos en 30 días. Prometemos un sistema estructurado, métricas reales y acompañamiento constante. Los resultados son el reflejo exacto de tu trabajo. El que no abandona, avanza. Sin excepción.</p>
+  </div>
+</section>
+
+<!-- AFILIADOS -->
+<section class="aff" id="afiliados">
+  <div class="s-label">Programa de afiliados</div>
+  <h2 class="s-h2">Tu crecimiento<br><em>genera ingresos.</em></h2>
+  <div class="aff-layout">
+    <div>
+      <p class="aff-intro"><strong>El programa de afiliados es para ti.</strong> Tus hábitos cambian. Tu mentalidad cambia. Tu físico cambia. Eso no es solo transformación. <strong>Es tu capital.</strong> Tu historia tiene peso. Tu proceso tiene credibilidad. Tu resultado tiene valor. No construyes algo nuevo. Te apalancas en un sistema que ya funciona.</p>
+
+      <!-- NIVEL 1: Partner -->
+      <div class="aff-box anim" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div class="aff-num" style="font-size:38px;line-height:1">35%</div>
+          <div>
+            <div style="font-family:var(--font-head);font-size:11px;letter-spacing:.08em;color:var(--green);text-transform:uppercase">Nivel 1 — Partner</div>
+            <h4 style="font-size:14px;margin-top:2px">Por cada venta directa · residual en renovaciones</h4>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--off);line-height:1.7;margin:0">Compartes tu enlace, tu cliente compra y cobras el 35% automático. Cuando renueva, el 35% vuelve a entrar. Sin límite de ventas.</p>
+      </div>
+
+      <!-- NIVEL 2: Director(a) -->
+      <div class="aff-box anim" style="border-color:rgba(180,120,255,.25);background:rgba(180,120,255,.04)">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div class="aff-num" style="font-size:38px;line-height:1;color:#b47aff;text-shadow:0 0 20px rgba(180,120,255,.4)">50%</div>
+          <div>
+            <div style="font-family:var(--font-head);font-size:11px;letter-spacing:.08em;color:#b47aff;text-transform:uppercase">Nivel 2 — Director(a) de Operaciones</div>
+            <h4 style="font-size:14px;margin-top:2px">Dos fuentes simultáneas de ingreso</h4>
+          </div>
+        </div>
+        <div class="aff-calc" style="margin-top:10px">
+          <div>
+            <div class="c-num"><span style="color:#b47aff">50%</span></div>
+            <div class="c-lbl">Ventas propias<br><span style="font-size:9px;color:var(--muted)">(sube de 35% a 50%)</span></div>
+          </div>
+          <div>
+            <div class="c-num"><span style="color:#b47aff">+15%</span></div>
+            <div class="c-lbl">De tu equipo<br><span style="font-size:9px;color:var(--muted)">(sin reducir el 35% de ellos)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aff-bens">
+      <div class="aff-ben anim"><div class="ab-ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div><h4>Kit de marketing listo para usar</h4><p>Copies, funnels y materiales validados. Tu rol es ejecutar y distribuir, no crear desde cero.</p></div></div>
+      <div class="aff-ben anim"><div class="ab-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg></div><div><h4>Dashboard de Partner propio</h4><p>Ventas, comisiones y progreso en tiempo real. Lo que no se mide, no se escala.</p></div></div>
+      <div class="aff-ben anim"><div class="ab-ico"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><div><h4>Comisiones residuales</h4><p>Cada renovación de tu cliente vuelve a generar comisión. El sistema no descansa aunque tú lo hagas.</p></div></div>
+      <div class="aff-ben anim"><div class="ab-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><h4>Embajador de marca</h4><p>Eres la prueba de que el sistema funciona. No representas un producto, representas un estándar.</p></div></div>
+      <a href="afiliados.html" class="aff-cta">
+        Quiero ser Partner
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="s-label">Preguntas Frecuentes</div>
+    <h2 class="s-h2">Lo que todos<br><em>preguntan.</em></h2>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="tFaq(this)"><span>¿Funciona si soy principiante total?</span><div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div><div class="faq-a">Sí. La entrevista de briefing al inicio existe precisamente para diseñar tu plan desde tu punto de partida real. No importa si nunca has entrenado o si llevas años.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="tFaq(this)"><span>¿Tengo que trabajar los 3 pilares al mismo tiempo?</span><div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div><div class="faq-a">No, pero empieza por el cuerpo. En 30 días el espejo no miente. Cuando el espejo cambia, tu mente no tiene opción. A partir de ahí, naturalmente se abre la puerta al crecimiento mental y económico.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="tFaq(this)"><span>¿En qué se diferencia de otras apps de fitness?</span><div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div><div class="faq-a">No es una app de fitness. Es el sistema que empieza por lo único que no te puedes inventar: tu cuerpo. En 30 días el espejo no miente, tu mente se enciende sola. Y cuando eso pasa, el dinero es consecuencia inevitable.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="tFaq(this)"><span>¿Cuánto puedo ganar como afiliado?</span><div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div><div class="faq-a">Lo que tú decidas ganar, porque el límite lo pone tu nivel de compromiso, no una tabla de comisiones. El dinero es la consecuencia directa de cuánto trabajo pones, cuántas vidas tocas, cuánto valor entregas.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="tFaq(this)"><span>¿Qué pasa si quiero cancelar?</span><div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div><div class="faq-a">Cancelas cuando quieras. Sin contratos, sin permanencia. No estás obligado a quedarte. Pero si decides hacerlo, decides cambiar. Y cuando decides de verdad, tu vida no vuelve a ser la misma.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="final-grid-bg"></div>
+  <div class="final-glow"></div>
+  <div class="final-rings"></div>
+  <div class="final-tag">La decisión es tuya</div>
+  <h2>Fluye Libre<br>o sigue <em>atrapado.</em></h2>
+  <p>El sistema existe. La comunidad existe. Las herramientas existen. Lo único que falta eres tú tomando la decisión.</p>
+  <div class="final-btns">
+    <a href="#planes" class="btn-neon">
+      Ver planes
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="afiliados.html" class="aff-cta">
+      Quiero ser Partner
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-main">
+    <div>
+      <div class="fb-logo">Fluye<em>Libre</em></div>
+      <p class="fb-p">Ecosistema de transformación integral. Cuerpo, mente y economía en un solo sistema estructurado.</p>
+    </div>
+    <div class="fc">
+      <h4>Sistema</h4>
+      <a href="#sistema">Cómo funciona</a>
+      <a href="#sistema">Los 3 pilares</a>
+      <a href="brochure.html">La app</a>
+    </div>
+    <div class="fc">
+      <h4>Acceso</h4>
+      <a href="planes.html">Ver planes</a>
+      <a href="brochure.html">Prueba 7 días gratis</a>
+      <a href="afiliados.html">Programa afiliados</a>
+    </div>
+    <div class="fc">
+      <h4>Contacto</h4>
+      <a href="https://wa.me/51926723311">WhatsApp</a>
+      <a href="https://instagram.com/fluyelibre">Instagram</a>
+      <a href="index.html">Acceder al app</a>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <span class="fc-copy">© 2026 FluyelLibre.club — Transformación integral · Disciplina medible</span>
+    <span class="fc-made">Hecho en <span>Perú</span></span>
+  </div>
+</footer>
+
+<!-- FLOAT BTN -->
+<a href="brochure.html" id="float-btn">
+  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.174-1.448A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.877 9.877 0 0 1-5.031-1.378l-.36-.214-3.733.875.944-3.452-.235-.375A9.872 9.872 0 0 1 2.106 12C2.106 6.54 6.54 2.106 12 2.106c5.46 0 9.894 4.434 9.894 9.894 0 5.46-4.434 9.894-9.894 9.894z"/></svg>
+  Pruébalo 7 días gratis
+</a>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
+
+// HAMBURGER
+const ham=document.getElementById('hamburger'),menu=document.getElementById('mobileMenu');
+ham.addEventListener('click',()=>{ham.classList.toggle('active');menu.classList.toggle('open')});
+menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('active');menu.classList.remove('open')}));
+
+// PLAN SELECTOR — guarda plan y redirige a planes.html
+function selectPlan(plan, monto) {
+  localStorage.setItem('fl_plan', plan);
+  localStorage.setItem('fl_monto', String(monto));
+  // feedback visual breve antes de redirigir
+  document.querySelectorAll('.pc-btn').forEach(b => {
+    b.classList.remove('pc-btn-green');
+    b.classList.add('pc-btn-outline');
+  });
+  document.querySelectorAll('.pc-btn').forEach(b => {
+    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+plan+"'")) {
+      b.classList.remove('pc-btn-outline');
+      b.classList.add('pc-btn-green');
+    }
+  });
+  // Redirigir a planes.html con el plan preseleccionado
+  setTimeout(() => {
+    window.location.href = 'planes.html?plan=' + plan + '&monto=' + monto;
+  }, 200);
+}
+
+// SCROLL ANIMATIONS
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.15});
+document.querySelectorAll('.anim').forEach(el=>obs.observe(el));
+
+// FAQ
+function tFaq(el){
+  const item=el.parentElement;
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen)item.classList.add('open');
+}
+
+// CAROUSEL TESTIMONIOS (removed)
+
+// PLANS CAROUSEL
+const plansTrack = document.getElementById('plansTrack');
+const plansDotsC = document.getElementById('plansDots');
+if(plansTrack){
+  const planSlides = plansTrack.querySelectorAll('.plans-carousel-slide');
+  let curPlan = 0;
+  planSlides.forEach((_,i)=>{
+    const d = document.createElement('button');
+    d.className = 'plans-carousel-dot' + (i===0?' active':'');
+    d.addEventListener('click',()=>goToPlan(i));
+    plansDotsC.appendChild(d);
+  });
+  function goToPlan(n){
+    curPlan = n;
+    plansTrack.style.transform = `translateX(-${n*100}%)`;
+    document.querySelectorAll('.plans-carousel-dot').forEach((d,i)=>d.classList.toggle('active',i===n));
+  }
+  // touch swipe
+  let startX = 0;
+  plansTrack.addEventListener('touchstart',e=>startX=e.touches[0].clientX,{passive:true});
+  plansTrack.addEventListener('touchend',e=>{
+    const diff = startX - e.changedTouches[0].clientX;
+    if(Math.abs(diff)>50) goToPlan(diff>0 ? Math.min(curPlan+1,planSlides.length-1) : Math.max(curPlan-1,0));
+  },{passive:true});
+}
+
+// MOBILE: close nav on scroll
+window.addEventListener('scroll',()=>{if(menu.classList.contains('open')){ham.classList.remove('active');menu.classList.remove('open')}});
+</script>
+</body>
+</html>

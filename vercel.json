@@ -1,11 +1,24 @@
 {
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/",          "destination": "/landing.html" },
+    { "source": "/app",       "destination": "/index.html" },
+    { "source": "/admin",     "destination": "/desfit-admin.html" },
+    { "source": "/planes",    "destination": "/planes.html" },
+    { "source": "/afiliados", "destination": "/afiliados.html" },
+    { "source": "/brochure",  "destination": "/brochure.html" }
+  ],
   "headers": [
     {
-      "source": "/(.*).html",
+      "source": "/(.*)",
       "headers": [
-        { "key": "Content-Type", "value": "text/html; charset=utf-8" },
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
       ]
     }
   ]
 }
+```
+
+Luego en terminal:
+```
+git add . && git commit -m "rutas limpias" && git push

@@ -41,6 +41,42 @@
     .header-user{font-size:13px;color:var(--muted);}
     .btn-logout{background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
 
+    /* ── SELECTOR DE MODO ── */
+    .modo-selector{display:flex;align-items:center;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:3px;}
+    .modo-btn{background:none;border:none;color:var(--muted);border-radius:16px;padding:5px 12px;font-size:11px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;transition:all 0.2s;letter-spacing:.5px;}
+    .modo-btn.active{background:var(--accent);color:#0a0a0a;}
+    .tab-fl{display:none !important;}
+    .modo-fl .tab-fl{display:flex !important;}
+    .modo-fl .tab-fli{display:none !important;}
+    #tab-fl-vouchers.active,#tab-fl-afiliados.active,#tab-fl-comisiones.active,#tab-fl-ranking.active,#tab-fl-usuarios.active,#tab-fl-trial.active{display:block;position:fixed;top:171px;left:0;right:0;bottom:0;overflow-y:auto;padding:20px;background:var(--bg);z-index:50;}
+    .vou-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;display:grid;grid-template-columns:100px 1fr auto;gap:14px;align-items:start;}
+    .vou-card.urgente{border-color:#ff4d4d;}
+    .vou-img{width:100px;height:80px;border-radius:8px;object-fit:cover;cursor:pointer;border:1px solid var(--border);}
+    .vou-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-radius:20px;padding:3px 10px;display:inline-block;margin-bottom:6px;}
+    .vou-badge.pendiente{background:#2a2000;color:#ffb74d;}
+    .vou-badge.aprobado{background:#0f1f00;color:var(--accent);}
+    .vou-badge.rechazado{background:#2a0a0a;color:#ff4d4d;}
+    .vou-badge.escalado{background:#0a1a2a;color:#4fc3f7;}
+    .vou-badge.urgente-tag{background:#3a0a0a;color:#ff6b6b;animation:blink-r 1.2s infinite;}
+    @keyframes blink-r{0%,100%{opacity:1}50%{opacity:.4}}
+    .fl-stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;}
+    .fl-stat-val{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:1px;line-height:1;}
+    .fl-stat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-top:4px;}
+    .fl-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
+    .fl-row:hover{border-color:rgba(169,243,56,0.3);}
+    .ranking-pos{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--muted);width:34px;text-align:center;flex-shrink:0;}
+    .ranking-pos.gold{color:#ffd700;}
+    .ranking-pos.silver{color:#c0c0c0;}
+    .ranking-pos.bronze{color:#cd7f32;}
+    .prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:4px;}
+    .prog-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s ease;}
+    #fl-img-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;align-items:center;justify-content:center;cursor:pointer;}
+    #fl-img-modal.open{display:flex;}
+    #fl-img-modal img{max-width:90vw;max-height:88vh;border-radius:12px;border:1px solid var(--border);}
+    #fl-rechazo-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9998;align-items:center;justify-content:center;}
+    #fl-rechazo-modal.open{display:flex;}
+    .fl-modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:400px;width:90%;}
+
     .admin-tabs{display:flex;overflow-x:auto;gap:4px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);scrollbar-width:none;align-items:center;flex-shrink:0;position:relative;z-index:200;}
     .admin-tabs::-webkit-scrollbar{display:none;}
     .tab-btn{flex-shrink:0;background:none;border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:7px 16px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all 0.2s;}
@@ -56,6 +92,19 @@
     .admin-content{flex:1;padding:20px;max-width:960px;margin:0 auto;width:100%;overflow-y:auto;}
     .tab-panel{display:none;}
     .tab-panel.active{display:block;}
+    /* Tabs fuera de admin-content necesitan su propio scroll */
+    #tab-ejercicios.active,
+    #tab-alimentos.active,
+    #tab-videos.active {
+      display: block;
+      position: fixed;
+      top: 171px;
+      left: 0; right: 0; bottom: 0;
+      overflow-y: auto;
+      padding-top: 20px;
+      background: var(--bg);
+      z-index: 50;
+    }
     #tab-revision.active{
       display:flex;
       flex-direction:column;
@@ -66,6 +115,25 @@
       overflow:hidden;
       padding:0;
       background:var(--bg);
+    }
+    /* Limitar ancho del contenido de revisión */
+    #rev-contenido{max-width:1280px;margin:0 auto;width:100%;}
+    /* Revisión responsive */
+    @media(max-width:1100px){
+      #tab-revision.active .rev-3col{grid-template-columns:130px minmax(0,1fr) 220px!important;}
+    }
+    @media(max-width:860px){
+      #tab-revision.active .rev-3col{grid-template-columns:110px minmax(0,1fr) 190px!important;}
+    }
+    /* Nombres ejercicios col 3 — permitir 2 líneas en vez de cortar */
+    .rev-ej-nombre-wrap{
+      font-size:11px;font-weight:600;
+      overflow:hidden;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      white-space:normal;
+      line-height:1.3;
     }
 
     /* UTILS */
@@ -266,15 +334,22 @@
     .nut-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;}
     @media(max-width:800px){.nut-layout{grid-template-columns:1fr;}}
     .macro-rest-bar{background:var(--card);border-radius:10px;padding:12px;margin-bottom:12px;}
-    .rest-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-    .rest-item{text-align:center;}
-    .rest-val{font-family:'Bebas Neue',sans-serif;font-size:22px;}
+    .rest-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+    .rest-item{display:flex;flex-direction:column;gap:3px;}
+    .rest-val{font-family:'Bebas Neue',sans-serif;font-size:22px;line-height:1;}
     .rest-val.p{color:var(--prot);}
     .rest-val.c{color:var(--carb);}
     .rest-val.g{color:var(--fat);}
-    .rest-val.cero{color:var(--muted);}
-    .rest-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;}
+    .rest-val.exceso{color:var(--danger);}
+    .rest-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
     .rest-obj{font-size:10px;color:var(--muted);margin-top:1px;}
+    .rest-track{height:4px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden;margin-top:3px;}
+    .rest-fill{height:100%;border-radius:2px;transition:width 0.35s ease;}
+    .rest-fill.p{background:var(--prot);}
+    .rest-fill.c{background:var(--carb);}
+    .rest-fill.g{background:var(--fat);}
+    .rest-fill.exceso{background:var(--danger);}
+    .rest-sub{font-size:10px;color:var(--muted);margin-top:1px;}
     .cat-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
     .cat-btn{border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;}
     .cat-btn.prot{background:#0d2a3a;color:var(--prot);}
@@ -1287,21 +1362,31 @@
       <div class="header-admin-badge">Admin</div>
     </div>
     <div class="header-right">
+      <div class="modo-selector">
+        <button class="modo-btn active" onclick="setModo('fli',this)">🏋️ FLI</button>
+        <button class="modo-btn" onclick="setModo('fl',this)">💼 Fluye Libre</button>
+      </div>
       <div class="header-user" id="header-user"></div>
       <button class="btn-logout" id="btn-logout">Salir</button>
     </div>
   </div>
 
   <div class="admin-tabs">
-    <button class="tab-btn active" data-tab="resumen" onclick="switchTab('resumen',this)">📊 Resumen</button>
-    <button class="tab-btn" data-tab="cliente" onclick="switchTab('cliente',this)">👤 Cliente</button>
-    <button class="tab-btn" data-tab="evolucion" onclick="switchTab('evolucion',this)">📈 Evolución</button>
-    <button class="tab-btn" data-tab="pendientes" onclick="switchTab('pendientes',this)">🔔 Pendientes <span id="badge-pendientes" style="display:none;background:#e53e3e;color:#fff;border-radius:50%;padding:1px 6px;font-size:11px;font-weight:700;margin-left:2px">0</span></button>
-    <button class="tab-btn" data-tab="videos" onclick="switchTab('videos',this)">🎬 Videos</button>
-    <button class="tab-btn" data-tab="alimentos" onclick="switchTab('alimentos',this)">🥦 Alimentos</button>
-    <button class="tab-btn" data-tab="ejercicios" onclick="switchTab('ejercicios',this)">🏋️ Ejercicios</button>
-    <button class="tab-btn" data-tab="revision" onclick="switchTab('revision',this)">🔄 Revisión</button>
-    <button class="tab-btn" data-tab="trial" onclick="switchTab('trial',this)">🎟 Trial</button>
+    <!-- FLI — solo gestión de clientes -->
+    <button class="tab-btn tab-fli active" data-tab="resumen"    onclick="switchTab('resumen',this)">📊 Resumen</button>
+    <button class="tab-btn tab-fli"        data-tab="cliente"    onclick="switchTab('cliente',this)">👤 Cliente</button>
+    <button class="tab-btn tab-fli"        data-tab="evolucion"  onclick="switchTab('evolucion',this)">📈 Evolución</button>
+    <button class="tab-btn tab-fli"        data-tab="videos"     onclick="switchTab('videos',this)">🎬 Videos</button>
+    <button class="tab-btn tab-fli"        data-tab="alimentos"  onclick="switchTab('alimentos',this)">🥦 Alimentos</button>
+    <button class="tab-btn tab-fli"        data-tab="ejercicios" onclick="switchTab('ejercicios',this)">🏋️ Ejercicios</button>
+    <button class="tab-btn tab-fli"        data-tab="revision"   onclick="switchTab('revision',this)">🔄 Revisión</button>
+    <!-- FL — todo lo operativo -->
+    <button class="tab-btn tab-fl" data-tab="fl-usuarios"   onclick="switchTab('fl-usuarios',this);flUsuariosCargar();">👥 Miembros <span id="badge-fl-usuarios" style="display:none;background:#e53e3e;color:#fff;border-radius:50%;padding:1px 6px;font-size:11px;font-weight:700;margin-left:2px">0</span></button>
+    <button class="tab-btn tab-fl" data-tab="fl-trial"      onclick="switchTab('fl-trial',this);trialCargar();">🎟 Trial</button>
+    <button class="tab-btn tab-fl" data-tab="fl-vouchers"   onclick="switchTab('fl-vouchers',this);flVouchersCargar();">🧾 Vouchers <span id="badge-vou" style="display:none;background:#ff4d4d;color:#fff;border-radius:50%;padding:1px 6px;font-size:11px;font-weight:700;margin-left:2px">0</span></button>
+    <button class="tab-btn tab-fl" data-tab="fl-afiliados"  onclick="switchTab('fl-afiliados',this);flAfiliadosCargar();">🤝 Afiliados</button>
+    <button class="tab-btn tab-fl" data-tab="fl-comisiones" onclick="switchTab('fl-comisiones',this);flComisionesCargar();">💰 Comisiones</button>
+    <button class="tab-btn tab-fl" data-tab="fl-ranking"    onclick="switchTab('fl-ranking',this);flRankingCargar();">🏆 Ranking</button>
 
   </div>
 
@@ -1628,11 +1713,26 @@
                   <button onclick="cerrarEditor()" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif">✕ Cerrar</button>
                 </div>
                 <div style="padding:12px 16px;background:rgba(169,243,56,0.04);border-bottom:1px solid var(--border)" id="macro-rest-bar">
-                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px">Macro restante por cubrir</div>
+                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px">Macros acumulados</div>
                   <div class="rest-cols">
-                    <div class="rest-item"><div class="rest-val p" id="rest-p">—</div><div class="rest-lbl">Proteína</div><div class="rest-obj" id="rest-p-obj"></div></div>
-                    <div class="rest-item"><div class="rest-val c" id="rest-c">—</div><div class="rest-lbl">Carbos</div><div class="rest-obj" id="rest-c-obj"></div></div>
-                    <div class="rest-item"><div class="rest-val g" id="rest-g">—</div><div class="rest-lbl">Grasas</div><div class="rest-obj" id="rest-g-obj"></div></div>
+                    <div class="rest-item">
+                      <div class="rest-val p" id="rest-p">—</div>
+                      <div class="rest-lbl">Proteína</div>
+                      <div class="rest-track"><div class="rest-fill p" id="rest-fill-p" style="width:0%"></div></div>
+                      <div class="rest-sub" id="rest-sub-p"></div>
+                    </div>
+                    <div class="rest-item">
+                      <div class="rest-val c" id="rest-c">—</div>
+                      <div class="rest-lbl">Carbos</div>
+                      <div class="rest-track"><div class="rest-fill c" id="rest-fill-c" style="width:0%"></div></div>
+                      <div class="rest-sub" id="rest-sub-c"></div>
+                    </div>
+                    <div class="rest-item">
+                      <div class="rest-val g" id="rest-g">—</div>
+                      <div class="rest-lbl">Grasas</div>
+                      <div class="rest-track"><div class="rest-fill g" id="rest-fill-g" style="width:0%"></div></div>
+                      <div class="rest-sub" id="rest-sub-g"></div>
+                    </div>
                   </div>
                 </div>
                 <div style="padding:14px 16px">
@@ -1643,7 +1743,8 @@
                     <button class="cat-btn veg"  onclick="agregarFila('Verdura')">🥦 Verdura</button>
                   </div>
                   <div id="editor-items"></div>
-                  <button class="btn-accent" style="margin-top:10px;width:100%" id="btn-guardar-comida">💾 Guardar comida</button>
+                  <button onclick="autoCalcularGramos()" style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--accent);color:var(--accent);border-radius:10px;padding:10px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;letter-spacing:0.3px" id="btn-auto-calcular">⚡ Auto-calcular gramos</button>
+                  <button class="btn-accent" style="margin-top:8px;width:100%" id="btn-guardar-comida">💾 Guardar comida</button>
                 </div>
               </div>
             </div>
@@ -1711,6 +1812,8 @@
     <!-- TAB ENTRENO -->
     <div id="tab-entreno">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+
+        <!-- ══ COLUMNA IZQUIERDA: Biblioteca + Macrociclo ══ -->
         <div>
           <!-- ── INDICADOR MACROCICLO ACTIVO ── -->
           <div id="bib-macrociclo-activo" style="display:none;background:#0d1a00;border:1px solid rgba(169,243,56,0.25);border-radius:10px;padding:10px 14px;margin-top:12px;display:none;align-items:center;justify-content:space-between;gap:10px">
@@ -1774,30 +1877,13 @@
           </div>
           <!-- ── FIN BIBLIOTECA ── -->
 
-          <!-- Botones edición manual — visibles cuando hay plan activo -->
-          <div id="ent-editor-actions" style="display:none;justify-content:flex-end;gap:6px;align-items:center;margin-bottom:10px">
-            <button class="btn-ghost" onclick="agregarEjPersonalizado()">+ Ejercicio</button>
-            <button class="btn-ghost" onclick="limpiarPlanPersonalizado()" style="color:var(--danger);border-color:var(--danger)">🗑 Limpiar</button>
-          </div>
-          <div id="ent-editor-wrap" style="display:none">
-            <div id="ent-dias-wrap"></div>
-          </div>
-          <div id="ent-editor-vacio" style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px">
-            Selecciona un programa desde la Biblioteca JC Muscle
-          </div>
-        </div>
-        <div>
-
-          <!-- ── PROGRESIÓN JC MUSCLE ── -->
           <!-- ══ MACROCICLO ACTIVO ══ -->
-          <div id="prog-card" style="display:none;margin-bottom:16px">
+          <div id="prog-card" style="display:none;margin-top:16px">
             <div class="card" style="border:1px solid rgba(169,243,56,0.3)">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
                 <div class="card-title" style="margin-bottom:0">🚀 Macrociclo activo</div>
                 <span id="prog-semana-badge" style="font-size:11px;background:#1a2a00;color:var(--accent);border-radius:20px;padding:3px 10px;font-weight:600"></span>
               </div>
-
-              <!-- Programa + barra progreso -->
               <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:10px">
                 <div id="prog-nombre-actual" style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:2px"></div>
                 <div id="prog-meta-actual" style="font-size:11px;color:var(--muted);margin-bottom:8px"></div>
@@ -1805,35 +1891,21 @@
                   <div id="prog-barra" style="height:6px;background:var(--accent);border-radius:20px;transition:width .4s;width:0%"></div>
                 </div>
               </div>
-
-              <!-- 4 criterios -->
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
                 <div id="prog-crit-semanas" class="prog-crit"></div>
                 <div id="prog-crit-cargas" class="prog-crit"></div>
                 <div id="prog-crit-reps" class="prog-crit"></div>
                 <div id="prog-crit-adherencia" class="prog-crit"></div>
               </div>
-
-              <!-- CTA avanzar -->
               <div id="prog-opciones" style="display:none">
-                <button onclick="progMostrarModalAvance()" style="width:100%;background:var(--accent);color:#0a0a0a;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">
-                  ✅ Listo para avanzar →
-                </button>
+                <button onclick="progMostrarModalAvance()" style="width:100%;background:var(--accent);color:#0a0a0a;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">✅ Listo para avanzar →</button>
               </div>
-              <div id="prog-no-listo" style="display:none;text-align:center;padding:8px;font-size:11px;color:var(--muted)">
-                Sigue en progreso — revisa al completar más semanas
-              </div>
+              <div id="prog-no-listo" style="display:none;text-align:center;padding:8px;font-size:11px;color:var(--muted)">Sigue en progreso — revisa al completar más semanas</div>
             </div>
           </div>
 
-          <!-- ══ PLAN ACTUAL ══ -->
-          <span class="lbl">📋 Plan actual del cliente</span>
-          <div id="ent-plan-guardado">
-            <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px">El plan guardado aparecerá aquí</div>
-          </div>
-
           <!-- ══ HISTORIAL DE MACROCICLOS ══ -->
-          <div style="margin-top:20px">
+          <div style="margin-top:16px">
             <span class="lbl" style="margin-bottom:10px;display:block">📦 Historial de macrociclos</span>
             <div id="ent-historial-rutinas">
               <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">—</div>
@@ -1841,12 +1913,50 @@
           </div>
 
           <!-- ══ BOTÓN REVISIÓN SEMANAL ══ -->
-          <div style="margin-top:20px" id="rev-btn-wrap">
+          <div style="margin-top:16px" id="rev-btn-wrap">
             <button onclick="switchTab('revision', document.querySelector('[data-tab=revision]'))" style="width:100%;background:linear-gradient(135deg,#1a2a00,#0f1800);border:1px solid rgba(169,243,56,0.4);color:var(--accent);border-radius:12px;padding:14px;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.2s;">
               🧠 Abrir Revisión Semanal
             </button>
           </div>
         </div>
+
+        <!-- ══ COLUMNA DERECHA: Plan + Editor ══ -->
+        <div>
+          <!-- Toggle Ver / Editar -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span class="lbl" style="margin-bottom:0" id="ent-col-titulo">📋 Plan actual del cliente</span>
+            <div style="display:flex;gap:6px" id="ent-toggle-btns">
+              <button id="ent-btn-ver" onclick="entModoVer()"
+                style="background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">
+                👁 Ver
+              </button>
+              <button id="ent-btn-editar" onclick="entModoEditar()"
+                style="background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
+                ✏️ Editar
+              </button>
+            </div>
+          </div>
+
+          <!-- Vista: Plan guardado (modo Ver) -->
+          <div id="ent-plan-guardado" style="display:block">
+            <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px">El plan guardado aparecerá aquí</div>
+          </div>
+
+          <!-- Vista: Editor (modo Editar) -->
+          <div id="ent-editor-panel" style="display:none">
+            <div id="ent-editor-actions" style="display:flex;justify-content:flex-end;gap:6px;align-items:center;margin-bottom:10px">
+              <button class="btn-ghost" onclick="agregarEjPersonalizado()">+ Ejercicio</button>
+              <button class="btn-ghost" onclick="limpiarPlanPersonalizado()" style="color:var(--danger);border-color:var(--danger)">🗑 Limpiar</button>
+            </div>
+            <div id="ent-editor-wrap">
+              <div id="ent-dias-wrap"></div>
+            </div>
+            <div id="ent-editor-vacio" style="display:none;text-align:center;padding:40px 20px;color:var(--muted);font-size:14px">
+              Sin plan activo para editar
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     </div><!-- /sub-entreno -->
@@ -2418,7 +2528,7 @@
 </div>
 
 <!-- ═══ TAB TRIAL ═══ -->
-<div class="tab-panel" id="tab-trial" style="padding:0 20px 28px;overflow-y:auto;height:100%;">
+<div class="tab-panel" id="tab-fl-trial" style="padding:0 20px 28px;overflow-y:auto;height:100%;">
   <div style="max-width:560px;margin:0 auto;padding-top:24px;padding-bottom:40px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
       <div>
@@ -2474,7 +2584,7 @@
     </div>
 
     <!-- LAYOUT 3 COLS fijas -->
-    <div style="display:grid;grid-template-columns:190px minmax(0,1fr) 270px;flex:1;min-height:0;overflow:hidden">
+    <div class="rev-3col" style="display:grid;grid-template-columns:150px minmax(0,1fr) 260px;flex:1;min-height:0;overflow:hidden">
 
       <!-- ══ COL 1: GRUPOS + SENSACIONES ══ -->
       <div style="border-right:1px solid #161616;overflow-y:auto;background:#0c0c0c;display:flex;flex-direction:column">
@@ -2613,6 +2723,144 @@
   </div>
 </div>
 
+
+<!-- ═══ FLUYE LIBRE — TAB USUARIOS (validación unificada) ═══ -->
+<div class="tab-panel" id="tab-fl-usuarios" style="padding:0;">
+  <div style="max-width:860px;margin:0 auto;padding:20px 20px 60px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-size:18px;font-weight:700;">👤 Usuarios Fluye Libre</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Gestiona acceso, activación y trial de todos los miembros FL</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select id="flu-filtro-estado" onchange="flUsuariosCargar()" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;">
+          <option value="">— Todos —</option>
+          <option value="pendiente">⏳ Pendientes</option>
+          <option value="activo">✅ Activos</option>
+          <option value="cancelado">🚫 Cancelados</option>
+          <option value="trial">🎟️ Trial</option>
+        </select>
+        <button onclick="flUsuariosCargar()" style="background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;">↻ Actualizar</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+      <div class="fl-stat"><div class="fl-stat-val" id="flu-stat-pendientes" style="color:#ffb74d;">—</div><div class="fl-stat-lbl">Pendientes</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="flu-stat-activos" style="color:var(--accent);">—</div><div class="fl-stat-lbl">Activos</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="flu-stat-trial" style="color:#4fc3f7;">—</div><div class="fl-stat-lbl">Trial</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="flu-stat-cancelados" style="color:#ff4d4d;">—</div><div class="fl-stat-lbl">Cancelados</div></div>
+    </div>
+    <div id="flu-lista"><div class="loading"><div class="spinner"></div>Cargando usuarios...</div></div>
+  </div>
+</div>
+
+<!-- ═══ FLUYE LIBRE — TAB VOUCHERS ═══ -->
+<div class="tab-panel" id="tab-fl-vouchers" style="padding:0;">
+  <div style="max-width:860px;margin:0 auto;padding:20px 20px 60px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-size:18px;font-weight:700;">🧾 Vouchers pendientes</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Valida o rechaza los comprobantes de pago</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select id="vou-filtro" onchange="flVouchersCargar()" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;">
+          <option value="pendiente">Pendientes</option>
+          <option value="escalado">Escalados</option>
+          <option value="aprobado">Aprobados</option>
+          <option value="rechazado">Rechazados</option>
+          <option value="">Todos</option>
+        </select>
+        <button onclick="flVouchersCargar()" style="background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;">↻ Actualizar</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;" id="vou-stats">
+      <div class="fl-stat"><div class="fl-stat-val" id="vs-pendientes" style="color:#ffb74d;">—</div><div class="fl-stat-lbl">Pendientes</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="vs-escalados" style="color:#4fc3f7;">—</div><div class="fl-stat-lbl">Escalados</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="vs-aprobados" style="color:var(--accent);">—</div><div class="fl-stat-lbl">Aprobados</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="vs-rechazados" style="color:#ff4d4d;">—</div><div class="fl-stat-lbl">Rechazados</div></div>
+    </div>
+    <div id="vou-lista"><div class="loading"><div class="spinner"></div>Cargando vouchers...</div></div>
+  </div>
+</div>
+
+<!-- ═══ FLUYE LIBRE — TAB AFILIADOS ═══ -->
+<div class="tab-panel" id="tab-fl-afiliados" style="padding:0;">
+  <div style="max-width:860px;margin:0 auto;padding:20px 20px 60px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-size:18px;font-weight:700;">👥 Afiliados</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Gestión de afiliados y líderes</div>
+      </div>
+      <select id="afl-filtro-rol" onchange="flAfiliadosCargar()" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;">
+        <option value="afiliado">Afiliados</option>
+        <option value="lider">Líderes</option>
+        <option value="">Todos</option>
+      </select>
+    </div>
+    <div id="afl-lista"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+  </div>
+</div>
+
+<!-- ═══ FLUYE LIBRE — TAB COMISIONES ═══ -->
+<div class="tab-panel" id="tab-fl-comisiones" style="padding:0;">
+  <div style="max-width:860px;margin:0 auto;padding:20px 20px 60px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-size:18px;font-weight:700;">💰 Comisiones</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Gestiona y marca pagos de comisiones</div>
+      </div>
+      <select id="com-filtro" onchange="flComisionesCargar()" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;">
+        <option value="aprobado">Listas para pagar</option>
+        <option value="pendiente">Pendientes</option>
+        <option value="pagado">Pagadas</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
+      <div class="fl-stat"><div class="fl-stat-val" id="com-total-pagar" style="color:var(--accent);">—</div><div class="fl-stat-lbl">Total a pagar (S/.)</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="com-total-pendiente" style="color:#ffb74d;">—</div><div class="fl-stat-lbl">Pendiente (S/.)</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="com-total-pagado" style="color:var(--muted);">—</div><div class="fl-stat-lbl">Pagado total (S/.)</div></div>
+    </div>
+    <div id="com-lista"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+  </div>
+</div>
+
+<!-- ═══ FLUYE LIBRE — TAB RANKING ═══ -->
+<div class="tab-panel" id="tab-fl-ranking" style="padding:0;">
+  <div style="max-width:860px;margin:0 auto;padding:20px 20px 60px;">
+    <div style="margin-bottom:20px;">
+      <div style="font-size:18px;font-weight:700;">🏆 Ranking del mes</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px;">Top afiliados + bonos por 20 ventas</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;">
+      <div class="fl-stat"><div class="fl-stat-val" id="rnk-ventas-mes" style="color:var(--accent);">—</div><div class="fl-stat-lbl">Ventas este mes</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="rnk-bonos-pend" style="color:#ffd700;">—</div><div class="fl-stat-lbl">Bonos pendientes</div></div>
+      <div class="fl-stat"><div class="fl-stat-val" id="rnk-bonos-pagados" style="color:var(--muted);">—</div><div class="fl-stat-lbl">Bonos pagados</div></div>
+    </div>
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:12px;">Top afiliados — ventas validadas este mes</div>
+    <div id="rnk-lista"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:24px 0 12px;">Bonos S/. 200 (20 ventas)</div>
+    <div id="rnk-bonos"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+  </div>
+</div>
+
+<!-- Modal imagen voucher -->
+<div id="fl-img-modal" onclick="this.classList.remove('open')">
+  <img id="fl-img-modal-src" src="" alt="Voucher">
+</div>
+
+<!-- Modal rechazo -->
+<div id="fl-rechazo-modal">
+  <div class="fl-modal-box">
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px;">❌ Motivo de rechazo</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Será registrado y notificado al afiliado.</div>
+    <textarea id="fl-rechazo-motivo" rows="3" placeholder="Ej: El monto no coincide, imagen ilegible..."
+      style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;resize:none;outline:none;margin-bottom:14px;"></textarea>
+    <div style="display:flex;gap:10px;">
+      <button onclick="flRechazoCancelar()" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:11px;font-size:14px;font-family:'Inter',sans-serif;cursor:pointer;">Cancelar</button>
+      <button onclick="flRechazarConfirmar()" style="flex:1;background:#ff4d4d;border:none;color:#fff;border-radius:10px;padding:11px;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Rechazar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ERROR PANEL GLOBAL -->
 <div id="error-panel" style="display:none;position:fixed;bottom:0;left:0;right:0;max-height:200px;overflow-y:auto;background:#1a0000;border-top:2px solid #ff4d4d;z-index:9999;padding:10px 16px;font-family:monospace;font-size:11px;color:#ff8888"></div>
 
@@ -2663,6 +2911,26 @@ const SUPABASE_KEY='sb_publishable_Y3IVWyc_uiHjZ6wp_CctOw_X3Uft7n1';
 const{createClient}=supabase;
 const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
 
+// Refresca el JWT si está por vencer o ya venció — llamar antes de cualquier operación de escritura
+async function ensureSession() {
+  const { data: { session }, error } = await sb.auth.getSession();
+  if (!session) return false;
+  // Si vence en menos de 60 segundos, refrescar
+  const expiresAt = session.expires_at * 1000;
+  if (Date.now() > expiresAt - 60000) {
+    const { error: refErr } = await sb.auth.refreshSession();
+    if (refErr) {
+      showToast('⚠ Sesión vencida — volvé a iniciar sesión');
+      setTimeout(() => {
+        document.getElementById('screen-app').style.display = 'none';
+        document.getElementById('screen-login').style.display = 'flex';
+      }, 2000);
+      return false;
+    }
+  }
+  return true;
+}
+
 let adminUser=null, clientes=[], clienteActivo=null;
 let resumenConfig={}, comidasActivas=[];
 
@@ -2705,6 +2973,8 @@ const ICONS={'Desayuno':'🌞','Media Mañana':'☕','Almuerzo':'🍗','Merienda
 
 // Distribución % por número de comidas activas
 // Orden de activación: Desayuno, Almuerzo, Cena, Media Mañana, Merienda, Snack Media Tarde, Pre-Entreno, Post-Entreno
+// Pesos relativos fijos por tipo de comida — independientes del total
+// Se normalizan automáticamente al 100% según las comidas activas
 const DIST_SPEC = {
   3: { 'Desayuno':30, 'Almuerzo':40, 'Cena':30 },
   4: { 'Desayuno':25, 'Media Mañana':15, 'Almuerzo':35, 'Cena':25 },
@@ -2714,20 +2984,61 @@ const DIST_SPEC = {
   8: { 'Desayuno':18, 'Media Mañana':10, 'Almuerzo':25, 'Merienda':12, 'Snack Media Tarde':8, 'Pre-Entreno':7, 'Post-Entreno':10, 'Cena':10 },
 };
 
+// % fijo asignado a cada extra cuando se activan sobre comidas base
+const EXTRA_PCT = { 'Pre-Entreno':7, 'Post-Entreno':10, 'Snack Media Tarde':10 };
+const EXTRAS = new Set(['Pre-Entreno','Post-Entreno','Snack Media Tarde']);
+
 // Orden en que se activan las comidas al agregar de a una
 const ORDEN_ACTIVACION = ['Desayuno','Almuerzo','Cena','Media Mañana','Merienda','Snack Media Tarde','Pre-Entreno','Post-Entreno'];
 
+// Pesos base por comida — se usan cuando la combinación no matchea la tabla exacta
+const PESO_BASE = {
+  'Desayuno':25, 'Media Mañana':12, 'Almuerzo':32,
+  'Merienda':14, 'Cena':22
+};
+
 function getDistribucion(comidasActivas) {
-  // Buscar la distribución más cercana según cantidad
-  const n = Math.min(Math.max(comidasActivas.length, 3), 8);
-  const dist = DIST_SPEC[n] || DIST_SPEC[3];
-  // Mapear % a las comidas activas en orden canónico
+  const extras = comidasActivas.filter(c => EXTRAS.has(c));
+  const bases  = comidasActivas.filter(c => !EXTRAS.has(c));
+
+  // Intentar usar la tabla exacta si todas las bases están en ella
+  const n = Math.min(Math.max(bases.length, 3), 5);
+  const distBase = DIST_SPEC[n] || DIST_SPEC[3];
+  const todasEnTabla = bases.every(b => distBase[b] != null);
+
   const result = {};
-  comidasActivas.forEach(nombre => { result[nombre] = dist[nombre] || 0; });
-  // Normalizar a 100% por si hay diferencia
-  const total = Object.values(result).reduce((a,b) => a+b, 0);
-  if (total > 0 && total !== 100) {
-    Object.keys(result).forEach(k => { result[k] = Math.round(result[k] / total * 100); });
+  if (todasEnTabla) {
+    // Todas las bases están en la tabla → usar valores exactos
+    bases.forEach(b => { result[b] = distBase[b]; });
+  } else {
+    // Alguna base no está en la tabla (ej: Merienda sin Media Mañana)
+    // → usar pesos propios y normalizar
+    let totalPeso = 0;
+    bases.forEach(b => { const p = PESO_BASE[b]||15; result[b]=p; totalPeso+=p; });
+    if (totalPeso > 0) {
+      bases.forEach(b => { result[b] = Math.round(result[b]/totalPeso*100); });
+      // ajustar centésimas
+      const s1 = bases.reduce((a,b)=>a+result[b],0);
+      if (s1 !== 100) { const m = bases.reduce((a,b)=>result[a]>result[b]?a:b); result[m]+=(100-s1); }
+    }
+  }
+
+  // Para cada extra: asignarle su % fijo y descontarlo proporcionalmente de las bases
+  extras.forEach(extra => {
+    const pctExtra = EXTRA_PCT[extra] || 8;
+    result[extra] = pctExtra;
+    const totalBase = bases.reduce((s,b) => s + (result[b]||0), 0);
+    if (totalBase > 0) {
+      bases.forEach(b => { result[b] = (result[b]||0) * (1 - pctExtra / totalBase); });
+    }
+  });
+
+  // Redondear y ajustar para sumar exactamente 100
+  Object.keys(result).forEach(k => { result[k] = Math.round(result[k]); });
+  const suma = Object.values(result).reduce((a,b) => a+b, 0);
+  if (suma !== 100 && Object.keys(result).length > 0) {
+    const mayor = Object.keys(result).reduce((a,b) => result[a] > result[b] ? a : b);
+    result[mayor] += (100 - suma);
   }
   return result;
 }
@@ -2746,14 +3057,14 @@ function switchTab(tab, btn) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-'+tab)?.classList.add('active');
-  if(tab==='revision') {
-    // Calcular offset exacto de las barras superiores
+  // Calcular offset exacto para tabs full-screen
+  if(['revision','ejercicios','alimentos','videos'].includes(tab)) {
     const bar1 = document.querySelector('.app-header');
     const bar2 = document.querySelector('.admin-tabs');
     const bar3 = document.getElementById('global-cliente-bar');
     const offset = (bar1?.offsetHeight||0) + (bar2?.offsetHeight||0) + (bar3?.offsetHeight||0);
-    const revEl = document.getElementById('tab-revision');
-    if(revEl) revEl.style.top = offset + 'px';
+    const el = document.getElementById('tab-'+tab);
+    if(el) el.style.top = offset + 'px';
   }
   if(tab==='evolucion') requestAnimationFrame(()=>iniciarEvolucion());
   if(tab==='resumen' && clienteActivo) cargarResumen(clienteActivo.id);
@@ -2837,9 +3148,12 @@ async function initAdmin(user){
   document.getElementById('screen-app').style.flexDirection='column';
   document.getElementById('header-user').textContent=perfil.nombre||user.email;
   await cargarClientes();
-  // Badge pendientes
-  const {data:pend} = await sb.from('usuarios').select('id').eq('estado','pendiente');
-  if(pend && pend.length){ const b=document.getElementById('badge-pendientes'); b.textContent=pend.length; b.style.display='inline'; }
+  // Badge FL — miembros pendientes de activar
+  const {data:pendFL} = await sb.from('usuarios')
+    .select('id')
+    .eq('estado','pendiente')
+    .in('rol',['usuario','afiliado','lider']);
+  if(pendFL && pendFL.length){ const b=document.getElementById('badge-fl-usuarios'); if(b){b.textContent=pendFL.length;b.style.display='inline';} }
   // Aplicar cambios de plan programados que ya vencieron
   aplicarCambiosProgramados();
 }
@@ -2851,7 +3165,14 @@ async function cargarPendientes(){
   lista.innerHTML = '<p style="color:var(--muted);padding:20px">Cargando...</p>';
   const filtro = document.getElementById('pend-filtro-estado')?.value || '';
 
-  let query = sb.from('usuarios').select('id,nombre,email,estado,rol,fecha_activacion,trial_expires').neq('rol','admin').order('nombre');
+  // Solo clientes FLI (rol='cliente') — excluir admin y todos los roles de Fluye Libre
+  let query = sb.from('usuarios')
+    .select('id,nombre,email,estado,rol,fecha_activacion,trial_expires')
+    .neq('rol','admin')
+    .neq('rol','usuario')    // clientes FL — se validan en FL > Vouchers
+    .neq('rol','afiliado')   // afiliados FL — se gestionan en FL > Afiliados
+    .neq('rol','lider')      // líderes FL — se gestionan en FL > Afiliados
+    .order('nombre');
   if(filtro === 'pendiente' || filtro === 'activo' || filtro === 'cancelado' || filtro === 'trial') query = query.eq('estado', filtro);
   const {data, error} = await query;
 
@@ -2863,10 +3184,6 @@ async function cargarPendientes(){
     (cfgs || []).forEach(c => { if(c.whatsapp) waMap[c.usuario_id] = c.whatsapp; });
   }
 
-  // Badge solo pendientes
-  const pendCount = (data||[]).filter(u => u.estado === 'pendiente').length;
-  const badge = document.getElementById('badge-pendientes');
-  if(badge){ badge.textContent = pendCount; badge.style.display = pendCount ? 'inline' : 'none'; }
 
   if(error || !data || !data.length){
     lista.innerHTML = '<div style="text-align:center;padding:60px 0;color:var(--muted)"><div style="font-size:32px;margin-bottom:12px">✅</div><div style="font-size:14px">Sin usuarios para mostrar</div></div>';
@@ -2910,7 +3227,7 @@ async function cargarPendientes(){
     // Días restantes trial
     let trialBadge = '';
     if (esTrial && u.trial_expires) {
-      const trialDias = Math.max(0, Math.ceil((new Date(u.trial_expires) - new Date()) / 86400000));
+      const trialDias = Math.max(0, Math.floor((new Date(u.trial_expires) - new Date()) / 86400000));
       const tc = trialDias <= 1 ? '#e53e3e' : trialDias <= 3 ? '#ed8936' : '#A9F338';
       trialBadge = `<span style="font-size:10px;font-weight:700;background:${tc}18;color:${tc};border:1px solid ${tc}44;border-radius:20px;padding:2px 10px">⏱ ${trialDias}d restantes</span>`;
     }
@@ -2961,7 +3278,7 @@ async function cargarPendientes(){
         <div style="min-width:0">
           <div style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.nombre||'Sin nombre'}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.email||'—'}</div>
-          ${waNum ? `<div style="font-size:11px;color:#A9F338;margin-top:3px">📱 <a href="https://wa.me/${waNum.replace(/\D/g,'')}" target="_blank" style="color:#A9F338;text-decoration:none;">${waNum}</a></div>` : '<div style="font-size:11px;color:var(--muted);margin-top:3px">📱 Sin WhatsApp</div>'}
+          ${waNum ? `<div style="font-size:11px;color:#A9F338;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📱 <a href="https://wa.me/${waNum.replace(/\D/g,'')}" target="_blank" style="color:#A9F338;text-decoration:none;">${waNum}</a></div>` : '<div style="font-size:11px;color:var(--muted);margin-top:3px">📱 Sin WhatsApp</div>'}
         </div>
         <div style="flex-shrink:0">${estadoBadge}</div>
       </div>
@@ -3087,6 +3404,9 @@ async function cargarClienteGlobal() {
   clienteActivo = clientes.find(c => c.id === _clienteSelId);
   if (!clienteActivo) return;
 
+  // Cerrar editor de comidas si quedó abierto del cliente anterior
+  if (editorComida) cerrarEditor();
+
   const btn = document.getElementById('global-btn-cargar');
   btn.textContent = 'Cargando...'; btn.style.opacity = '0.6';
 
@@ -3177,6 +3497,7 @@ function actualizarEstadoBadge(estado){
 }
 
 function cerrarEditor(){
+  editorComida=null;
   document.getElementById('editor-comida-wrap').style.display='none';
   document.getElementById('editor-vacio').style.display='block';
 }
@@ -4969,6 +5290,7 @@ async function cargarMedidasCliente(clienteId){
 // UN SOLO BOTÓN GUARDAR
 document.getElementById('btn-guardar-todo')?.addEventListener('click', async()=>{
   if(!clienteActivo){showToast('⚠ Selecciona un cliente');return;}
+  if(!await ensureSession()) return;
   const btn=document.getElementById('btn-guardar-todo');
   btn.disabled=true;btn.textContent='Guardando...';
 
@@ -5301,29 +5623,130 @@ document.getElementById('btn-add-comida')?.addEventListener('click',async()=>{
 });
 
 function calcRestante(){
-  if(!editorComida)return{p:0,c:0,g:0};
+  if(!editorComida)return{p:0,c:0,g:0,acumP:0,acumC:0,acumG:0};
   let up=0,uc=0,ug=0;
   editorComida.items.forEach(it=>{const m=calcItem(it);if(m){up+=m.prot;uc+=m.carbs;ug+=m.grasas;}});
-  return{p:Math.max(0,Math.round((editorComida.objP-up)*10)/10),c:Math.max(0,Math.round((editorComida.objC-uc)*10)/10),g:Math.max(0,Math.round((editorComida.objG-ug)*10)/10)};
+  up=Math.round(up*10)/10; uc=Math.round(uc*10)/10; ug=Math.round(ug*10)/10;
+  return{p:Math.round((editorComida.objP-up)*10)/10,c:Math.round((editorComida.objC-uc)*10)/10,g:Math.round((editorComida.objG-ug)*10)/10,acumP:up,acumC:uc,acumG:ug};
 }
-
 function actualizarRestante(){
   if(!editorComida)return;
   const r=calcRestante();
-  const set=(id,v,cls)=>{const el=document.getElementById(id);if(el){el.textContent=v+'g';el.className='rest-val '+cls+(v<=0?' cero':'');}};
-  set('rest-p',r.p,'p');set('rest-c',r.c,'c');set('rest-g',r.g,'g');
-  document.getElementById('rest-p-obj').textContent=`obj: ${editorComida.objP}g`;
-  document.getElementById('rest-c-obj').textContent=`obj: ${editorComida.objC}g`;
-  document.getElementById('rest-g-obj').textContent=`obj: ${editorComida.objG}g`;
+  function setMacro(idVal,idFill,idSub,restante,acum,obj,cls){
+    const elVal=document.getElementById(idVal);
+    const elFill=document.getElementById(idFill);
+    const elSub=document.getElementById(idSub);
+    const exceso=restante<0;
+    const pct=obj>0?Math.min(100,Math.round((acum/obj)*100)):0;
+    // Número grande = acumulado
+    if(elVal){
+      elVal.textContent=acum+'g';
+      elVal.className='rest-val '+(exceso?'exceso':cls);
+    }
+    if(elFill){elFill.style.width=pct+'%';elFill.className='rest-fill '+(exceso?'exceso':cls);}
+    // Texto pequeño = faltan / exceso
+    if(elSub){
+      if(exceso){
+        elSub.textContent='+'+Math.abs(restante)+'g exceso de '+obj+'g ⚠';
+        elSub.style.color='var(--danger)';
+      } else if(restante===0){
+        elSub.textContent='✓ objetivo cubierto ('+obj+'g)';
+        elSub.style.color='var(--accent)';
+      } else {
+        elSub.textContent='faltan '+restante+'g de '+obj+'g';
+        elSub.style.color='';
+      }
+    }
+  }
+  setMacro('rest-p','rest-fill-p','rest-sub-p',r.p,r.acumP,editorComida.objP,'p');
+  setMacro('rest-c','rest-fill-c','rest-sub-c',r.c,r.acumC,editorComida.objC,'c');
+  setMacro('rest-g','rest-fill-g','rest-sub-g',r.g,r.acumG,editorComida.objG,'g');
 }
 
 function gramosAuto(alimento,cat){
   if(!editorComida||!alimento)return 100;
   const r=calcRestante();
-  const map={'Proteína':{obj:r.p,mac:alimento.proteina},'Carbohidrato':{obj:r.c,mac:alimento.carbos},'Grasa':{obj:r.g,mac:alimento.lipidos}};
+  const map={'Proteína':{obj:Math.max(0,r.p),mac:alimento.proteina},'Carbohidrato':{obj:Math.max(0,r.c),mac:alimento.carbos},'Grasa':{obj:Math.max(0,r.g),mac:alimento.lipidos}};
   const m=map[cat];
   if(!m||!m.mac||m.mac<=0)return 100;
+  if(m.obj<=0)return 0; // macro ya cubierto, no forzar gramos
   return Math.max(10,Math.round((m.obj/m.mac)*100));
+}
+
+function autoCalcularGramos(){
+  if(!editorComida)return;
+  const validos=editorComida.items.filter(it=>it.alimento_id);
+  if(!validos.length){showToast('⚠ Agrega alimentos primero');return;}
+
+  // Separar verduras (100g fijo) del resto
+  const verduras=validos.filter(it=>it.cat==='Verdura');
+  const principales=validos.filter(it=>it.cat!=='Verdura');
+  verduras.forEach(it=>{if(!it.gramos)it.gramos=100;});
+
+  if(!principales.length){
+    renderEditorItems();
+    showToast('⚡ Gramos calculados');
+    return;
+  }
+
+  // Obtener macros por 100g de cada alimento
+  const alims=principales.map(it=>{
+    const a=bdAlimentos.find(a=>a.id===it.alimento_id)||{};
+    return{
+      it,
+      p:a.proteina||0,  // g proteína / 100g
+      c:a.carbos||0,    // g carbos / 100g
+      g:a.lipidos||0,   // g grasa / 100g
+    };
+  });
+
+  // Objetivos de macros para esta comida
+  // Descontamos lo que ya aportan las verduras (si las hay)
+  let objP=editorComida.objP, objC=editorComida.objC, objG=editorComida.objG;
+  verduras.forEach(it=>{
+    const a=bdAlimentos.find(a=>a.id===it.alimento_id)||{};
+    const f=(it.gramos||100)/100;
+    objP-=(a.proteina||0)*f;
+    objC-=(a.carbos||0)*f;
+    objG-=(a.lipidos||0)*f;
+  });
+  objP=Math.max(0,objP); objC=Math.max(0,objC); objG=Math.max(0,objG);
+
+  const n=alims.length;
+  // Inicializar gramos en 100g por alimento
+  let gramos=alims.map(()=>100);
+
+  // Gradient descent — minimizar error cuadrático en los 3 macros
+  // Función de costo: (sumP-objP)² + (sumC-objC)² + (sumG-objG)²
+  const lr=0.8; // learning rate
+  const iters=400;
+
+  for(let iter=0;iter<iters;iter++){
+    // Calcular macros actuales
+    let sumP=0,sumC=0,sumG=0;
+    alims.forEach((a,i)=>{const f=gramos[i]/100;sumP+=a.p*f;sumC+=a.c*f;sumG+=a.g*f;});
+
+    const errP=sumP-objP, errC=sumC-objC, errG=sumG-objG;
+
+    // Gradiente para cada alimento
+    alims.forEach((a,i)=>{
+      const grad=(errP*a.p + errC*a.c + errG*a.g)/100;
+      gramos[i]=Math.max(0, gramos[i]-lr*grad);
+    });
+  }
+
+  // Redondear y asignar
+  principales.forEach((it,i)=>{
+    it.gramos=Math.max(0,Math.round(gramos[i]));
+  });
+
+  // Sincronizar inputs y re-renderizar
+  editorComida.items.forEach(it=>{
+    const gi=document.querySelector(`#ei-${it._id} .item-g`);
+    if(gi)gi.value=it.gramos||'';
+  });
+  renderEditorItems();
+  showToast('⚡ Gramos calculados');
 }
 
 function agregarFila(cat){
@@ -5382,7 +5805,7 @@ document.getElementById('btn-guardar-comida')?.addEventListener('click',async()=
     if(g)it.gramos=parseFloat(g.value)||0;if(s)it.alimento_id=s.value;
   });
   try{
-    const orden=nutPlan.length+1;
+    const orden = nutPlan.length ? Math.max(...nutPlan.map(c=>c.orden||0)) + 1 : 1;
     const{data:nc,error:e1}=await sb.from('plan_comidas').insert({cliente_id:nutClienteId,comida:editorComida.nombre,orden,plan_dieta_id:nutDietaActivaId||null}).select().single();
     if(e1)throw e1;
     const val=editorComida.items.filter(i=>i.alimento_id&&i.gramos>0);
@@ -5435,6 +5858,7 @@ function renderPlan(){
 function togglePG(i){const el=document.getElementById('pgb-'+i);if(el)el.classList.toggle('open');}
 async function delComida(i){
   const p=nutPlan[i];if(!p)return;
+  if(!confirm(`¿Eliminar "${p.nombre}" del plan? Esta acción no se puede deshacer.`))return;
   if(p.dbId){
     // Solo borrar comidas de la dieta activa o sueltas
     await sb.from('plan_comidas_items').delete().eq('plan_comida_id',p.dbId);
@@ -5612,6 +6036,7 @@ window.seleccionarDietaEvo = async function(dietaId, clienteId) {
 let entClienteId = null;
 let entNivelActivo = null;
 let entEjercicios = [];     // ejercicios cargados desde bd_ejercicios
+let entEjCatalogo = [];     // catálogo completo de bd_ejercicios_catalogo para el selector
 let entPlanItems = [];      // ejercicios editables en el editor
 let entPlanGuardadoId = null;
 let entItemCnt = 0;
@@ -5625,6 +6050,12 @@ const COLORES_GRUPO = {
 
 async function iniciarEntreno() {
   entClienteId = clienteActivo?.id || null;
+  // Cargar catálogo una sola vez
+  if (!entEjCatalogo.length) {
+    const { data } = await sb.from('bd_ejercicios_catalogo')
+      .select('nombre,grupo').eq('activo', true).order('grupo').order('nombre');
+    entEjCatalogo = data || [];
+  }
   if (entClienteId) {
     await cargarPlanEntrenoGuardado(entClienteId);
     await cargarHistorialRutinas(entClienteId);
@@ -5634,72 +6065,36 @@ async function iniciarEntreno() {
 
 // [REMOVIDO] renderNivelBtns / seleccionarNivel / cargarPlanDesdeNivel — reemplazado por Biblioteca JC Muscle
 
-function renderEditorEntreno() {
-  const wrap = document.getElementById('ent-dias-wrap');
-  if (!wrap) return;
-  const actions = document.getElementById('ent-editor-actions');
-  const editorWrap = document.getElementById('ent-editor-wrap');
-  const vacio = document.getElementById('ent-editor-vacio');
-
-  if (!entPlanItems.length) {
-    wrap.innerHTML = '';
-    if (actions) actions.style.display = 'none';
-    if (editorWrap) editorWrap.style.display = 'none';
-    if (vacio) vacio.style.display = 'block';
-    return;
-  }
-  if (actions) actions.style.display = 'flex';
-  if (editorWrap) editorWrap.style.display = 'block';
-  if (vacio) vacio.style.display = 'none';
-
-  // Agrupar por día
-  const diasMap = {};
-  entPlanItems.forEach(ej => {
-    if (!diasMap[ej.dia]) diasMap[ej.dia] = { sesion: ej.sesion, items: [] };
-    diasMap[ej.dia].items.push(ej);
-  });
-  const diasOrden = ['LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO','DOMINGO'];
-  const dias = Object.keys(diasMap).sort((a,b) => diasOrden.indexOf(a) - diasOrden.indexOf(b));
-
-  wrap.innerHTML = dias.map(dia => {
-    const { sesion, items } = diasMap[dia];
-    const rows = items.map(ej => {
-      const gc = COLORES_GRUPO[ej.grupo] || 'grupo-core';
-      return `<div class="ej-row" id="ejr-${ej._id}" style="border-left-color:${getGrupoColor(ej.grupo)}">
-        <div>
-          <span class="grupo-chip ${gc}">${ej.grupo}</span>
-          <div class="ej-nombre">${ej.nombre}</div>
-        </div>
-        <div class="ej-col">
-          <input class="ej-input" type="number" value="${ej.series||''}" placeholder="3"
-            onchange="editarEj(${ej._id},'series',this.value)" style="width:44px">
-          <div class="ej-lbl">series</div>
-        </div>
-        <div class="ej-col">
-          <input class="ej-input" type="text" value="${ej.reps||''}" placeholder="10-12"
-            onchange="editarEj(${ej._id},'reps',this.value)" style="width:64px">
-          <div class="ej-lbl">reps</div>
-        </div>
-        <div class="ej-col">
-          <input class="ej-input" type="text" value="${ej.descanso||''}" placeholder="90s"
-            onchange="editarEj(${ej._id},'descanso',this.value)" style="width:52px">
-          <div class="ej-lbl">descanso</div>
-        </div>
-        <button class="btn-del" onclick="eliminarEj(${ej._id})">✕</button>
-      </div>`;
-    }).join('');
-    return `<div class="dia-card">
-      <div class="dia-header">
-        <div>
-          <div class="dia-nombre">💪 ${dia}</div>
-          <div class="dia-sesion">${sesion} · ${items.length} ejercicios</div>
-        </div>
-        <span style="color:var(--muted);font-size:12px">▼</span>
-      </div>
-      <div class="dia-body">${rows}</div>
-    </div>`;
-  }).join('');
+function entModoVer() {
+  document.getElementById('ent-plan-guardado').style.display = 'block';
+  document.getElementById('ent-editor-panel').style.display = 'none';
+  document.getElementById('ent-col-titulo').textContent = '📋 Plan actual del cliente';
+  document.getElementById('ent-btn-ver').style.background = 'var(--accent)';
+  document.getElementById('ent-btn-ver').style.color = '#0a0a0a';
+  document.getElementById('ent-btn-ver').style.border = 'none';
+  document.getElementById('ent-btn-editar').style.background = 'var(--card)';
+  document.getElementById('ent-btn-editar').style.color = 'var(--muted)';
+  document.getElementById('ent-btn-editar').style.border = '1px solid var(--border)';
 }
+
+function entModoEditar() {
+  if (!entPlanItems.length) { showToast('⚠ Carga un cliente con plan activo primero'); return; }
+  document.getElementById('ent-plan-guardado').style.display = 'none';
+  document.getElementById('ent-editor-panel').style.display = 'block';
+  document.getElementById('ent-col-titulo').textContent = '✏️ Editando plan';
+  document.getElementById('ent-btn-editar').style.background = 'var(--accent)';
+  document.getElementById('ent-btn-editar').style.color = '#0a0a0a';
+  document.getElementById('ent-btn-editar').style.border = 'none';
+  document.getElementById('ent-btn-ver').style.background = 'var(--card)';
+  document.getElementById('ent-btn-ver').style.color = 'var(--muted)';
+  document.getElementById('ent-btn-ver').style.border = '1px solid var(--border)';
+  renderEditorEntreno();
+}
+
+
+
+// ── Estado del editor inline ──
+let entEditorDiaActivo = null;
 
 function getGrupoColor(grupo) {
   const m = {
@@ -5711,17 +6106,401 @@ function getGrupoColor(grupo) {
   return m[grupo] || 'var(--border)';
 }
 
+function entSeriesInit(ej) {
+  if (!ej.seriesDetalle || !ej.seriesDetalle.length) {
+    const n = parseInt(ej.series) || 3;
+    const reps = ej.reps || '8-12';
+    const desc = ej.descanso || '90s';
+    const nota = ej.indicacion || '';
+    ej.seriesDetalle = Array.from({length:n}, (_,i) => ({
+      serie_num: i+1, reps, descanso: desc, comentario: nota
+    }));
+  }
+}
+
+function renderEditorEntreno() {
+  if (!entPlanItems.length) {
+    const wrap = document.getElementById('ent-dias-wrap');
+    const vacio = document.getElementById('ent-editor-vacio');
+    if (wrap) wrap.innerHTML = '';
+    if (vacio) vacio.style.display = 'block';
+    const btn = document.getElementById('ent-btn-guardar-cambios');
+    if (btn) btn.style.display = 'none';
+    return;
+  }
+  const vacio = document.getElementById('ent-editor-vacio');
+  if (vacio) vacio.style.display = 'none';
+  const wrap = document.getElementById('ent-dias-wrap');
+  if (!wrap) return;
+
+  entPlanItems.forEach(entSeriesInit);
+
+  const diasOrden = ['LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO','DOMINGO'];
+  const dias = [...new Set(entPlanItems.map(e => e.dia))]
+    .sort((a,b) => diasOrden.indexOf(a) - diasOrden.indexOf(b));
+
+  if (!entEditorDiaActivo || !dias.includes(entEditorDiaActivo)) {
+    entEditorDiaActivo = dias[0];
+  }
+
+  const tabsDias = dias.map(d => {
+    const activo = d === entEditorDiaActivo;
+    const n = entPlanItems.filter(e => e.dia === d).length;
+    return `<button onclick="entSelDia('${d}')" style="flex-shrink:0;padding:7px 14px;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:${activo?700:500};background:${activo?'var(--accent)':'var(--card)'};color:${activo?'#0a0a0a':'var(--muted)'};border:1px solid ${activo?'var(--accent)':'var(--border)'};">${d} <span style="font-size:10px;opacity:0.7">${n}ej</span></button>`;
+  }).join('');
+
+  const ejsDia = entPlanItems.filter(e => e.dia === entEditorDiaActivo);
+  const sesion = ejsDia[0]?.sesion || entEditorDiaActivo;
+
+  const gruposEj = {};
+  (entEjCatalogo||[]).forEach(e => {
+    if (!gruposEj[e.grupo]) gruposEj[e.grupo] = [];
+    gruposEj[e.grupo].push(e);
+  });
+  const optsEjHtml = Object.keys(gruposEj).sort().map(g =>
+    `<optgroup label="${g}">${gruposEj[g].map(e=>`<option value="${e.nombre}|${e.grupo}">${e.nombre}</option>`).join('')}</optgroup>`
+  ).join('');
+
+  const rowsHtml = ejsDia.map((ej, ejIdx) => {
+    const color = getGrupoColor(ej.grupo);
+    const grupos = [...new Set((entEjCatalogo||[]).map(e=>e.grupo))].sort();
+    const grupoOpts = grupos.map(g=>`<option value="${g}" ${g===ej.grupo?'selected':''}>${g}</option>`).join('');
+    const gc = COLORES_GRUPO[ej.grupo] || 'grupo-core';
+    const posNum = ejIdx + 1;
+    const isFirst = ejIdx === 0;
+    const isLast = ejIdx === ejsDia.length - 1;
+
+    const seriesHtml = ej.seriesDetalle.map((s,i) => {
+      return `<div style="display:grid;grid-template-columns:28px 80px 70px 1fr auto;gap:6px;align-items:center;padding:7px 10px;background:var(--bg);border-radius:8px;border:1px solid var(--border);margin-bottom:5px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#444;text-align:center">${s.serie_num}</div>
+        <div>
+          <input type="text" id="ent-reps-${ej._id}-${i}" value="${s.reps}" placeholder="8-12" oninput="entEditSerie(${ej._id},${i},'reps',this.value)" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 7px;color:var(--text);font-size:13px;font-weight:700;font-family:'Inter',sans-serif;text-align:center;outline:none;box-sizing:border-box">
+          <div style="font-size:9px;color:var(--muted);text-align:center;margin-top:2px;text-transform:uppercase;letter-spacing:1px">reps</div>
+        </div>
+        <div>
+          <input type="text" id="ent-desc-${ej._id}-${i}" value="${s.descanso}" placeholder="90s" oninput="entEditSerie(${ej._id},${i},'descanso',this.value)" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 7px;color:var(--text);font-size:13px;font-weight:700;font-family:'Inter',sans-serif;text-align:center;outline:none;box-sizing:border-box">
+          <div style="font-size:9px;color:var(--muted);text-align:center;margin-top:2px;text-transform:uppercase;letter-spacing:1px">descanso</div>
+        </div>
+        <input type="text" id="ent-nota-${ej._id}-${i}" value="${s.comentario||''}" placeholder="nota para esta serie…" oninput="entEditSerie(${ej._id},${i},'comentario',this.value)" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:5px 0;color:var(--muted);font-size:11px;font-family:'Inter',sans-serif;outline:none">
+        <button onclick="entQuitarSerie(${ej._id},${i})" style="background:transparent;border:none;color:#333;cursor:pointer;font-size:14px;padding:2px 4px" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='#333'">✕</button>
+      </div>`;
+    }).join('');
+
+    return `<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${color};border-radius:12px;overflow:hidden;margin-bottom:8px" id="ent-card-${ej._id}">
+      <!-- Header colapsable -->
+      <div onclick="entToggleEj(${ej._id})" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;cursor:pointer;user-select:none">
+        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:17px;color:#444;flex-shrink:0;min-width:18px;text-align:center">${posNum}</span>
+          <span class="grupo-chip ${gc}" style="font-size:9px;flex-shrink:0">${ej.grupo}</span>
+          <span id="ent-nombre-${ej._id}" style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${ej.nombre}</span>
+          <span style="font-size:10px;color:var(--muted);flex-shrink:0">${ej.seriesDetalle.length}s</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0" onclick="event.stopPropagation()">
+          <button onclick="entMoverEj(${ej._id},'up')" title="Mover arriba" ${isFirst?'disabled':''} style="background:transparent;border:none;color:${isFirst?'#2a2a2a':'#555'};cursor:${isFirst?'default':'pointer'};font-size:13px;padding:2px 4px;line-height:1" onmouseover="if(!${isFirst})this.style.color='var(--accent)'" onmouseout="this.style.color='${isFirst?'#2a2a2a':'#555'}'">↑</button>
+          <button onclick="entMoverEj(${ej._id},'down')" title="Mover abajo" ${isLast?'disabled':''} style="background:transparent;border:none;color:${isLast?'#2a2a2a':'#555'};cursor:${isLast?'default':'pointer'};font-size:13px;padding:2px 4px;line-height:1" onmouseover="if(!${isLast})this.style.color='var(--accent)'" onmouseout="this.style.color='${isLast?'#2a2a2a':'#555'}'">↓</button>
+          <button onclick="eliminarEj(${ej._id})" style="background:transparent;border:none;color:#444;cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;padding:2px 4px" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='#444'">✕</button>
+          <span id="ent-chevron-${ej._id}" style="color:var(--muted);font-size:12px;transition:transform .2s">▼</span>
+        </div>
+      </div>
+      <!-- Contenido colapsable -->
+      <div id="ent-body-${ej._id}" style="display:none;padding:0 12px 12px;border-top:1px solid var(--border)">
+        <!-- Selector grupo + buscador -->
+        <div style="display:flex;align-items:center;gap:8px;margin:10px 0 8px">
+          <select onchange="entCambiarGrupo(${ej._id},this.value)" style="flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 8px;color:${color};font-size:11px;font-weight:700;font-family:'Inter',sans-serif;outline:none;cursor:pointer">${grupoOpts}</select>
+          <span style="font-size:11px;color:var(--muted)">→ cambiar ejercicio:</span>
+        </div>
+        <div style="margin-bottom:10px">
+          <input type="text" id="ent-buscar-${ej._id}" data-ejid="${ej._id}"
+            placeholder="🔍 Buscar ejercicio…"
+            oninput="entFiltrarEj(${ej._id},this.value)"
+            onfocus="entAbrirLista(${ej._id})"
+            style="width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border);border-radius:8px 8px 0 0;padding:7px 10px;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;outline:none">
+          <div id="ent-lista-${ej._id}" data-ejid="${ej._id}"
+            style="display:none;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;max-height:160px;overflow-y:auto"></div>
+        </div>
+        <!-- Series -->
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px">Series — ${ej.seriesDetalle.length} en total</div>
+        ${seriesHtml}
+        <button onclick="entAgregarSerie(${ej._id})" style="width:100%;background:transparent;border:1px dashed var(--border);color:var(--muted);border-radius:8px;padding:6px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px">+ Agregar serie</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  wrap.innerHTML = `<div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none">${tabsDias}</div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)">${sesion}</div><button onclick="entAgregarEjDia('${entEditorDiaActivo}','${sesion}')" style="background:#1a2a00;border:1px solid rgba(169,243,56,0.3);color:var(--accent);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">+ Ejercicio</button></div>${rowsHtml||'<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Sin ejercicios este día</div>'}`;
+
+  let btn = document.getElementById('ent-btn-guardar-cambios');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'ent-btn-guardar-cambios';
+    btn.style.cssText = 'width:100%;background:var(--accent);color:#0a0a0a;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer;margin-top:12px';
+    wrap.parentElement.appendChild(btn);
+  }
+  btn.style.display = 'block';
+  btn.textContent = '💾 Guardar cambios en el plan';
+  btn.onclick = guardarCambiosPlanEntreno;
+}
+
+// Lee inputs visibles y los persiste antes de re-render
+function entFlushDOM() {
+  entPlanItems.forEach(ej => {
+    if (!ej.seriesDetalle) return;
+    ej.seriesDetalle.forEach((s, i) => {
+      const repsEl = document.getElementById(`ent-reps-${ej._id}-${i}`);
+      const descEl = document.getElementById(`ent-desc-${ej._id}-${i}`);
+      const notaEl = document.getElementById(`ent-nota-${ej._id}-${i}`);
+      if (repsEl) s.reps       = repsEl.value;
+      if (descEl) s.descanso   = descEl.value;
+      if (notaEl) s.comentario = notaEl.value;
+    });
+  });
+}
+
+function entSelDia(dia) { entFlushDOM(); entEditorDiaActivo = dia; renderEditorEntreno(); }
+
+function entToggleEj(ejId) {
+  const body = document.getElementById('ent-body-'+ejId);
+  const chevron = document.getElementById('ent-chevron-'+ejId);
+  if (!body) return;
+  const open = body.style.display !== 'none';
+  // Cerrar todos primero
+  document.querySelectorAll('[id^="ent-body-"]').forEach(b => b.style.display='none');
+  document.querySelectorAll('[id^="ent-chevron-"]').forEach(c => c.style.transform='');
+  // Abrir este si estaba cerrado
+  if (!open && body) {
+    body.style.display = 'block';
+    if (chevron) chevron.style.transform = 'rotate(180deg)';
+  }
+}
+
+function entCambiarGrupo(ejId, nuevoGrupo) {
+  const ej = entPlanItems.find(e => e._id === ejId);
+  if (!ej) return;
+  ej.grupo = nuevoGrupo;
+  const input = document.getElementById('ent-buscar-'+ejId);
+  if (input) input.value = '';
+  entAbrirLista(ejId);
+}
+
+function entAbrirLista(ejId) {
+  const ej = entPlanItems.find(e => e._id === ejId);
+  if (!ej) return;
+  const lista = document.getElementById('ent-lista-'+ejId);
+  if (!lista) return;
+  lista.style.display = 'block';
+  const q = (document.getElementById('ent-buscar-'+ejId)||{}).value || '';
+  const resultados = (entEjCatalogo||[])
+    .filter(e => e.grupo === ej.grupo && (!q || e.nombre.toLowerCase().includes(q.toLowerCase())))
+    .slice(0, 30);
+  lista.innerHTML = resultados.map(e => {
+    const idSafe = ejId;
+    // store name in data attribute to avoid quote escaping issues
+    return `<div class="ent-ej-opt" data-ejid="${idSafe}" data-nombre="${e.nombre.replace(/"/g,'&quot;')}" data-grupo="${e.grupo.replace(/"/g,'&quot;')}"
+      style="padding:9px 12px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);
+      border-bottom:1px solid rgba(255,255,255,0.04)"
+      onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='transparent'">
+      ${e.nombre}
+    </div>`;
+  }).join('') || '<div style="padding:12px;color:var(--muted);font-size:12px">Sin resultados</div>';
+}
+
+function entFiltrarEj(ejId, q) {
+  entAbrirLista(ejId);
+}
+
+function entSeleccionarEj(ejId, nombre, grupo) {
+  const ej = entPlanItems.find(e => e._id === ejId);
+  if (!ej) return;
+  ej.nombre = nombre;
+  ej.grupo = grupo;
+  const input = document.getElementById('ent-buscar-'+ejId);
+  const lista = document.getElementById('ent-lista-'+ejId);
+  const span  = document.getElementById('ent-nombre-'+ejId);
+  if (input) { input.value = ''; input.blur(); }
+  if (lista) lista.style.display = 'none';
+  if (span)  span.textContent = nombre;
+  const card = document.getElementById('ent-card-'+ejId);
+  if (card) card.style.borderLeftColor = getGrupoColor(grupo);
+  // Colapsar tras seleccionar
+  const body = document.getElementById('ent-body-'+ejId);
+  const chevron = document.getElementById('ent-chevron-'+ejId);
+  if (body) body.style.display = 'none';
+  if (chevron) chevron.style.transform = '';
+  showToast('✓ '+nombre);
+}
+
+// Delegación de eventos para los items de la lista (evita bugs de apostrofes)
+document.addEventListener('click', e => {
+  const opt = e.target.closest('.ent-ej-opt');
+  if (opt) {
+    const ejId = parseInt(opt.dataset.ejid);
+    const nombre = opt.dataset.nombre;
+    const grupo  = opt.dataset.grupo;
+    entSeleccionarEj(ejId, nombre, grupo);
+    return;
+  }
+  // Cerrar listas al click afuera
+  if (!e.target.closest('[id^="ent-lista-"]') && !e.target.closest('[id^="ent-buscar-"]')) {
+    document.querySelectorAll('[id^="ent-lista-"]').forEach(el => el.style.display='none');
+  }
+});
+
+function entEditSerie(ejId, idx, campo, val) {
+  const ej = entPlanItems.find(e => e._id === ejId);
+  if (ej && ej.seriesDetalle[idx]) ej.seriesDetalle[idx][campo] = val;
+}
+
+function entAgregarSerie(ejId) {
+  const ej = entPlanItems.find(e => e._id === ejId);
+  if (!ej) return;
+  const ultima = ej.seriesDetalle[ej.seriesDetalle.length-1] || {reps:'8-12',descanso:'90s'};
+  ej.seriesDetalle.push({ serie_num: ej.seriesDetalle.length+1, reps:ultima.reps, descanso:ultima.descanso, comentario:'' });
+  ej.series = ej.seriesDetalle.length;
+  renderEditorEntreno();
+  // Reabrir el mismo card tras re-render
+  requestAnimationFrame(() => {
+    const body = document.getElementById('ent-body-'+ejId);
+    const chevron = document.getElementById('ent-chevron-'+ejId);
+    if (body) { body.style.display='block'; }
+    if (chevron) chevron.style.transform='rotate(180deg)';
+  });
+}
+
+function entQuitarSerie(ejId, idx) {
+  const ej = entPlanItems.find(e => e._id === ejId);
+  if (!ej || ej.seriesDetalle.length <= 1) { showToast('⚠ Mínimo 1 serie'); return; }
+  ej.seriesDetalle.splice(idx,1);
+  ej.seriesDetalle.forEach((s,i) => s.serie_num = i+1);
+  ej.series = ej.seriesDetalle.length;
+  renderEditorEntreno();
+  requestAnimationFrame(() => {
+    const body = document.getElementById('ent-body-'+ejId);
+    const chevron = document.getElementById('ent-chevron-'+ejId);
+    if (body) body.style.display='block';
+    if (chevron) chevron.style.transform='rotate(180deg)';
+  });
+}
+
+function entAgregarEjDia(dia, sesion) {
+  const ejsDelDia = entPlanItems.filter(e => e.dia === dia);
+  const maxOrden = ejsDelDia.length ? Math.max(...ejsDelDia.map(e=>e.orden||0))+1 : 1;
+  const nuevo = { _id:++entItemCnt, dia, sesion:sesion||dia, grupo:'Pecho', nombre:entEjCatalogo?.[0]?.nombre||'Nuevo ejercicio', series:3, reps:'8-12', descanso:'90s', indicacion:'', orden:maxOrden, seriesDetalle:[] };
+  entSeriesInit(nuevo);
+  entPlanItems.push(nuevo);
+  renderEditorEntreno();
+}
+
+function agregarEjPersonalizado() {
+  const dia = entEditorDiaActivo || entPlanItems[0]?.dia || 'LUNES';
+  const sesion = entPlanItems.find(e=>e.dia===dia)?.sesion || dia;
+  entAgregarEjDia(dia, sesion);
+}
+
+function editarEjNombre(id, val) {
+  const ej = entPlanItems.find(e => e._id === id);
+  if (!ej) return;
+  const [nombre, grupo] = val.split('|');
+  ej.nombre = nombre;
+  if (grupo) ej.grupo = grupo;
+}
+
 function editarEj(id, campo, val) {
   const ej = entPlanItems.find(e => e._id === id);
   if (ej) ej[campo] = campo === 'series' ? (parseInt(val)||0) : val;
 }
 
 function eliminarEj(id) {
+  if (!confirm('¿Quitar este ejercicio del plan?')) return;
   entPlanItems = entPlanItems.filter(e => e._id !== id);
   renderEditorEntreno();
 }
 
-// ── Modal de confirmación personalizado ──
+function entMoverEj(id, dir) {
+  entFlushDOM();
+  const dia = entEditorDiaActivo;
+  const ejsDia = entPlanItems.filter(e => e.dia === dia);
+  const idx = ejsDia.findIndex(e => e._id === id);
+  if (dir === 'up' && idx <= 0) return;
+  if (dir === 'down' && idx >= ejsDia.length - 1) return;
+  const swapIdx = dir === 'up' ? idx - 1 : idx + 1;
+  const swapEj = ejsDia[swapIdx];
+  // Intercambiar órdenes
+  const tmpOrden = ejsDia[idx].orden;
+  ejsDia[idx].orden = swapEj.orden;
+  swapEj.orden = tmpOrden;
+  // Re-sort entPlanItems manteniend los otros días igual
+  const otrosDias = entPlanItems.filter(e => e.dia !== dia);
+  const diasOrden = ['LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO','DOMINGO'];
+  const ejsDiaOrdenados = ejsDia.sort((a,b) => (a.orden??99) - (b.orden??99));
+  // Re-asignar orden consecutivo para evitar empates
+  ejsDiaOrdenados.forEach((e,i) => { e.orden = i; });
+  entPlanItems = [...otrosDias, ...ejsDiaOrdenados]
+    .sort((a,b) => diasOrden.indexOf(a.dia) - diasOrden.indexOf(b.dia) || (a.orden??99) - (b.orden??99));
+  renderEditorEntreno();
+}
+
+async function guardarCambiosPlanEntreno() {
+  entFlushDOM();
+  if (!entClienteId) { showToast('⚠ Selecciona un cliente'); return; }
+  if (!entPlanGuardadoId) { showToast('⚠ No hay plan activo'); return; }
+  if (!entPlanItems.length) { showToast('⚠ El plan está vacío'); return; }
+  if (!await ensureSession()) return;
+  const btn = document.getElementById('ent-btn-guardar-cambios');
+  if (btn) { btn.disabled=true; btn.textContent='Guardando...'; }
+  try {
+    entPlanItems.forEach(ej => {
+      entSeriesInit(ej);
+      ej.series = ej.seriesDetalle.length;
+      ej.reps = ej.seriesDetalle[0]?.reps || ej.reps || '8-12';
+      ej.descanso = ej.seriesDetalle[0]?.descanso || ej.descanso || '90s';
+      ej.indicacion = ej.seriesDetalle[0]?.comentario || ej.indicacion || '';
+    });
+    const { error: delErr } = await sb.from('plan_entreno_items').delete().eq('plan_id', entPlanGuardadoId);
+    if (delErr) throw delErr;
+    const items = entPlanItems.map((ej,idx) => ({ plan_id:entPlanGuardadoId, dia:ej.dia, sesion:ej.sesion||ej.dia, grupo:ej.grupo||'', nombre:ej.nombre, series:ej.series, reps:ej.reps, descanso:ej.descanso, indicacion:ej.indicacion||null, orden:ej.orden??idx }));
+    const { error: insErr } = await sb.from('plan_entreno_items').insert(items);
+    if (insErr) throw insErr;
+    await sincronizarPlanClienteAppDetalle(entClienteId, entPlanItems);
+    await cargarPlanEntrenoGuardado(entClienteId);
+    showToast('✅ Plan actualizado y sincronizado');
+  } catch(err) { showToast('❌ '+err.message); console.error(err); }
+  finally { if (btn) { btn.disabled=false; btn.textContent='💾 Guardar cambios en el plan'; } }
+}
+
+async function sincronizarPlanClienteAppDetalle(clienteId, planItems) {
+  try {
+    const nombresUnicos = [...new Set(planItems.map(e => e.nombre))];
+    const ejRows = planItems.filter((e,i,arr)=>arr.findIndex(x=>x.nombre===e.nombre)===i).map(e=>({nombre:e.nombre,grupo:e.grupo||''}));
+    const { data: upserted, error: upsertErr } = await sb.from('ejercicios').upsert(ejRows,{onConflict:'nombre',ignoreDuplicates:false}).select('id,nombre');
+    let ejMap = {};
+    if (upsertErr||!upserted?.length) {
+      const { data: ex } = await sb.from('ejercicios').select('id,nombre').in('nombre',nombresUnicos);
+      (ex||[]).forEach(e=>{ ejMap[e.nombre]=e.id; });
+    } else { upserted.forEach(e=>{ ejMap[e.nombre]=e.id; }); }
+    const faltan = nombresUnicos.filter(n=>!ejMap[n]);
+    if (faltan.length) { const { data: r } = await sb.from('ejercicios').select('id,nombre').in('nombre',faltan); (r||[]).forEach(e=>{ ejMap[e.nombre]=e.id; }); }
+    await sb.from('plan_semanal').delete().eq('cliente_id',clienteId);
+    const semanalRows = planItems.filter(ej=>ejMap[ej.nombre]).map((ej,idx)=>({cliente_id:clienteId,dia:ej.dia,grupo:ej.grupo||'',ejercicio_id:ejMap[ej.nombre],orden:ej.orden??idx}));
+    await sb.from('plan_semanal').delete().eq('cliente_id',clienteId);
+    if (semanalRows.length) await sb.from('plan_semanal').insert(semanalRows);
+    const seriesRows = [];
+    planItems.forEach(ej => {
+      const ejId = ejMap[ej.nombre]; if(!ejId) return;
+      (ej.seriesDetalle||[]).forEach(s => {
+        seriesRows.push({ cliente_id:clienteId, ejercicio_id:ejId, serie_num:s.serie_num, reps_objetivo:s.reps||'8-12', descanso_seg:parsearDescanso(s.descanso), indicacion:s.comentario||null });
+      });
+    });
+    // Borrar TODAS las series del cliente y reinsertar limpio
+    const { error: delErr } = await sb.from('plan_series').delete().eq('cliente_id',clienteId);
+    if (delErr) console.error('[SINC-DET] delete error:', delErr.message);
+    if (seriesRows.length) {
+      const { error: psErr } = await sb.from('plan_series').insert(seriesRows);
+      if (psErr) console.error('[SINC-DET] plan_series error:', psErr.message);
+    }
+    console.log(`[SINC-DET] OK — ${semanalRows.length}ej / ${seriesRows.length}series`);
+  } catch(err) { console.error('[SINC-DET]',err); }
+}
+
+
 let _confirmCallback = null;
 function showConfirm(title, msg, icon, onOk) {
   _confirmCallback = onOk;
@@ -5774,13 +6553,52 @@ async function cargarPlanEntrenoGuardado(clienteId) {
     return;
   }
 
+  // Cargar plan_series para restaurar reps/descanso/indicacion por serie individual
+  const { data: planSeriesData } = await sb.from('plan_series')
+    .select('ejercicio_id,serie_num,reps_objetivo,descanso_seg,indicacion')
+    .eq('cliente_id', clienteId);
+
+  // Mapa ejercicio_id -> series
+  const seriesMap = {};
+  (planSeriesData || []).forEach(s => {
+    if (!seriesMap[s.ejercicio_id]) seriesMap[s.ejercicio_id] = [];
+    seriesMap[s.ejercicio_id].push(s);
+  });
+
+  // Para mapear nombre->ejercicio_id necesitamos la tabla ejercicios
+  const nombresEj = [...new Set(items.map(e => e.nombre))];
+  const { data: ejCat } = await sb.from('ejercicios').select('id,nombre').in('nombre', nombresEj);
+  const ejNombreToId = {};
+  (ejCat || []).forEach(e => { ejNombreToId[e.nombre] = e.id; });
+
   // Cargar en entPlanItems para que el editor funcione (borrar, editar, guardar)
   entItemCnt = 0;
-  entPlanItems = items.map(e => ({
-    _id: ++entItemCnt, dia: e.dia, sesion: e.sesion,
-    grupo: e.grupo, nombre: e.nombre,
-    series: e.series, reps: e.reps, descanso: e.descanso, orden: e.orden
-  }));
+  entPlanItems = items.map(e => {
+    const ejId = ejNombreToId[e.nombre];
+    // Deduplicar por serie_num (puede haber duplicados si el ejercicio está en varios días)
+    const rawSeries = ejId ? (seriesMap[ejId] || []) : [];
+    const seenNums = new Set();
+    const seriesDetalleBD = rawSeries
+      .filter(s => { if (seenNums.has(s.serie_num)) return false; seenNums.add(s.serie_num); return true; })
+      .sort((a,b) => a.serie_num - b.serie_num)
+      .slice(0, parseInt(e.series) || 99); // no más series que las declaradas en el plan
+    let seriesDetalle = null;
+    if (seriesDetalleBD.length) {
+      seriesDetalle = seriesDetalleBD.map(s => ({
+        serie_num: s.serie_num,
+        reps: s.reps_objetivo || e.reps || '8-12',
+        descanso: s.descanso_seg ? s.descanso_seg + 's' : e.descanso || '90s',
+        comentario: s.indicacion || e.indicacion || ''
+      }));
+    }
+    return {
+      _id: ++entItemCnt, dia: e.dia, sesion: e.sesion,
+      grupo: e.grupo, nombre: e.nombre,
+      series: e.series, reps: e.reps, descanso: e.descanso,
+      indicacion: e.indicacion || '', orden: e.orden,
+      seriesDetalle: seriesDetalle  // null = se generará con entSeriesInit si no hay data
+    };
+  });
   entNivelActivo = plan.nivel;
 
   renderEditorEntreno();
@@ -6059,7 +6877,7 @@ async function sincronizarPlanClienteApp(clienteId, planItems) {
     });
 
     if (seriesRows.length) {
-      const { error: serErr } = await sb.from('plan_series').insert(seriesRows);
+      const { error: serErr } = await sb.from('plan_series').upsert(seriesRows, {onConflict:'cliente_id,ejercicio_id,serie_num',ignoreDuplicates:false});
       if (serErr) console.error('[SINC] plan_series insert error:', serErr.message);
     }
 
@@ -10144,28 +10962,28 @@ function revRenderPlanEj(p, dia) {
   const borderColor = esReemplazo?'#ffb74d':esQuitar?'#f87171':tieneData?'rgba(169,243,56,0.25)':'#161616';
   const nomEsc = p.nombre.replace(/'/g,"\'");
   return `<div style="background:#111;border:1px solid #1a1a1a;border-left:2px solid ${borderColor};border-radius:7px;padding:6px 8px;margin-bottom:4px;opacity:${esQuitar?'0.4':'1'}">
-    <div style="display:flex;align-items:center;gap:5px">
+    <div style="display:flex;align-items:flex-start;gap:5px">
       <div style="flex:1;min-width:0">
-        <div style="font-size:11px;font-weight:600;color:${esQuitar?'#444':'var(--text)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:3px">
+        <div class="rev-ej-nombre-wrap" style="color:${esQuitar?'#444':'var(--text)'}">
           ${nombreHTML}
-          ${tieneData&&!esQuitar&&!esReemplazo?'<span style="width:4px;height:4px;border-radius:50%;background:#A9F338;display:inline-block;flex-shrink:0"></span>':''}
+          ${tieneData&&!esQuitar&&!esReemplazo?'<span style="width:4px;height:4px;border-radius:50%;background:#A9F338;display:inline-block;flex-shrink:0;vertical-align:middle;margin-left:2px"></span>':''}
           ${esQuitar?'<span style="font-size:8px;background:#2a0a0a;color:#f87171;border-radius:2px;padding:1px 4px">Quitar</span>':''}
         </div>
-        <div style="font-size:9px;color:#2e2e2e;margin-top:1px">${p.series}s · ${p.reps_min}-${p.reps_max} reps</div>
+        <div style="font-size:9px;color:#2e2e2e;margin-top:2px">${p.series}s · ${p.reps_min}-${p.reps_max} reps</div>
       </div>
-      <div style="display:flex;gap:2px;flex-shrink:0">
+      <div style="display:flex;gap:2px;flex-shrink:0;margin-top:1px">
         ${!esQuitar?`
-          <button onclick="revAbrirModalReemplazar('${dia}','${p.grupo}',${p.ejercicio_id},'${nomEsc}')" title="Reemplazar"
+          <button onclick="revAbrirModalReemplazar('${dia}','${p.grupo}','${p.ejercicio_id}','${nomEsc}')" title="Reemplazar"
             style="background:transparent;border:1px solid #181818;border-radius:4px;color:#333;padding:2px 5px;font-size:10px;cursor:pointer;transition:all .1s"
             onmouseover="this.style.borderColor='#ffb74d';this.style.color='#ffb74d'"
             onmouseout="this.style.borderColor='#181818';this.style.color='#333'">⇄</button>
-          <button onclick="revQuitarEjercicio('${dia}',${p.ejercicio_id},'${nomEsc}')" title="Quitar"
+          <button onclick="revQuitarEjercicio('${dia}','${p.ejercicio_id}','${nomEsc}')" title="Quitar"
             style="background:transparent;border:1px solid #181818;border-radius:4px;color:#333;padding:2px 5px;font-size:10px;cursor:pointer;transition:all .1s"
             onmouseover="this.style.borderColor='#f87171';this.style.color='#f87171'"
             onmouseout="this.style.borderColor='#181818';this.style.color='#333'">✕</button>
         `:''}
         ${esQuitar||esReemplazo?`
-          <button onclick="revDeshacerCambio('${dia}',${p.ejercicio_id})"
+          <button onclick="revDeshacerCambio('${dia}','${p.ejercicio_id}')"
             style="background:transparent;border:1px solid #1e1e1e;border-radius:4px;color:#555;padding:2px 5px;font-size:10px;cursor:pointer">↩</button>
         `:''}
       </div>
@@ -10585,6 +11403,622 @@ function trialCopiar(code, btn) {
     setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
   });
 }
+
+
+// ══════════════════════════════════════════
+//  FLUYE LIBRE — MÓDULO ADMIN
+// ══════════════════════════════════════════
+
+// ── MODO SELECTOR ──────────────────────────
+function setModo(modo, btn) {
+  document.querySelectorAll('.modo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const app = document.getElementById('screen-app');
+  if (modo === 'fl') {
+    app.classList.add('modo-fl');
+    // Activar primer tab FL manualmente sin rellamar switchTab
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const btnVou = document.querySelector('[data-tab="fl-vouchers"]');
+    if (btnVou) btnVou.classList.add('active');
+    const panVou = document.getElementById('tab-fl-vouchers');
+    if (panVou) panVou.classList.add('active');
+    flVouchersCargar();
+    flStatsCargar();
+  } else {
+    app.classList.remove('modo-fl');
+    // Volver al resumen FLI manualmente
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const btnRes = document.querySelector('[data-tab="resumen"]');
+    if (btnRes) btnRes.classList.add('active');
+    const panRes = document.getElementById('tab-resumen');
+    if (panRes) panRes.classList.add('active');
+  }
+}
+
+// ── PLANES Y VENCIMIENTOS ──────────────────
+const FL_PLANES = { mensual: 30, trimestral: 90, semestral: 180, anual: 365 };
+const FL_MONTOS = { mensual: 99, trimestral: 267, semestral: 475, anual: 772 };
+
+function flDiasVenc(plan) {
+  return FL_PLANES[plan] || 30;
+}
+
+// ── STATS GLOBALES ─────────────────────────
+async function flStatsCargar() {
+  try {
+    const { data } = await sb.from('ventas').select('estado');
+    if (!data) return;
+    const cnt = { pendiente:0, escalado:0, aprobado:0, rechazado:0 };
+    data.forEach(v => { if (cnt[v.estado] !== undefined) cnt[v.estado]++; });
+    document.getElementById('vs-pendientes').textContent = cnt.pendiente;
+    document.getElementById('vs-escalados').textContent  = cnt.escalado;
+    document.getElementById('vs-aprobados').textContent  = cnt.aprobado;
+    document.getElementById('vs-rechazados').textContent = cnt.rechazado;
+    // Badge en tab
+    const badge = document.getElementById('badge-vou');
+    if (cnt.pendiente + cnt.escalado > 0) {
+      badge.textContent = cnt.pendiente + cnt.escalado;
+      badge.style.display = 'inline';
+    } else { badge.style.display = 'none'; }
+  } catch(e) { console.warn('flStats', e); }
+}
+
+// ── TAB VOUCHERS ───────────────────────────
+let flRechazarVentaId = null;
+
+async function flVouchersCargar() {
+  const lista = document.getElementById('vou-lista');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div>Cargando...</div>';
+  const filtro = document.getElementById('vou-filtro').value;
+  try {
+    let q = sb.from('ventas')
+      .select('id, cliente_nombre, cliente_email, cliente_whatsapp, plan, monto, captura_url, estado, motivo_rechazo, creado_en, afiliado_id, lider_id, usuarios!ventas_afiliado_id_fkey(nombre)')
+      .order('creado_en', { ascending: false });
+    if (filtro) q = q.eq('estado', filtro);
+    const { data, error } = await q;
+    if (error) throw error;
+    if (!data || !data.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted);font-size:14px;">No hay registros con este filtro.</div>';
+      return;
+    }
+    const ahora = Date.now();
+    lista.innerHTML = data.map(v => {
+      const horas = (ahora - new Date(v.creado_en)) / 3600000;
+      const urgente = v.estado === 'pendiente' && horas >= 48;
+      const fecha = new Date(v.creado_en).toLocaleString('es-PE', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      const afl = v.usuarios?.nombre || '—';
+      const com35 = v.monto ? (v.monto * 0.35).toFixed(2) : '—';
+      const com15 = v.monto ? (v.monto * 0.15).toFixed(2) : '—';
+      return `<div class="vou-card${urgente?' urgente':''}">
+        <div>
+          ${v.captura_url
+            ? `<img class="vou-img" src="${v.captura_url}" alt="voucher" onclick="flVerImagen('${v.captura_url}')" title="Ver imagen">`
+            : `<div style="width:100px;height:80px;background:var(--card);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;border:1px solid var(--border);">Sin imagen</div>`}
+        </div>
+        <div>
+          <span class="vou-badge ${v.estado}">${v.estado}</span>
+          ${urgente ? '<span class="vou-badge urgente-tag" style="margin-left:6px;">+48h ⚠</span>' : ''}
+          <div style="font-size:15px;font-weight:700;margin-bottom:2px;">${v.cliente_nombre || '—'}</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">${v.cliente_whatsapp || ''} · ${v.cliente_email || ''}</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;margin-bottom:4px;">
+            <span>📦 <b style="color:var(--text);text-transform:capitalize;">${v.plan || '—'}</b></span>
+            <span>💰 <b style="color:var(--accent);">S/. ${v.monto || '—'}</b></span>
+            <span>📅 ${fecha}</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);">Afiliado: ${afl} · Com. afl: S/.${com35} · Com. líder: S/.${com15}</div>
+          ${v.motivo_rechazo ? `<div style="font-size:11px;color:#ff4d4d;margin-top:4px;">Motivo: ${v.motivo_rechazo}</div>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:110px;">
+          ${v.estado === 'pendiente' || v.estado === 'escalado' ? `
+            <button onclick="flAprobar('${v.id}','${v.plan}',${v.monto},'${v.afiliado_id||''}','${v.lider_id||''}')" style="background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">✓ Aprobar</button>
+            <button onclick="flRechazarAbrir('${v.id}')" style="background:#2a0a0a;border:1px solid #4a1515;color:#ff4d4d;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;">✕ Rechazar</button>
+            ${v.estado === 'pendiente' ? `<button onclick="flEscalar('${v.id}')" style="background:#0a1a2a;border:1px solid #1a3a4a;color:#4fc3f7;border-radius:8px;padding:6px 12px;font-size:11px;font-family:'Inter',sans-serif;cursor:pointer;">↑ Escalar</button>` : ''}
+          ` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    flStatsCargar();
+  } catch(e) {
+    lista.innerHTML = `<div style="color:var(--danger);padding:20px;">Error: ${e.message}</div>`;
+  }
+}
+
+async function flAprobar(ventaId, plan, monto, afiliadoId, liderId) {
+  if (!confirm('¿Aprobar este voucher? Esto activará la membresía del cliente.')) return;
+  try {
+    // 1. Obtener venta completa
+    const { data: venta } = await sb.from('ventas').select('*').eq('id', ventaId).single();
+    if (!venta) throw new Error('Venta no encontrada');
+
+    // 2. Buscar usuario por email
+    const { data: usuarios } = await sb.from('usuarios').select('id').eq('email', venta.cliente_email);
+    const userId = usuarios?.[0]?.id || null;
+
+    const hoy = new Date();
+    const venc = new Date(hoy);
+    venc.setDate(venc.getDate() + flDiasVenc(plan));
+
+    // 3. Actualizar venta
+    await sb.from('ventas').update({ estado: 'aprobado' }).eq('id', ventaId);
+
+    // 4. Aprobar comisiones
+    await sb.from('comisiones').update({ estado: 'aprobado' }).eq('venta_id', ventaId);
+
+    // 5. Crear/actualizar membresía
+    if (userId) {
+      await sb.from('membresias').upsert({
+        usuario_id: userId,
+        venta_id: ventaId,
+        plan,
+        monto,
+        fecha_inicio: hoy.toISOString().split('T')[0],
+        fecha_vencimiento: venc.toISOString().split('T')[0],
+        activo: true
+      }, { onConflict: 'venta_id' });
+
+      // 6. Activar usuario (unifica activo + estado para que index.html lo detecte)
+      await sb.from('usuarios').update({
+        activo: true,
+        estado: 'activo',
+        fecha_activacion: new Date().toISOString(),
+        primera_sesion: null
+      }).eq('id', userId);
+    }
+
+    // 7. Verificar bono (20 ventas del mes)
+    if (afiliadoId && afiliadoId !== 'null' && afiliadoId !== '') {
+      const mesInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString();
+      const mesFin = new Date(hoy.getFullYear(), hoy.getMonth()+1, 1).toISOString();
+      const { data: ventasMes } = await sb.from('ventas')
+        .select('id')
+        .eq('afiliado_id', afiliadoId)
+        .eq('estado', 'aprobado')
+        .gte('creado_en', mesInicio)
+        .lt('creado_en', mesFin);
+      if (ventasMes && ventasMes.length >= 20) {
+        // Verificar si ya existe bono este mes
+        const { data: bonoExiste } = await sb.from('bonos')
+          .select('id')
+          .eq('afiliado_id', afiliadoId)
+          .gte('mes', mesInicio)
+          .lt('mes', mesFin)
+          .maybeSingle();
+        if (!bonoExiste) {
+          await sb.from('bonos').insert({
+            afiliado_id: afiliadoId,
+            mes: mesInicio.split('T')[0],
+            ventas_count: ventasMes.length,
+            monto: 200,
+            estado: 'pendiente'
+          });
+          showToast('🎉 ¡Bono S/.200 generado para el afiliado!');
+        }
+      }
+    }
+
+    showToast('✅ Voucher aprobado — membresía activada');
+    flVouchersCargar();
+  } catch(e) {
+    showToast('⚠ Error: ' + e.message);
+    console.error(e);
+  }
+}
+
+function flRechazarAbrir(ventaId) {
+  flRechazarVentaId = ventaId;
+  document.getElementById('fl-rechazo-motivo').value = '';
+  document.getElementById('fl-rechazo-modal').classList.add('open');
+}
+function flRechazoCancelar() {
+  document.getElementById('fl-rechazo-modal').classList.remove('open');
+  flRechazarVentaId = null;
+}
+async function flRechazarConfirmar() {
+  const motivo = document.getElementById('fl-rechazo-motivo').value.trim();
+  if (!motivo) { showToast('⚠ Ingresa el motivo de rechazo'); return; }
+  try {
+    await sb.from('ventas').update({ estado: 'rechazado', motivo_rechazo: motivo }).eq('id', flRechazarVentaId);
+    await sb.from('comisiones').delete().eq('venta_id', flRechazarVentaId);
+    flRechazoCancelar();
+    showToast('✓ Voucher rechazado');
+    flVouchersCargar();
+  } catch(e) { showToast('⚠ Error: ' + e.message); }
+}
+async function flEscalar(ventaId) {
+  await sb.from('ventas').update({ estado: 'escalado' }).eq('id', ventaId);
+  showToast('↑ Venta escalada');
+  flVouchersCargar();
+}
+function flVerImagen(url) {
+  document.getElementById('fl-img-modal-src').src = url;
+  document.getElementById('fl-img-modal').classList.add('open');
+}
+
+// ── TAB AFILIADOS ──────────────────────────
+async function flAfiliadosCargar() {
+  const lista = document.getElementById('afl-lista');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div>Cargando...</div>';
+  const rol = document.getElementById('afl-filtro-rol').value;
+  try {
+    let q = sb.from('usuarios').select('id, nombre, email, whatsapp, rol, activo, lider_id, codigo_afiliado, creado_en').order('creado_en', { ascending: false });
+    if (rol) q = q.eq('rol', rol);
+    const { data, error } = await q;
+    if (error) throw error;
+    if (!data || !data.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted);">Sin registros.</div>';
+      return;
+    }
+    // Obtener ventas de este mes por afiliado
+    const mesInicio = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+    const { data: ventas } = await sb.from('ventas').select('afiliado_id, estado').gte('creado_en', mesInicio);
+    const ventasMes = {};
+    (ventas || []).forEach(v => {
+      if (!ventasMes[v.afiliado_id]) ventasMes[v.afiliado_id] = { total:0, aprobado:0 };
+      ventasMes[v.afiliado_id].total++;
+      if (v.estado === 'aprobado') ventasMes[v.afiliado_id].aprobado++;
+    });
+
+    lista.innerHTML = data.map(u => {
+      const vm = ventasMes[u.id] || { total:0, aprobado:0 };
+      const progreso = Math.min(100, (vm.aprobado / 20) * 100);
+      return `<div class="fl-row" style="flex-wrap:wrap;gap:10px;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:14px;font-weight:700;">${u.nombre || '—'}</div>
+          <div style="font-size:11px;color:var(--muted);">${u.email} · ${u.whatsapp || '—'}</div>
+          ${u.codigo_afiliado ? `<div style="font-size:10px;font-family:monospace;color:var(--accent);margin-top:3px;">🔗 ${u.codigo_afiliado}</div>` : ''}
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;flex-shrink:0;">
+          <div style="text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);line-height:1;">${vm.aprobado}</div>
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Ventas mes</div>
+            <div class="prog-bar" style="width:80px;margin-top:4px;"><div class="prog-fill" style="width:${progreso}%"></div></div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">${vm.aprobado}/20 bono</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:10px;font-weight:600;border-radius:20px;padding:3px 10px;display:inline-block;${u.activo?'background:#0f1f00;color:var(--accent);':'background:#2a1010;color:#ff4d4d;'}">${u.activo ? '● Activo' : '○ Inactivo'}</div>
+            <div style="font-size:10px;color:var(--muted);text-transform:capitalize;margin-top:4px;">${u.rol}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <button onclick="flToggleActivo('${u.id}',${u.activo})" style="background:${u.activo?'#2a1010':'#0f1f00'};border:1px solid ${u.activo?'#4a1515':'#1a3a00'};color:${u.activo?'#ff4d4d':'var(--accent)'};border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;">${u.activo ? 'Desactivar' : 'Activar'}</button>
+            <select onchange="flCambiarRol('${u.id}',this.value)" style="background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:5px 8px;font-size:11px;font-family:'Inter',sans-serif;">
+              <option value="">Cambiar rol...</option>
+              <option value="usuario">Usuario</option>
+              <option value="afiliado">Afiliado</option>
+              <option value="lider">Líder</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    lista.innerHTML = `<div style="color:var(--danger);padding:20px;">Error: ${e.message}</div>`;
+  }
+}
+
+async function flToggleActivo(userId, actual) {
+  await sb.from('usuarios').update({ activo: !actual }).eq('id', userId);
+  showToast(actual ? '○ Usuario desactivado' : '● Usuario activado');
+  flAfiliadosCargar();
+}
+async function flCambiarRol(userId, nuevoRol) {
+  if (!nuevoRol) return;
+  if (!confirm(`¿Cambiar rol a "${nuevoRol}"?`)) return;
+  await sb.from('usuarios').update({ rol: nuevoRol }).eq('id', userId);
+  showToast(`✓ Rol cambiado a ${nuevoRol}`);
+  flAfiliadosCargar();
+}
+
+// ── TAB COMISIONES ─────────────────────────
+async function flComisionesCargar() {
+  const lista = document.getElementById('com-lista');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div>Cargando...</div>';
+  const filtro = document.getElementById('com-filtro').value;
+  try {
+    const { data, error } = await sb.from('comisiones')
+      .select('id, tipo, porcentaje, monto, estado, creado_en, venta_id, usuario_id, usuarios!comisiones_usuario_id_fkey(nombre), ventas(plan, monto, cliente_nombre)')
+      .eq('estado', filtro)
+      .order('creado_en', { ascending: false });
+    if (error) throw error;
+
+    // Stats totales (independiente del filtro)
+    const { data: todas } = await sb.from('comisiones').select('estado, monto');
+    let totalPagar = 0, totalPend = 0, totalPagado = 0;
+    (todas || []).forEach(c => {
+      if (c.estado === 'aprobado') totalPagar += c.monto || 0;
+      if (c.estado === 'pendiente') totalPend += c.monto || 0;
+      if (c.estado === 'pagado') totalPagado += c.monto || 0;
+    });
+    document.getElementById('com-total-pagar').textContent    = 'S/.' + totalPagar.toFixed(2);
+    document.getElementById('com-total-pendiente').textContent = 'S/.' + totalPend.toFixed(2);
+    document.getElementById('com-total-pagado').textContent   = 'S/.' + totalPagado.toFixed(2);
+
+    if (!data || !data.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted);">Sin comisiones con este estado.</div>';
+      return;
+    }
+    lista.innerHTML = data.map(c => {
+      const fecha = new Date(c.creado_en).toLocaleDateString('es-PE', {day:'2-digit',month:'short',year:'numeric'});
+      const nombre = c.usuarios?.nombre || '—';
+      const planCliente = c.ventas?.cliente_nombre || '—';
+      const plan = c.ventas?.plan || '—';
+      return `<div class="fl-row">
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;">${nombre}</div>
+          <div style="font-size:11px;color:var(--muted);">Venta: ${planCliente} — <span style="text-transform:capitalize;">${plan}</span> · ${fecha}</div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px;">${c.tipo} · ${c.porcentaje}%</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);letter-spacing:1px;">S/.${(c.monto||0).toFixed(2)}</div>
+          ${filtro === 'aprobado' ? `<button onclick="flMarcarPagado('${c.id}')" style="background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Marcar pagado</button>` : ''}
+          ${filtro === 'pagado' ? `<span style="font-size:11px;color:var(--muted);background:var(--card);border-radius:20px;padding:3px 10px;">✓ Pagado</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    lista.innerHTML = `<div style="color:var(--danger);padding:20px;">Error: ${e.message}</div>`;
+  }
+}
+async function flMarcarPagado(comId) {
+  await sb.from('comisiones').update({ estado: 'pagado' }).eq('id', comId);
+  showToast('✓ Comisión marcada como pagada');
+  flComisionesCargar();
+}
+
+// ── TAB RANKING ────────────────────────────
+async function flRankingCargar() {
+  const lista = document.getElementById('rnk-lista');
+  const bonos = document.getElementById('rnk-bonos');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div>Cargando...</div>';
+  bonos.innerHTML = '<div class="loading"><div class="spinner"></div>Cargando...</div>';
+  try {
+    const hoy = new Date();
+    const mesInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString();
+    const mesFin    = new Date(hoy.getFullYear(), hoy.getMonth()+1, 1).toISOString();
+
+    // Ventas aprobadas del mes
+    const { data: ventasMes } = await sb.from('ventas')
+      .select('afiliado_id, id')
+      .eq('estado', 'aprobado')
+      .gte('creado_en', mesInicio)
+      .lt('creado_en', mesFin);
+
+    document.getElementById('rnk-ventas-mes').textContent = ventasMes?.length || 0;
+
+    // Agrupar por afiliado
+    const porAfl = {};
+    (ventasMes || []).forEach(v => {
+      if (!v.afiliado_id) return;
+      porAfl[v.afiliado_id] = (porAfl[v.afiliado_id] || 0) + 1;
+    });
+    const ranking = Object.entries(porAfl).sort((a,b) => b[1]-a[1]).slice(0, 10);
+
+    if (!ranking.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">Sin ventas este mes.</div>';
+    } else {
+      // Cargar nombres
+      const ids = ranking.map(r => r[0]);
+      const { data: usrs } = await sb.from('usuarios').select('id, nombre').in('id', ids);
+      const nombresMap = {};
+      (usrs || []).forEach(u => nombresMap[u.id] = u.nombre);
+
+      const posClasses = ['gold','silver','bronze'];
+      lista.innerHTML = ranking.map(([id, cnt], i) => {
+        const progreso = Math.min(100, (cnt/20)*100);
+        const posClass = posClasses[i] || '';
+        return `<div class="fl-row">
+          <div class="ranking-pos ${posClass}">${i+1}</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;">${nombresMap[id] || '—'}</div>
+            <div class="prog-bar" style="margin-top:6px;"><div class="prog-fill" style="width:${progreso}%;${cnt>=20?'background:#ffd700':''}"></div></div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px;">${cnt}/20 ventas para bono ${cnt>=20?'🎉 ¡Bono alcanzado!':''}</div>
+          </div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:${cnt>=20?'#ffd700':'var(--accent)'};letter-spacing:1px;flex-shrink:0;">${cnt}</div>
+        </div>`;
+      }).join('');
+    }
+
+    // Bonos
+    const { data: bonosData } = await sb.from('bonos')
+      .select('id, mes, ventas_count, monto, estado, afiliado_id, usuarios!bonos_afiliado_id_fkey(nombre)')
+      .order('mes', { ascending: false });
+
+    const bPend = (bonosData||[]).filter(b=>b.estado==='pendiente').length;
+    const bPag  = (bonosData||[]).filter(b=>b.estado==='pagado').length;
+    document.getElementById('rnk-bonos-pend').textContent    = bPend;
+    document.getElementById('rnk-bonos-pagados').textContent = bPag;
+
+    if (!bonosData || !bonosData.length) {
+      bonos.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">Sin bonos generados aún.</div>';
+    } else {
+      bonos.innerHTML = bonosData.map(b => {
+        const mes = new Date(b.mes).toLocaleDateString('es-PE', {month:'long', year:'numeric'});
+        return `<div class="fl-row">
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;">${b.usuarios?.nombre || '—'}</div>
+            <div style="font-size:11px;color:var(--muted);">${mes} · ${b.ventas_count} ventas</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#ffd700;">S/.${b.monto}</div>
+            <span style="font-size:10px;font-weight:700;border-radius:20px;padding:3px 10px;${b.estado==='pagado'?'background:#1a1a00;color:var(--muted);':'background:#2a2000;color:#ffd700;border:1px solid #5a4a00;'}">${b.estado==='pagado'?'✓ Pagado':'Pendiente'}</span>
+            ${b.estado === 'pendiente' ? `<button onclick="flMarcarBonoPagado('${b.id}')" style="background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Marcar pagado</button>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+  } catch(e) {
+    lista.innerHTML = `<div style="color:var(--danger);padding:20px;">Error: ${e.message}</div>`;
+  }
+}
+async function flMarcarBonoPagado(bonoId) {
+  await sb.from('bonos').update({ estado: 'pagado' }).eq('id', bonoId);
+  showToast('✓ Bono marcado como pagado');
+  flRankingCargar();
+}
+
+// ── FLUYE LIBRE — USUARIOS (validación unificada) ────────────────────────────
+
+async function flUsuariosCargar() {
+  const lista = document.getElementById('flu-lista');
+  if (!lista) return;
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div>Cargando...</div>';
+  const filtro = document.getElementById('flu-filtro-estado')?.value || '';
+
+  try {
+    // Solo roles FL: usuario, afiliado, lider
+    let query = sb.from('usuarios')
+      .select('id,nombre,email,whatsapp,rol,estado,activo,fecha_activacion,trial_expires')
+      .in('rol', ['usuario','afiliado','lider'])
+      .order('nombre');
+    if (filtro) query = query.eq('estado', filtro);
+    const { data, error } = await query;
+    if (error) throw error;
+
+    // Stats totales (siempre sin filtro)
+    const { data: todos } = await sb.from('usuarios').select('estado').in('rol',['usuario','afiliado','lider']);
+    const stats = { pendiente: 0, activo: 0, trial: 0, cancelado: 0 };
+    (todos||[]).forEach(u => { if (stats[u.estado] !== undefined) stats[u.estado]++; });
+    document.getElementById('flu-stat-pendientes').textContent = stats.pendiente;
+    document.getElementById('flu-stat-activos').textContent   = stats.activo;
+    document.getElementById('flu-stat-trial').textContent     = stats.trial;
+    document.getElementById('flu-stat-cancelados').textContent = stats.cancelado;
+
+    // Badge tab
+    const badge = document.getElementById('badge-fl-usuarios');
+    if (badge) { badge.textContent = stats.pendiente; badge.style.display = stats.pendiente ? 'inline' : 'none'; }
+
+    if (!data || !data.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:60px 0;color:var(--muted)"><div style="font-size:32px;margin-bottom:12px">✅</div><div>Sin usuarios para mostrar</div></div>';
+      return;
+    }
+
+    const hoy = new Date();
+    const rows = data.map(u => {
+      const nSafe = (u.nombre||'').replace(/'/g,"&apos;");
+      const eSafe = (u.email||'').replace(/'/g,"&apos;");
+      const rolLabel = u.rol === 'lider' ? '👑 Líder' : u.rol === 'afiliado' ? '🤝 Afiliado' : '👤 Usuario';
+
+      // Badge estado
+      const estadoColor = { activo: '#48bb78', pendiente: '#fbbf24', cancelado: '#e53e3e', trial: '#A9F338' };
+      const estadoIcon  = { activo: '✅', pendiente: '⏳', cancelado: '🚫', trial: '🎟️' };
+      const ec = estadoColor[u.estado] || '#94a3b8';
+      const ei = estadoIcon[u.estado]  || '•';
+      const estadoBadge = `<span style="font-size:10px;font-weight:700;background:${ec}18;color:${ec};border:1px solid ${ec}33;border-radius:20px;padding:2px 10px">${ei} ${u.estado||'—'}</span>`;
+
+      // Días membresía
+      let diasBadge = '';
+      if (u.fecha_activacion && u.estado === 'activo') {
+        const diasTranscurridos = Math.floor((hoy - new Date(u.fecha_activacion)) / 86400000);
+        const dr = 30 - diasTranscurridos;
+        if      (dr > 10) diasBadge = `<span style="font-size:10px;font-weight:700;background:#48bb7818;color:#48bb78;border:1px solid #48bb7833;border-radius:20px;padding:2px 10px">${dr}d restantes</span>`;
+        else if (dr > 2)  diasBadge = `<span style="font-size:10px;font-weight:700;background:#fbbf2418;color:#fbbf24;border:1px solid #fbbf2433;border-radius:20px;padding:2px 10px">⚠ ${dr}d restantes</span>`;
+        else if (dr >= 0) diasBadge = `<span style="font-size:10px;font-weight:700;background:#e53e3e28;color:#fc8181;border:1px solid #e53e3e55;border-radius:20px;padding:2px 10px">🔴 ${dr === 0 ? 'Vence hoy' : dr + 'd restantes'}</span>`;
+        else              diasBadge = `<span style="font-size:10px;font-weight:700;background:#e53e3e18;color:#e53e3e;border:1px solid #e53e3e33;border-radius:20px;padding:2px 10px">💀 Vencido hace ${Math.abs(dr)}d</span>`;
+      }
+      if (u.estado === 'trial' && u.trial_expires) {
+        const td = Math.max(0, Math.floor((new Date(u.trial_expires) - hoy) / 86400000));
+        const tc = td <= 1 ? '#e53e3e' : td <= 3 ? '#ed8936' : '#A9F338';
+        diasBadge = `<span style="font-size:10px;font-weight:700;background:${tc}18;color:${tc};border:1px solid ${tc}44;border-radius:20px;padding:2px 10px">⏱ ${td}d trial restantes</span>`;
+      }
+
+      const esPend     = u.estado === 'pendiente';
+      const esActivo   = u.estado === 'activo';
+      const esCancelado = u.estado === 'cancelado';
+      const esTrial    = u.estado === 'trial';
+
+      const acciones = esPend
+        ? `<button onclick="fluAprobar('${u.id}','${nSafe}')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:6px 14px;font-weight:700;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">✅ Activar</button>
+           <button onclick="fluCancelar('${u.id}','${nSafe}')" style="background:#2a1010;color:#ff6b6b;border:1px solid #ff6b6b44;border-radius:8px;padding:6px 12px;font-weight:600;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">❌ Rechazar</button>`
+        : esTrial
+        ? `<button onclick="fluAprobar('${u.id}','${nSafe}')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:6px 14px;font-weight:700;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">✅ Activar</button>
+           <button onclick="fluCancelar('${u.id}','${nSafe}')" style="background:transparent;color:#ff6b6b;border:1px solid #ff6b6b44;border-radius:8px;padding:6px 12px;font-weight:600;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">🚫 Cancelar</button>`
+        : esCancelado
+        ? `<button onclick="fluAprobar('${u.id}','${nSafe}')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:6px 14px;font-weight:700;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">🔄 Reactivar</button>`
+        : `<button onclick="fluCancelar('${u.id}','${nSafe}')" style="background:transparent;color:#ff6b6b;border:1px solid #ff6b6b44;border-radius:8px;padding:6px 12px;font-weight:600;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif">🚫 Cancelar</button>`;
+
+      const fechaStr = u.fecha_activacion
+        ? new Date(u.fecha_activacion).toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'})
+        : '—';
+
+      return `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="min-width:0">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.nombre||'Sin nombre'}</div>
+              <span style="font-size:10px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2px 8px;white-space:nowrap">${rolLabel}</span>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">${u.email||'—'}</div>
+            ${u.whatsapp ? `<div style="font-size:11px;color:#A9F338;margin-top:3px">📱 <a href="https://wa.me/${(u.whatsapp||'').replace(/\D/g,'')}" target="_blank" style="color:#A9F338;text-decoration:none">${u.whatsapp}</a></div>` : '<div style="font-size:11px;color:var(--muted);margin-top:3px">📱 Sin WhatsApp</div>'}
+          </div>
+          <div style="flex-shrink:0">${estadoBadge}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-size:11px;color:var(--muted)">📅 Activación: <b style="color:var(--text)">${fechaStr}</b></span>
+          ${diasBadge}
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:11px;color:var(--muted)">+ Días:</span>
+            <input type="number" min="1" max="365" placeholder="30" id="flu-dias-${u.id}"
+              style="width:56px;padding:5px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;text-align:center">
+            <button onclick="fluAumentarDias('${u.id}','${nSafe}')" style="padding:5px 14px;border-radius:8px;border:none;background:var(--accent);color:#000;cursor:pointer;font-size:12px;font-weight:700;font-family:'Inter',sans-serif">Aplicar</button>
+          </div>
+          <div style="display:flex;gap:6px">${acciones}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    lista.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px">${rows}</div>`;
+  } catch(e) {
+    lista.innerHTML = `<div style="color:var(--danger);padding:20px">Error: ${e.message}</div>`;
+  }
+}
+
+async function fluAprobar(id, nombre) {
+  if (!confirm(`¿Activar acceso de ${nombre}?`)) return;
+  const { error } = await sb.from('usuarios').update({
+    activo: true,
+    estado: 'activo',
+    fecha_activacion: new Date().toISOString(),
+    primera_sesion: null
+  }).eq('id', id);
+  if (error) { showToast('Error: ' + error.message); return; }
+  showToast(`✅ ${nombre} activado`);
+  flUsuariosCargar();
+}
+
+async function fluCancelar(id, nombre) {
+  if (!confirm(`¿Cancelar acceso de ${nombre}?`)) return;
+  const { error } = await sb.from('usuarios').update({ estado: 'cancelado', activo: false, fecha_activacion: null }).eq('id', id);
+  if (error) { showToast('Error: ' + error.message); return; }
+  showToast(`✓ Acceso cancelado para ${nombre}`);
+  flUsuariosCargar();
+}
+
+async function fluAumentarDias(id, nombre) {
+  const input = document.getElementById('flu-dias-' + id);
+  const dias = parseInt(input?.value);
+  if (!dias || dias < 1) { showToast('⚠ Ingresa un número de días válido'); return; }
+  const { data: usr } = await sb.from('usuarios').select('fecha_activacion').eq('id', id).single();
+  let base = usr?.fecha_activacion ? new Date(usr.fecha_activacion) : new Date();
+  if (base < new Date()) base = new Date();
+  base.setDate(base.getDate() + dias);
+  const { error } = await sb.from('usuarios').update({
+    fecha_activacion: base.toISOString(),
+    estado: 'activo',
+    activo: true
+  }).eq('id', id);
+  if (error) { showToast('Error: ' + error.message); return; }
+  showToast(`✓ ${dias} días añadidos a ${nombre}`);
+  if (input) input.value = '';
+  flUsuariosCargar();
+}
+
+// ── HOOKS EN switchTab — se inyectan en el onclick directo de los tabs FL ─────
+// (sin wrapper para evitar recursión infinita)
+
 
 </script>
 

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programa de Afiliados— Fluye Libre</title>
+  <meta name="description" content="El 35% no es un bono. Es tu parte del negocio. Comisiones recurrentes, sistema automatizado, red que trabaja por ti.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    :root{
+      --bg:#000000;--bg1:#050505;--bg2:#090909;--bg3:#0d0d0d;
+      --green:#00FF87;--green2:#00E67A;--green3:#00CC6A;
+      --green-dim:rgba(0,255,135,0.1);--green-glow:rgba(0,255,135,0.06);
+      --white:#F0FFF8;--off:#A8C4B8;--muted:#4A6B5A;--muted2:#2A3D32;
+      --line:rgba(0,255,135,0.1);--line2:rgba(0,255,135,0.06);
+      --red:#FF3B5C;--blue:#00C8FF;--purple:#9966ff;--orange:#ff9900;
+      --font-head:'Unbounded',sans-serif;
+      --font-body:'Space Grotesk',sans-serif;
+      --font-mono:'Space Mono',monospace;
+    }
+    body{background:var(--bg);color:var(--white);font-family:var(--font-body);line-height:1.5;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:9000;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none}
+
+    /* ── CURSOR ── */
+    #cur{width:6px;height:6px;background:var(--green);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 10px var(--green),0 0 20px rgba(0,255,135,.4)}
+    #curRing{width:32px;height:32px;border:1px solid rgba(0,255,135,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,border-color .2s}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:60px;background:rgba(0,0,0,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(20px)}
+    .logo{font-family:var(--font-head);font-weight:900;font-size:16px;letter-spacing:.06em;text-decoration:none;color:var(--white);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+    .logo-b{color:var(--green);font-size:20px}
+    .nav-mid{display:flex;gap:40px;position:absolute;left:50%;transform:translateX(-50%)}
+    .nav-mid a{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;position:relative}
+    .nav-mid a::before{content:'>';position:absolute;left:-14px;color:var(--green);opacity:0;transition:opacity .2s}
+    .nav-mid a:hover{color:var(--green)}
+    .nav-mid a:hover::before{opacity:1}
+    .nav-r{display:flex;gap:10px;align-items:center}
+    .nav-cta{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:10px 24px;background:transparent;color:var(--green);border:1px solid rgba(0,255,135,.3);transition:all .2s;position:relative;overflow:hidden}
+    .nav-cta::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,255,135,.08),transparent);transform:translateX(-100%);transition:transform .4s}
+    .nav-cta:hover::after{transform:translateX(100%)}
+    .nav-cta:hover{border-color:var(--green);box-shadow:0 0 16px rgba(0,255,135,.15);background:rgba(0,255,135,.04)}
+    .nav-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:transparent;border:1px solid rgba(0,255,135,0.2);cursor:pointer;padding:8px}
+    .nav-hamburger span{display:block;width:20px;height:1.5px;background:var(--green);transition:all 0.3s ease}
+    .nav-hamburger.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+    .nav-hamburger.active span:nth-child(2){opacity:0}
+    .nav-hamburger.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+    .nav-mobile-menu{display:none;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:rgba(0,0,0,.97);border-bottom:1px solid rgba(0,255,135,.15);z-index:499;padding:16px 0;backdrop-filter:blur(20px)}
+    .nav-mobile-menu.open{display:flex}
+    .nav-mobile-link{padding:14px 24px;font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:1px solid rgba(0,255,135,.05);transition:color .2s,background .2s}
+    .nav-mobile-link:hover{color:var(--green);background:rgba(0,255,135,.04)}
+
+    /* ── HERO ── */
+    .hero{padding-top:68px;min-height:55vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-left:40px;padding-right:40px;padding-bottom:50px}
+    .hero-grid-bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(0,255,135,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,135,.04) 1px,transparent 1px);background-size:60px 60px}
+    .hero-orb{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,135,.07) 0%,transparent 70%);top:-150px;right:-150px;z-index:0}
+    .hero-content{position:relative;z-index:2;max-width:780px}
+    .hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,255,135,.08);border:1px solid rgba(0,255,135,.2);color:var(--green);font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;margin-bottom:36px}
+    .hero-tag::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:fl-pulse 2s infinite}
+    @keyframes fl-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .hero h1{font-family:var(--font-head);font-size:clamp(42px,6vw,80px);font-weight:900;line-height:.95;letter-spacing:-2px;margin-bottom:32px}
+    .hero h1 span{color:var(--green);text-shadow:0 0 40px rgba(0,255,135,.3)}
+    .hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+    .btn-wa{display:inline-flex;align-items:center;gap:12px;background:transparent;color:var(--green);padding:16px 32px;font-family:var(--font-head);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:all .25s;border:1px solid rgba(0,255,135,.35);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
+    .btn-wa:hover{border-color:var(--green);box-shadow:0 0 20px rgba(0,255,135,.15);background:rgba(0,255,135,.04);transform:translateY(-2px)}
+    .btn-wa svg{width:18px;height:18px;fill:var(--green);flex-shrink:0}
+
+    /* ── SECTIONS ── */
+    section{padding:60px 40px}
+
+    /* ── LABELS ── */
+    .s-label{display:inline-flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:20px}
+    .s-label::before{content:'//';margin-right:4px;opacity:.5}
+    .s-h2{font-family:var(--font-head);font-size:clamp(32px,3.8vw,54px);line-height:1.1;font-weight:900;letter-spacing:-.02em;margin-bottom:16px}
+    .s-h2 em{font-style:normal;color:var(--green);text-shadow:0 0 20px rgba(0,255,135,.3)}
+    .s-sub{font-size:15px;color:var(--off);line-height:1.85;max-width:600px;font-weight:300;margin-bottom:40px}
+
+    /* ── PASOS ── */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line2);border:1px solid var(--line)}
+    .step{background:var(--bg2);padding:48px 40px;transition:background .3s;border-left:2px solid transparent;transition:all .3s}
+    .step:hover{background:var(--bg3);border-left-color:var(--green)}
+    .step-num{font-family:var(--font-head);font-size:72px;font-weight:900;color:rgba(0,255,135,.07);line-height:1;margin-bottom:24px}
+    .step h3{font-family:var(--font-head);font-size:17px;font-weight:700;margin-bottom:12px;line-height:1.2}
+    .step p{font-size:13px;color:var(--off);line-height:1.75;font-weight:300}
+
+    /* ── TABLA COMISIONES ── */
+    .com-table{width:100%;border-collapse:collapse;border:1px solid var(--line)}
+    .com-table th{background:var(--bg2);font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:20px 24px;text-align:left;border-bottom:1px solid var(--line);font-weight:500}
+    .com-table td{padding:20px 24px;font-size:15px;color:var(--off);border-bottom:1px solid var(--line2);background:var(--bg1);transition:background .2s}
+    .com-table tr:last-child td{border-bottom:none}
+    .com-table tr:hover td{background:rgba(0,255,135,.03)}
+    .plan-name{color:var(--white);font-weight:600}
+    .com-green{color:var(--green);font-family:var(--font-head);font-weight:700}
+    .price{font-weight:600;color:rgba(255,255,255,.8)}
+    .lider-com{color:var(--purple);font-weight:600;font-family:var(--font-head)}
+    .bono-row{margin-top:2px;background:rgba(0,255,135,.04);border:1px solid rgba(0,255,135,.15);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .bono-row span{font-size:13px;color:var(--off)}
+    .bono-row strong{font-family:var(--font-head);font-size:20px;color:var(--green)}
+
+    /* ── CALCULADORA ── */
+    .calc-wrap{background:var(--bg2);border:1px solid var(--line);padding:40px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+    .calc-title{font-family:var(--font-head);font-size:26px;font-weight:700;margin-bottom:12px;line-height:1.2}
+    .calc-sub{font-size:13px;color:var(--off);line-height:1.7;margin-bottom:32px;font-weight:300}
+    .calc-row{margin-bottom:28px}
+    .calc-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .calc-row-head label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+    .calc-val{font-family:var(--font-head);font-size:13px;color:var(--green)}
+    .calc-row input[type="range"]{width:100%;-webkit-appearance:none;height:2px;background:var(--line);outline:none;border-radius:0;cursor:pointer}
+    .calc-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--green);border-radius:50%;cursor:pointer}
+    .calc-row input[type="range"]::-moz-range-thumb{width:16px;height:16px;background:var(--green);border-radius:50%;cursor:pointer;border:none}
+    .calc-result-inner{border:1px solid var(--line);padding:40px 32px}
+    .calc-amount{font-family:var(--font-head);font-size:64px;font-weight:900;color:var(--green);line-height:1;margin-bottom:6px}
+    .calc-period{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:32px}
+    .calc-breakdown{border-top:1px solid var(--line2);padding-top:24px;display:flex;flex-direction:column;gap:12px}
+    .calc-line{display:flex;justify-content:space-between;font-size:13px;color:var(--off)}
+    .calc-line strong{color:var(--white)}
+    .calc-total{border-top:1px solid var(--line2);padding-top:12px;margin-top:4px;display:flex;justify-content:space-between;font-size:14px;font-weight:600;color:var(--white)}
+    .calc-total strong{color:var(--green);font-family:var(--font-head)}
+
+    /* ──  Kit de Marketing ── */
+    .benefits-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--line2);border:1px solid var(--line)}
+    .benefit{background:var(--bg2);padding:40px;display:flex;gap:24px;transition:background .3s;border-left:2px solid transparent}
+    .benefit:hover{background:var(--bg3);border-left-color:var(--green)}
+    .benefit-icon{width:48px;height:48px;background:var(--green-dim);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green)}
+    .benefit-icon svg{width:20px;height:20px}
+    .benefit-content h3{font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:8px;letter-spacing:.01em}
+    .benefit-content p{font-size:13px;color:var(--off);line-height:1.7;font-weight:300}
+
+    /* ══════════════════════════════════════════════════════════
+       FLUJO VISUAL — REDISEÑO COMPLETO
+    ══════════════════════════════════════════════════════════ */
+    .flujo-section{padding:100px 56px;background:var(--bg1);border-top:1px solid var(--line)}
+    .flujo-intro{max-width:700px;margin-bottom:80px}
+
+    /* Mapa contenedor */
+    .mapa-wrap{overflow-x:auto;padding-bottom:8px}
+    .flujo-svg{width:100%;min-width:820px;display:block}
+
+    /* Fases explicadas */
+    .fases-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--line2);border:1px solid var(--line);margin-top:80px}
+    .fase-card{background:var(--bg2);padding:40px;transition:background .3s;position:relative;overflow:hidden;border-left:3px solid transparent}
+    .fase-card.fc-green{border-left-color:var(--green)}
+    .fase-card.fc-blue{border-left-color:var(--blue)}
+    .fase-card.fc-orange{border-left-color:var(--orange)}
+    .fase-card.fc-purple{border-left-color:var(--purple)}
+    .fase-card:hover{background:var(--bg3)}
+    .fase-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;margin-bottom:20px;font-weight:600}
+    .fase-badge.fb-green{background:rgba(0,255,135,.1);color:var(--green)}
+    .fase-badge.fb-blue{background:rgba(0,200,255,.1);color:var(--blue)}
+    .fase-badge.fb-orange{background:rgba(255,153,0,.1);color:var(--orange)}
+    .fase-badge.fb-purple{background:rgba(153,102,255,.1);color:var(--purple)}
+    .fase-card h3{font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:10px;line-height:1.2}
+    .fase-card p{font-size:13px;color:var(--off);line-height:1.75;margin-bottom:16px;font-weight:300}
+    .fase-detail{display:flex;flex-direction:column;gap:8px;margin-top:16px;border-top:1px solid var(--line2);padding-top:16px}
+    .fase-detail-item{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--off);font-weight:300}
+    .fase-detail-item::before{content:'→';color:var(--green);flex-shrink:0;margin-top:1px;font-size:11px}
+
+    /* Roles */
+    .roles-wrap{margin-top:2px;display:grid;grid-template-columns:1fr 1fr;background:var(--line2);border:1px solid var(--line)}
+    .role-box{background:var(--bg2);padding:48px;border-left:3px solid transparent}
+    .role-box.rb-aff{border-left-color:var(--green)}
+    .role-box.rb-lid{border-left-color:var(--purple)}
+    .role-label{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+    .role-label.rl-green{color:var(--green)}
+    .role-label.rl-purple{color:var(--purple)}
+    .role-pct{font-family:var(--font-head);font-size:52px;font-weight:900;line-height:1;margin-bottom:20px}
+    .role-pct.rp-green{color:var(--green);text-shadow:0 0 30px rgba(0,255,135,.3)}
+    .role-pct.rp-purple{color:var(--purple);text-shadow:0 0 30px rgba(153,102,255,.3)}
+    .role-desc{font-size:13px;color:var(--off);line-height:1.8;font-weight:300;margin-bottom:24px}
+    .role-items{display:flex;flex-direction:column;gap:10px}
+    .role-item{display:flex;gap:10px;font-size:13px;color:var(--off);font-weight:300}
+    .role-item .ri-check{flex-shrink:0;font-size:12px;margin-top:1px}
+    .ri-g{color:var(--green)}
+    .ri-p{color:var(--purple)}
+
+    /* ── CTA ── */
+    .cta-section{text-align:center;padding:140px 56px;position:relative;overflow:hidden;background:var(--bg)}
+    .cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 50% 50%,rgba(0,255,135,.05) 0%,transparent 60%)}
+    .cta-rings{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;border:1px solid rgba(0,255,135,.04)}
+    .cta-rings::before{content:'';position:absolute;inset:80px;border-radius:50%;border:1px solid rgba(0,255,135,.06)}
+    .cta-rings::after{content:'';position:absolute;inset:160px;border-radius:50%;border:1px solid rgba(0,255,135,.08)}
+    .cta-section h2{font-family:var(--font-head);font-size:clamp(36px,5vw,68px);font-weight:900;line-height:1.05;letter-spacing:-1.5px;margin-bottom:24px;position:relative}
+    .cta-section h2 span{color:var(--green)}
+    .cta-section>p{font-size:15px;color:var(--off);max-width:460px;margin:0 auto 48px;line-height:1.8;position:relative;font-weight:300}
+    .cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative}
+    .cta-note{margin-top:24px;font-family:var(--font-mono);font-size:11px;color:var(--muted);position:relative;letter-spacing:.05em}
+    .cta-note a{color:var(--green);text-decoration:none}
+    .btn-neon{display:inline-flex;align-items:center;gap:12px;background:var(--green);color:var(--bg);padding:16px 32px;font-family:var(--font-head);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:all .25s;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
+    .btn-neon:hover{background:var(--green2);box-shadow:0 0 30px rgba(0,255,135,.5);transform:translateY(-2px)}
+    .btn-line{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);text-decoration:none;border:1px solid rgba(0,255,135,.3);padding:15px 28px;transition:all .2s}
+    .btn-line:hover{border-color:var(--green);box-shadow:0 0 16px rgba(0,255,135,.15);background:rgba(0,255,135,.04)}
+
+    /* ── FOOTER ── */
+    footer{background:var(--bg1);border-top:1px solid var(--line)}
+    .footer-main{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding:50px 40px 40px}
+    .fb-logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:-.01em;margin-bottom:16px;color:var(--white)}
+    .fb-logo em{font-style:normal;color:var(--green)}
+    .fb-p{font-size:13px;color:var(--muted);line-height:1.75;max-width:260px;font-weight:300}
+    .fc h4{font-family:var(--font-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:20px}
+    .fc a{display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:10px;transition:color .2s}
+    .fc a:hover{color:var(--white)}
+    .footer-bot{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-top:1px solid var(--line2)}
+    .fc-copy{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.1em}
+    .fc-made{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.08em}
+    .fc-made span{color:var(--green)}
+
+    /* ── FLOAT BTN ── */
+    #float-btn{position:fixed;bottom:80px;right:20px;z-index:9999;background:#25D366;color:#fff;padding:14px 20px;border-radius:100px;font-family:var(--font-body);font-size:11px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(37,211,102,0.45),0 2px 8px rgba(0,0,0,.3);animation:floatPulse 2.5s ease-in-out infinite;letter-spacing:.2px}
+    #float-btn:hover{background:#20c45e;transform:scale(1.04)}
+    @keyframes floatPulse{0%,100%{box-shadow:0 4px 24px rgba(37,211,102,0.45),0 2px 8px rgba(0,0,0,.3)}50%{box-shadow:0 4px 40px rgba(37,211,102,0.7),0 2px 8px rgba(0,0,0,.3)}}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px){
+      nav{padding:0 32px}
+      .nav-mid{display:none}
+      .nav-hamburger{display:flex}
+      .hero{padding-left:32px;padding-right:32px}
+      section{padding:60px 32px}
+      .flujo-section{padding:60px 32px}
+      .steps{grid-template-columns:1fr}
+      .benefits-grid{grid-template-columns:1fr}
+      .calc-wrap{grid-template-columns:1fr;padding:40px 24px;gap:40px}
+      .fases-grid{grid-template-columns:1fr}
+      .roles-wrap{grid-template-columns:1fr}
+      .footer-main{grid-template-columns:1fr 1fr;gap:40px;padding:60px 32px 40px}
+      .footer-bot{padding:20px 32px;flex-direction:column;gap:12px;text-align:center}
+      .cta-section{padding:60px 32px}
+    }
+    @media(max-width:640px){
+      nav{padding:0 16px;height:60px}
+      .nav-hamburger{display:flex}
+      .nav-cta{font-size:9px;padding:8px 14px}
+      .hero{padding-left:20px;padding-right:20px;padding-bottom:40px;min-height:auto;padding-top:80px}
+      .hero h1{font-size:clamp(36px,9vw,56px)}
+      .hero-tag{margin-bottom:24px}
+      section{padding:48px 20px}
+      .flujo-section{padding:48px 20px}
+      .flujo-wrap{max-width:100%}
+      .footer-main{grid-template-columns:1fr;padding:40px 20px;gap:32px}
+      .footer-bot{padding:16px 20px;flex-direction:column;gap:10px;text-align:center}
+      .cta-section{padding:60px 20px}
+      .role-box{padding:32px 24px}
+      .calc-wrap{padding:28px 16px}
+      .fl-nivel-head{padding:14px 16px}
+      .fl-fuente{padding:14px 16px}
+    }
+  </style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curRing"></div>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════ -->
+<nav>
+  <a href="landing.html" class="logo"><span class="logo-b">⚡</span>Fluye<span style="color:var(--green)">Libre</span></a>
+  <div class="nav-mid">
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#calculadora">Cuánto ganas</a>
+    <a href="#Kit de Marketing">Kit de Marketing</a>
+  </div>
+  <div class="nav-r">
+    <a href="https://wa.me/51926723311" target="_blank" class="nav-cta">Contactar por WhatsApp</a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="#como-funciona" class="nav-mobile-link">Cómo funciona</a>
+  <a href="#calculadora" class="nav-mobile-link">Cuánto ganas</a>
+  <a href="#Kit de Marketing" class="nav-mobile-link">Kit de Marketing</a>
+  <a href="https://wa.me/51926723311" target="_blank" class="nav-mobile-link" style="color:var(--green)">Contactar por WhatsApp</a>
+</div>
+
+<!-- ══ HERO ══════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Sistema de Afiliados</div>
+    <h1>Tu red.<br><span>Tu ingreso.</span><br>Tus reglas.</h1>
+    <div class="hero-actions">
+      <a href="https://wa.me/51926723311" target="_blank" class="btn-wa">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.174-1.448A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.877 9.877 0 0 1-5.031-1.378l-.36-.214-3.733.875.944-3.452-.235-.375A9.872 9.872 0 0 1 2.106 12C2.106 6.54 6.54 2.106 12 2.106c5.46 0 9.894 4.434 9.894 9.894 0 5.46-4.434 9.894-9.894 9.894z"/></svg>
+        Contactar por WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CÓMO FUNCIONA ══════════════════════════════════════════════ -->
+<section id="como-funciona" style="background:var(--bg1);border-top:1px solid var(--line)">
+  <div class="s-label">Proceso</div>
+  <h2 class="s-h2">Cómo <em>funciona</em></h2>
+  <p class="s-sub">Un sistema que trabaja contigo — y para ti — aunque no estés mirando la pantalla.</p>
+
+  <style>
+    /* ── AZUL para pasos 1 y 2 ── */
+    .flujo-wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:0}
+    .fl-nivel-blue .fl-nivel-body,.fl-nivel-body-blue{border-color:rgba(0,200,255,0.2)!important}
+    .fl-nivel-blue.open .fl-nivel-arrow{color:#00C8FF}
+    .nh-blue{background:rgba(0,200,255,0.07);border:1px solid rgba(0,200,255,0.28);border-bottom:none}
+    .fl-nivel-blue:not(.open) .nh-blue{border-radius:10px;border-bottom:1px solid rgba(0,200,255,0.28)}
+    .fl-fuente-txt ul li::before{color:var(--li-c,var(--green))}
+    /* ── COMISIÓN pill ── */
+    .com-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,135,0.1);border:1px solid rgba(0,255,135,0.25);border-radius:6px;padding:8px 16px;margin:10px 0 4px}
+    .com-pill-pct{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--green);line-height:1}
+    .com-pill-info{font-size:11px;color:var(--off);line-height:1.4}
+    .com-pill-info strong{display:block;color:var(--white);font-size:12px}
+    /* ── RECOMPENSAS ── */
+    .reward-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0}
+    .reward-card{background:rgba(0,200,255,0.04);border:1px solid rgba(0,200,255,0.15);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+    .reward-card-icon-svg{width:28px;height:28px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#00C8FF;flex-shrink:0}
+    .reward-card-title{font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--white);margin-bottom:0}
+    .reward-card-desc{font-size:11px;color:var(--off);font-weight:300;line-height:1.5}
+    @media(max-width:500px){.reward-grid{grid-template-columns:1fr}}
+    /* ── MAPA integrado ── */
+    .fl-mapa-wrap{width:100%;border-radius:10px;overflow:hidden}
+    .fl-mapa-wrap .fl-nivel-head{background:rgba(0,200,255,0.07);border:1px solid rgba(0,200,255,0.28);border-bottom:none}
+    .fl-mapa-wrap:not(.open) .fl-nivel-head{border-radius:10px;border-bottom:1px solid rgba(0,200,255,0.28)}
+    .fl-mapa-wrap .fl-nivel-body{border-color:rgba(0,200,255,0.2);background:#080d0b;padding:24px}
+    .fl-mapa-wrap.open .fl-nivel-arrow{color:#00C8FF}
+    .fl-connector{width:1px;height:28px;background:rgba(0,255,135,.2);margin:0 auto}
+    .fl-block{width:100%;background:#111;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:24px 28px;transition:border-color .25s,background .25s}
+    .fl-block:hover{background:#161616;border-color:rgba(0,255,135,.2)}
+    .fl-block.fl-green{border-color:rgba(0,255,135,.2);background:rgba(0,255,135,.03)}
+    .fl-block.fl-purple{border-color:rgba(153,102,255,.25);background:rgba(153,102,255,.03)}
+    .fl-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px}
+    .fl-label.lc-green{color:var(--green)}
+    .fl-label.lc-purple{color:var(--purple)}
+    .fl-h{font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px;line-height:1.25}
+    .fl-p{font-size:13px;color:var(--off);font-weight:300;line-height:1.6;margin:0}
+    /* nivel cards */
+    .fl-nivel{width:100%;border-radius:10px;overflow:hidden}
+    .fl-nivel-head{padding:18px 28px;display:flex;align-items:center;gap:14px;cursor:pointer;user-select:none}
+    .fl-nivel-head:hover .fl-nivel-title{opacity:.85}
+    .fl-nivel-head.nh-green{background:rgba(0,255,135,.07);border:1px solid rgba(0,255,135,.2);border-bottom:none}
+    .fl-nivel-head.nh-purple{background:rgba(153,102,255,.07);border:1px solid rgba(153,102,255,.25);border-bottom:none}
+    .fl-nivel-pct{font-family:var(--font-head);font-size:28px;font-weight:900;line-height:1}
+    .fl-nivel-pct.np-green{color:var(--green);text-shadow:0 0 20px rgba(0,255,135,.3)}
+    .fl-nivel-pct.np-purple{color:var(--purple);text-shadow:0 0 20px rgba(153,102,255,.3)}
+    .fl-nivel-info{flex:1}
+    .fl-nivel-title{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--white);transition:opacity .2s}
+    .fl-nivel-sub{font-size:12px;color:var(--off);font-weight:300;margin-top:2px}
+    .fl-nivel-arrow{width:18px;height:18px;color:var(--muted);transition:transform .3s,color .2s;flex-shrink:0}
+    .fl-nivel.open .fl-nivel-arrow{transform:rotate(180deg)}
+    .fl-nivel-body{display:none;border:1px solid rgba(0,255,135,.2);border-top:none;border-radius:0 0 10px 10px;padding:0}
+    .fl-nivel.open .fl-nivel-body{display:block}
+    .fl-nivel.fl-nivel-purple .fl-nivel-body{border-color:rgba(153,102,255,.25)}
+    .fl-fuente{padding:16px 28px;display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.05)}
+    .fl-fuente:last-child{border-bottom:none}
+    .fl-fuente-pct{font-family:var(--font-head);font-size:20px;font-weight:900;min-width:52px;flex-shrink:0;line-height:1.1}
+    .fl-fuente-pct.fp-green{color:var(--green)}
+    .fl-fuente-pct.fp-purple{color:var(--purple)}
+    .fl-fuente-txt h4{font-family:var(--font-head);font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px}
+    .fl-fuente-txt ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
+    .fl-fuente-txt li{font-size:12px;color:var(--off);font-weight:300;line-height:1.5;padding-left:14px;position:relative}
+    .fl-fuente-txt li::before{content:'→';position:absolute;left:0;font-family:var(--font-mono);font-size:10px;color:var(--purple);margin-top:1px}
+    .fl-fuente-txt li.li-g::before{color:var(--green)}
+    /* divisor nivel */
+    .fl-divider{display:flex;align-items:center;gap:14px;width:100%;margin:4px 0}
+    .fl-div-line{flex:1;height:1px;background:rgba(255,255,255,.07)}
+    .fl-div-badge{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);border:1px solid rgba(0,255,135,.3);padding:4px 14px;white-space:nowrap;background:rgba(0,255,135,.06);border-radius:2px}
+    /* comisión automática */
+    .fl-auto{width:100%;background:rgba(0,255,135,.04);border:1px solid rgba(0,255,135,.12);border-radius:10px;padding:20px 28px;display:flex;gap:16px;align-items:flex-start;margin-top:4px}
+    .fl-auto-icon{width:36px;height:36px;border-radius:50%;background:rgba(0,255,135,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .fl-auto-icon svg{width:16px;height:16px}
+    .fl-auto-txt h4{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--green);margin-bottom:6px}
+    .fl-auto-txt ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
+    .fl-auto-txt li{font-size:12px;color:var(--off);font-weight:300;padding-left:14px;position:relative}
+    .fl-auto-txt li::before{content:'→';position:absolute;left:0;font-family:var(--font-mono);font-size:10px;color:var(--green)}
+    /* diagrama SVG */
+    .fl-diagram{width:100%;max-width:580px;margin:48px auto 0}
+    .fl-diagram-title{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:20px}
+    @media(max-width:600px){.fl-block{padding:20px 18px}.fl-nivel-head{padding:16px 18px}.fl-fuente{padding:14px 18px}.fl-auto{padding:16px 18px}}
+  </style>
+
+  <div class="flujo-wrap">
+
+    <!-- Bloque 1: Compartir enlace — azul -->
+    <div class="fl-nivel fl-nivel-blue" onclick="toggleNivel(this)">
+      <div class="fl-nivel-head nh-blue">
+        <div style="width:48px;height:48px;border-radius:50%;background:rgba(0,200,255,0.12);border:1px solid rgba(0,200,255,0.35);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C8FF" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <div class="fl-nivel-info">
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,255,0.7);margin-bottom:3px">Paso 1</div>
+          <div class="fl-nivel-title">Compartes tu enlace personal</div>
+          <div class="fl-nivel-sub" style="color:rgba(0,200,255,0.5)">Tu código único · activo en todos tus canales</div>
+        </div>
+        <svg class="fl-nivel-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="fl-nivel-body fl-nivel-body-blue">
+        <div class="fl-fuente">
+          <div style="flex-shrink:0;padding-top:2px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00C8FF" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="fl-fuente-txt">
+            <h4 style="color:#00C8FF">Tu enlace irrepetible</h4>
+            <ul>
+              <li style="--li-c:#00C8FF">Al activar tu cuenta recibes un <strong style="color:#00C8FF">código único de referido</strong>: <span style="font-family:var(--font-mono);color:#00C8FF;font-size:11px;background:rgba(0,200,255,0.08);padding:2px 8px;border-radius:4px;border:1px solid rgba(0,200,255,0.25)">fluyelibre.club/r/TUCODIGO</span> — compártelo con amigos, familiares o en tus redes: WhatsApp, TikTok, correo, Instagram, y más</li>
+              <li style="--li-c:#00C8FF">Registra cada visita y cada venta en tiempo real — vinculada a tu cuenta automáticamente</li>
+              <li style="--li-c:#00C8FF">Funciona en cualquier canal: bio de Instagram, historia de WhatsApp, descripción de TikTok, correo</li>
+              <li style="--li-c:#00C8FF">No caduca mientras seas miembro activo — sin tech, sin landing propia</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fl-connector" style="background:rgba(0,200,255,0.2)"></div>
+
+    <!-- Bloque 2: Cliente compra — azul -->
+    <div class="fl-nivel fl-nivel-blue" onclick="toggleNivel(this)">
+      <div class="fl-nivel-head nh-blue" style="background:rgba(0,200,255,0.04)">
+        <div style="width:48px;height:48px;border-radius:50%;background:rgba(0,200,255,0.10);border:1px solid rgba(0,200,255,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C8FF" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <div class="fl-nivel-info">
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,255,0.7);margin-bottom:3px">Paso 2</div>
+          <div class="fl-nivel-title">El cliente decide comprar</div>
+          <div class="fl-nivel-sub" style="color:rgba(0,200,255,0.5)">4 planes disponibles · venta registrada automáticamente</div>
+        </div>
+        <svg class="fl-nivel-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="fl-nivel-body fl-nivel-body-blue">
+        <div class="fl-fuente">
+          <div style="flex-shrink:0;padding-top:2px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00C8FF" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <div class="fl-fuente-txt">
+            <h4 style="color:#00C8FF">Qué pasa cuando tu referido compra</h4>
+            <ul>
+              <li style="--li-c:#00C8FF">Elige entre 4 planes: Mensual · Trimestral · Semestral · Anual</li>
+              <li style="--li-c:#00C8FF">El sistema vincula esa compra a tu enlace en el momento del pago — sin que intervenga nadie</li>
+              <li style="--li-c:#00C8FF">No tienes que confirmar nada, enviar capturas ni hacer seguimiento</li>
+              <li style="--li-c:#00C8FF">La venta queda registrada a tu nombre y tu comisión empieza a correr de inmediato</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fl-connector"></div>
+
+    <!-- Nivel 1: Afiliado -->
+    <div class="fl-nivel" onclick="toggleNivel(this)">
+      <div class="fl-nivel-head nh-green">
+        <div class="fl-nivel-pct np-green">35%</div>
+        <div class="fl-nivel-info">
+          <div class="fl-nivel-title">Nivel 1 — Partner</div>
+          <div class="fl-nivel-sub">35% por venta directa · recurrente en cada renovación</div>
+        </div>
+        <svg class="fl-nivel-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="fl-nivel-body">
+        <div class="fl-fuente">
+          <div class="fl-fuente-pct fp-green">35%</div>
+          <div class="fl-fuente-txt">
+            <h4>Ventas directas — comisión inmediata</h4>
+            <div class="com-pill">
+              <div class="com-pill-pct">35%</div>
+              <div class="com-pill-info"><strong>por cada venta confirmada</strong>acreditado en menos de 48 h hábiles</div>
+            </div>
+            <ul>
+              <li class="li-g">Aplica a los 4 planes — sin importar cuál elija tu referido</li>
+              <li class="li-g">Recurrente: cuando tu referido renueva, el 35% vuelve a entrar solo</li>
+              <li class="li-g">Sin techo — puedes acumular tantas comisiones como ventas generes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divisor -->
+    <div class="fl-divider">
+      <div class="fl-div-line"></div>
+      <div class="fl-div-badge">Subes a Director(a) de Operaciones</div>
+      <div class="fl-div-line"></div>
+    </div>
+
+    <!-- Nivel 2: Líder -->
+    <div class="fl-nivel fl-nivel-purple" onclick="toggleNivel(this)">
+      <div class="fl-nivel-head nh-purple">
+        <div class="fl-nivel-pct np-purple">50%</div>
+        <div class="fl-nivel-info">
+          <div class="fl-nivel-title">Nivel 2 — Director(a) de Operaciones</div>
+          <div class="fl-nivel-sub">Dos fuentes de ingreso separadas y simultáneas</div>
+        </div>
+        <svg class="fl-nivel-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="fl-nivel-body">
+        <div class="fl-fuente">
+          <div class="fl-fuente-pct fp-purple">50%</div>
+          <div class="fl-fuente-txt">
+            <h4>1. Tus ventas directas — sube de 35% a 50%</h4>
+            <div class="com-pill" style="background:rgba(153,102,255,0.1);border-color:rgba(153,102,255,0.3)">
+              <div class="com-pill-pct" style="color:#9966ff">50%</div>
+              <div class="com-pill-info"><strong style="color:#c4a0ff">por cada venta que tú cierras</strong>reemplaza la base del 35% — recurrente en cada renovación</div>
+            </div>
+            <ul>
+              <li>Al alcanzar el rango Director(a) de Operaciones, tu comisión base escala automáticamente — sin hacer nada extra</li>
+              <li>Aplica a los 4 planes · recurrente: las renovaciones también generan el 50%</li>
+            </ul>
+          </div>
+        </div>
+        <div class="fl-fuente">
+          <div class="fl-fuente-pct fp-purple">+15%</div>
+          <div class="fl-fuente-txt">
+            <h4>2. Ventas de tu equipo — ingreso paralelo</h4>
+            <div class="com-pill" style="background:rgba(153,102,255,0.08);border-color:rgba(153,102,255,0.25)">
+              <div class="com-pill-pct" style="color:#9966ff;font-size:22px">+15%</div>
+              <div class="com-pill-info"><strong style="color:#c4a0ff">+15% por cada venta de tus Partners</strong>El sistema te premia con el 15% del valor total del plan — automático</div>
+            </div>
+            <ul>
+              <li>Recurrente: cuando los clientes de tu equipo renuevan, tu 15% entra solo</li>
+            </ul>
+          </div>
+        </div>
+        <div class="fl-fuente" style="flex-direction:column;gap:10px">
+          <h4 style="font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--white);margin-bottom:2px">3. Tu rol como Director(a) de Operaciones — más allá de vender</h4>
+          <p style="font-size:12px;color:var(--off);font-weight:300;line-height:1.6;margin-bottom:8px">Como Director(a) de Operaciones no solo vendes — gestionas un equipo. Enseñas a vender, resuelves dudas, compartes estrategia y mantienes a tu red activa y motivada. El sistema reconoce eso.</p>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px">
+            <li style="font-size:12px;color:var(--off);font-weight:300;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--purple);font-family:var(--font-mono);font-size:10px">→</span>Onboarding de nuevos Partners — los integras al sistema desde el primer día</li>
+            <li style="font-size:12px;color:var(--off);font-weight:300;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--purple);font-family:var(--font-mono);font-size:10px">→</span>Capacitación en ventas — enseñas técnicas, guiones y cierres que funcionan</li>
+            <li style="font-size:12px;color:var(--off);font-weight:300;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--purple);font-family:var(--font-mono);font-size:10px">→</span>Soporte activo — resuelves dudas técnicas y de proceso en tiempo real</li>
+            <li style="font-size:12px;color:var(--off);font-weight:300;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--purple);font-family:var(--font-mono);font-size:10px">→</span>Seguimiento de desempeño — identificas quién necesita apoyo y actúas antes de perder una venta</li>
+          </ul>
+        </div>
+        <div class="fl-fuente" style="flex-direction:column;gap:0;border-bottom:none;padding:0">
+          <div style="padding:16px 28px 12px;border-bottom:1px solid rgba(0,200,255,0.1);background:rgba(0,200,255,0.03)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+              <div style="width:1px;height:16px;background:rgba(0,200,255,0.5)"></div>
+              <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,255,0.7)">Reconocimientos del sistema</span>
+            </div>
+            <p style="font-size:12px;color:var(--off);font-weight:300;line-height:1.6;margin:0">Para Directores(as) que construyen activamente — bonificaciones adicionales sobre la comisión base.</p>
+          </div>
+          <div class="reward-grid" style="padding:16px 28px 20px">
+            <div class="reward-card">
+              <div class="reward-card-icon-svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="16" height="16"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+              <div class="reward-card-title">Bonos por volumen</div>
+              <div class="reward-card-desc">La red supera un hito → el sistema activa bonificaciones extras automáticamente.</div>
+            </div>
+            <div class="reward-card">
+              <div class="reward-card-icon-svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="16" height="16"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+              </div>
+              <div class="reward-card-title">Ranking interno</div>
+              <div class="reward-card-desc">Los Directores(as) más activos aparecen con visibilidad real dentro de la comunidad.</div>
+            </div>
+            <div class="reward-card">
+              <div class="reward-card-icon-svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="16" height="16"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div class="reward-card-title">Acceso anticipado</div>
+              <div class="reward-card-desc">Primeros en conocer nuevos planes, funciones y estrategias de la red.</div>
+            </div>
+            <div class="reward-card">
+              <div class="reward-card-icon-svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="16" height="16"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="reward-card-title">Mentoría directa</div>
+              <div class="reward-card-desc">Sesiones uno a uno con el equipo Fluye Libre para escalar con estrategia probada.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fl-connector"></div>
+
+    <!-- Bloque cierre — desplegable -->
+    <div class="fl-nivel" onclick="toggleNivel(this)">
+      <div class="fl-nivel-head nh-green" style="background:rgba(0,255,135,0.06)">
+        <div style="width:48px;height:48px;border-radius:50%;background:rgba(0,255,135,0.12);border:1px solid rgba(0,255,135,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00FF87" stroke-width="1.8"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><path d="M12 8v4M12 12l-5 4M12 12l5 4"/></svg>
+        </div>
+        <div class="fl-nivel-info">
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,255,135,0.6);margin-bottom:3px">Cómo escala</div>
+          <div class="fl-nivel-title">Tu red avanza. Tu ingreso escala.</div>
+          <div class="fl-nivel-sub">cada nuevo Partner amplifica — sin reducir lo de nadie</div>
+        </div>
+        <svg class="fl-nivel-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="fl-nivel-body">
+        <div class="fl-fuente">
+          <div style="flex-shrink:0;padding-top:2px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00FF87" stroke-width="1.8"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><path d="M12 8v4M12 12l-5 4M12 12l5 4"/></svg>
+          </div>
+          <div class="fl-fuente-txt">
+            <h4>Un sistema de suma positiva</h4>
+            <ul>
+              <li class="li-g">Cada Partner que incorporas conserva su 35% íntegro — tú no les quitas nada</li>
+              <li class="li-g">Tú recibes el 15% adicional aparte, sin afectar la comisión de tu equipo</li>
+              <li class="li-g">Mientras más activos tenga tu red, más fuentes de ingreso recurrente se acumulan solas</li>
+              <li class="li-g">El sistema no descansa aunque tú lo hagas — las renovaciones siguen generando comisión</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fl-connector"></div>
+
+    <!-- Comisión automática — desplegable -->
+    <div class="fl-nivel" onclick="toggleNivel(this)">
+      <div class="fl-nivel-head nh-green" style="background:rgba(0,255,135,0.04);border-color:rgba(0,255,135,0.15)">
+        <div style="width:48px;height:48px;border-radius:50%;background:rgba(0,255,135,0.10);border:1px solid rgba(0,255,135,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00FF87" stroke-width="1.8"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </div>
+        <div class="fl-nivel-info">
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,255,135,0.6);margin-bottom:3px">Tu cobro</div>
+          <div class="fl-nivel-title">Comisión automática · retiro 24/7</div>
+          <div class="fl-nivel-sub">monedero en tiempo real · sin gestión manual</div>
+        </div>
+        <svg class="fl-nivel-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="fl-nivel-body">
+        <div class="fl-fuente">
+          <div style="flex-shrink:0;padding-top:2px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00FF87" stroke-width="1.8"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </div>
+          <div class="fl-fuente-txt">
+            <h4>Cómo entra y cómo retiras</h4>
+            <ul>
+              <li class="li-g">Cada venta confirmada aparece en tu monedero en tiempo real — sin esperar reportes ni enviar capturas</li>
+              <li class="li-g">Comisión acreditada en 24–48 horas hábiles tras confirmar el pago</li>
+              <li class="li-g">Solicitas retiro desde el panel con un clic, ingresas tu cuenta bancaria y listo</li>
+              <li class="li-g">Disponible 7 días a la semana, sin mínimo de retiro ni límite de horario</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.1em;margin-top:32px">Explora cada bloque para ver más detalle</p>
+
+  </div>
+
+  <!-- Mapa del sistema — FUERA de la cartilla -->
+  <div style="margin-top:48px;border-top:1px solid var(--line);padding-top:48px">
+    <div class="s-label" style="margin-bottom:16px">Mapa del sistema</div>
+    <p style="font-size:13px;color:var(--off);font-weight:300;margin-bottom:28px;max-width:520px">Visualización completa de cómo fluye cada comisión desde tu enlace hasta tu monedero.</p>
+    <div style="background:#080d0b;border:1px solid rgba(0,200,255,0.2);border-radius:10px;padding:24px 20px;overflow-x:auto">
+      <svg style="width:100%;display:block;min-width:320px" viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrG2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,1 L0,7 L7,4 z" fill="rgba(0,255,135,0.6)"/></marker>
+          <marker id="arrP2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,1 L0,7 L7,4 z" fill="rgba(153,102,255,0.6)"/></marker>
+          <marker id="arrB2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,1 L0,7 L7,4 z" fill="rgba(0,200,255,0.6)"/></marker>
+        </defs>
+        <!-- Nodo 1 — centrado -->
+        <rect x="165" y="10" width="230" height="48" rx="8" fill="rgba(0,200,255,0.08)" stroke="rgba(0,200,255,0.4)" stroke-width="1.2"/>
+        <text x="280" y="30" text-anchor="middle" font-family="'Unbounded',sans-serif" font-size="8" fill="rgba(0,200,255,0.7)" letter-spacing="2">PASO 1</text>
+        <text x="280" y="48" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="13" fill="#F0FFF8" font-weight="600">Compartes tu enlace</text>
+        <line x1="280" y1="58" x2="280" y2="84" stroke="rgba(0,200,255,0.45)" stroke-width="1.5" marker-end="url(#arrB2)"/>
+        <!-- Nodo 2 — centrado -->
+        <rect x="165" y="86" width="230" height="48" rx="8" fill="rgba(0,200,255,0.05)" stroke="rgba(0,200,255,0.25)" stroke-width="1.2"/>
+        <text x="280" y="106" text-anchor="middle" font-family="'Unbounded',sans-serif" font-size="8" fill="rgba(0,200,255,0.55)" letter-spacing="2">PASO 2</text>
+        <text x="280" y="124" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="13" fill="#F0FFF8" font-weight="600">El cliente compra</text>
+        <!-- bifurcación -->
+        <line x1="280" y1="134" x2="280" y2="148" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+        <line x1="130" y1="148" x2="430" y2="148" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <line x1="130" y1="148" x2="130" y2="164" stroke="rgba(0,255,135,0.4)" stroke-width="1.5" marker-end="url(#arrG2)"/>
+        <line x1="430" y1="148" x2="430" y2="164" stroke="rgba(153,102,255,0.4)" stroke-width="1.5" marker-end="url(#arrP2)"/>
+        <!-- NIVEL 1 — PARTNER — texto centrado -->
+        <rect x="20" y="166" width="220" height="110" rx="8" fill="rgba(0,255,135,0.07)" stroke="rgba(0,255,135,0.3)" stroke-width="1.2"/>
+        <text x="130" y="186" text-anchor="middle" font-family="'Unbounded',sans-serif" font-size="7" fill="rgba(0,255,135,0.65)" letter-spacing="2">NIVEL 1 — PARTNER</text>
+        <text x="130" y="220" text-anchor="middle" font-family="'Unbounded',sans-serif" font-size="32" fill="#00FF87" font-weight="900">35%</text>
+        <text x="130" y="240" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="11" fill="#A8C4B8" font-weight="300">ventas directas · recurrente</text>
+        <text x="130" y="256" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="10" fill="rgba(0,255,135,0.5)" font-weight="300">↺ se activa en cada renovación</text>
+        <!-- flecha N1 → monedero -->
+        <line x1="130" y1="276" x2="130" y2="308" stroke="rgba(0,255,135,0.3)" stroke-width="1.5" marker-end="url(#arrG2)"/>
+        <rect x="20" y="310" width="220" height="36" rx="6" fill="rgba(0,255,135,0.04)" stroke="rgba(0,255,135,0.15)" stroke-width="1"/>
+        <text x="130" y="333" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="12" fill="#A8C4B8" font-weight="300">monedero · retiro 24/7</text>
+        <!-- NIVEL 2 — DIRECTOR(A) — texto centrado -->
+        <rect x="320" y="166" width="220" height="152" rx="8" fill="rgba(153,102,255,0.07)" stroke="rgba(153,102,255,0.3)" stroke-width="1.2"/>
+        <text x="430" y="186" text-anchor="middle" font-family="'Unbounded',sans-serif" font-size="7" fill="rgba(153,102,255,0.75)" letter-spacing="2">NIVEL 2 — DIRECTOR(A)</text>
+        <text x="430" y="218" text-anchor="middle" font-family="'Unbounded',sans-serif" font-size="28" fill="#9966ff" font-weight="900">50%</text>
+        <text x="430" y="236" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="10" fill="#A8C4B8" font-weight="300">ventas propias · recurrente</text>
+        <line x1="330" y1="248" x2="530" y2="248" stroke="rgba(153,102,255,0.2)" stroke-width="1"/>
+        <text x="430" y="268" text-anchor="middle" font-family="'Unbounded',sans-serif" font-size="28" fill="#9966ff" font-weight="900">+15%</text>
+        <text x="430" y="286" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="10" fill="#A8C4B8" font-weight="300">ventas del equipo · recurrente</text>
+        <text x="430" y="302" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="9" fill="rgba(153,102,255,0.7)" font-weight="300">El sistema te premia con el 15% del plan</text>
+        <!-- flecha N2 → monedero -->
+        <line x1="430" y1="318" x2="430" y2="350" stroke="rgba(153,102,255,0.3)" stroke-width="1.5" marker-end="url(#arrP2)"/>
+        <rect x="320" y="352" width="220" height="36" rx="6" fill="rgba(153,102,255,0.04)" stroke="rgba(153,102,255,0.18)" stroke-width="1"/>
+        <text x="430" y="375" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="12" fill="#A8C4B8" font-weight="300">monedero · retiro 24/7</text>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+  function toggleNivel(el){
+    const isOpen=el.classList.contains('open');
+    document.querySelectorAll('.fl-nivel').forEach(n=>n.classList.remove('open'));
+    if(!isOpen) el.classList.add('open');
+  }
+  </script>
+
+</section>
+
+
+<!-- ══ CALCULADORA ════════════════════════════════════════════════ -->
+<section id="calculadora" style="padding-top:0">
+  <div class="calc-wrap">
+    <div>
+      <div class="s-label">Calculadora</div>
+      <h3 class="calc-title">¿Qué genera tu actividad al mes?</h3>
+      <p class="calc-sub">Mueve los sliders por plan. Los números son reales — sin inflación, sin trampa.</p>
+      <div id="calc-sliders"></div>
+    </div>
+    <div>
+      <div class="calc-result-inner">
+        <div class="calc-amount" id="fl-total">S/.0</div>
+        <div class="calc-period">al mes</div>
+        <div class="calc-breakdown">
+          <div id="fl-lines"></div>
+          <div class="calc-total">
+            <span>Total mensual</span>
+            <strong id="fl-total-b">S/.0.00</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══  Kit de Marketing ═════════════════════════════════════════════════ -->
+<section id="Kit de Marketing" style="background:var(--bg1);border-top:1px solid var(--line)">
+  <div class="s-label">Kit de Marketing</div>
+  <h2 class="s-h2">Lo que te da <em>Fluye Libre</em></h2>
+  <p class="s-sub">No vendes algo ajeno. Eres parte del sistema — y eso se nota cuando lo ofreces.</p>
+  <div class="benefits-grid">
+    <div class="benefit">
+      <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 12h6"/></svg></div>
+      <div class="benefit-content"><h3>Materiales que ya convierten</h3><p>Copies, creatividades y funnels probados. No empiezas desde cero — arrancas desde donde otros terminaron.</p></div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 17V13M12 17V7M17 17V11"/></svg></div>
+      <div class="benefit-content"><h3>Dashboard que no oculta nada</h3><p>Ventas, comisiones y posición en tu red. Visibles desde la app, en tiempo real, sin esperar reportes.</p></div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+      <div class="benefit-content"><h3>Ingresos que no piden permiso</h3><p>Cada renovación de tus referidos genera comisión sola. El dinero entra aunque no hayas trabajado ese día.</p></div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+      <div class="benefit-content"><h3>Roles que reconocen lo que construyes</h3><p>Partner → Director(a) de Operaciones. El sistema ve tu red, no solo tus ventas — y te paga por ambas.</p></div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></div>
+      <div class="benefit-content"><h3>Tu posición vale más con el tiempo</h3><p>A medida que Fluye Libre crece y el precio sube, tu lugar dentro del sistema gana más peso — no menos.</p></div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg></div>
+      <div class="benefit-content"><h3>Acompañamiento real, no un bot</h3><p>Tu Director(a) de Operaciones está presente cuando lo necesitas — con estrategia, no con respuestas automáticas.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CTA FINAL ═══════════════════════════════════════════════════ -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-rings"></div>
+  <h2>El sistema existe.<br><span>Solo falta tu decisión.</span></h2>
+  <p>Activa tu membresía hoy. Tu enlace te espera.</p>
+  <div class="cta-buttons">
+    <a href="https://wa.me/51926723311" target="_blank" class="btn-line">Contactar por WhatsApp</a>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-main">
+    <div>
+      <div class="fb-logo">Fluye<em>Libre</em></div>
+      <p class="fb-p">Ecosistema de transformación integral. Cuerpo, mente y economía — un solo sistema, una sola decisión.</p>
+    </div>
+    <div class="fc">
+      <h4>Sistema</h4>
+      <a href="#sistema">Cómo funciona</a>
+      <a href="#sistema">Los 3 pilares</a>
+      <a href="fli-onboarding.html">La app</a>
+    </div>
+    <div class="fc">
+      <h4>Acceso</h4>
+      <a href="planes.html">Ver planes</a>
+      <a href="fli-onboarding.html">Prueba 7 días gratis</a>
+      <a href="#">Programa afiliados</a>
+    </div>
+    <div class="fc">
+      <h4>Contacto</h4>
+      <a href="https://wa.me/51926723311">WhatsApp</a>
+      <a href="https://instagram.com/fluyelibre">Instagram</a>
+      <a href="index.html">Acceder al app</a>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <span class="fc-copy">© 2026 FluyelLibre.club — Transformación integral · Disciplina medible</span>
+    <span class="fc-made">Hecho en <span>Perú</span></span>
+  </div>
+</footer>
+
+
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
+
+// HAMBURGER
+const ham=document.getElementById('hamburger'),menu=document.getElementById('mobileMenu');
+ham.addEventListener('click',()=>{ham.classList.toggle('active');menu.classList.toggle('open')});
+menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('active');menu.classList.remove('open')}));
+window.addEventListener('scroll',()=>{if(menu.classList.contains('open')){ham.classList.remove('active');menu.classList.remove('open')}});
+
+// PLANES Y COMISIONES
+var PLANES=[
+  {key:'mensual',label:'Mensual',precio:99},
+  {key:'trimestral',label:'Trimestral',precio:267},
+  {key:'semestral',label:'Semestral',precio:475},
+  {key:'anual',label:'Anual',precio:772},
+];
+var PCT_AFILIADO=0.35,PCT_LIDER=0.15;
+PLANES.forEach(function(p){
+  p.com=Math.round(p.precio*PCT_AFILIADO*100)/100;
+  p.com_lider=Math.round(p.precio*PCT_LIDER*100)/100;
+});
+
+
+// CALCULADORA
+var slidersWrap=document.getElementById('calc-sliders');
+PLANES.forEach(function(p){
+  slidersWrap.innerHTML+='<div class="calc-row"><div class="calc-row-head"><label>'+p.label+' — S/.'+p.precio+'</label><span class="calc-val" id="lbl-'+p.key+'">0 ventas</span></div><input type="range" min="0" max="20" value="0" id="sl-'+p.key+'" data-com="'+p.com+'" oninput="flCalc()"></div>';
+});
+
+function flCalc(){
+  var total=0,linesHTML='';
+  PLANES.forEach(function(p){
+    var slider=document.getElementById('sl-'+p.key);
+    var ventas=parseInt(slider.value,10);
+    var com=parseFloat(slider.dataset.com);
+    var subtotal=ventas*com;
+    document.getElementById('lbl-'+p.key).textContent=ventas+' venta'+(ventas===1?'':'s');
+    if(ventas>0){linesHTML+='<div class="calc-line"><span>'+p.label+' ('+ventas+' × S/.'+com.toFixed(2)+')</span><strong>S/.'+subtotal.toFixed(2)+'</strong></div>';}
+    total+=subtotal;
+  });
+  document.getElementById('fl-lines').innerHTML=linesHTML;
+  document.getElementById('fl-total').textContent='S/.'+Math.round(total);
+  document.getElementById('fl-total-b').textContent='S/.'+total.toFixed(2);
+}
+flCalc();
+</script>
+</body>
+</html>

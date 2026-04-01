@@ -334,7 +334,8 @@ input[type=range]::-webkit-slider-thumb{
             <option value="+34">🇪🇸 +34</option>
             <option value="+1">🇺🇸 +1</option>
           </select>
-          <input class="fli-input" id="inp-whatsapp" type="tel" placeholder="999 999 999" autocomplete="tel" inputmode="numeric" style="flex:1;">
+          <input class="fli-input" id="inp-whatsapp" type="tel" placeholder="999 999 999" autocomplete="tel" inputmode="numeric" style="flex:1;"
+            oninput="this.value=this.value.replace(/[^\d]/g,'').replace(/^51+/,'').replace(/^0+/,'')">
         </div>
       </div>
       <div class="error-msg" id="err-cuenta"></div>
@@ -901,7 +902,11 @@ function validateCuenta() {
   if (state.pass.length < 6) { showErr('err-cuenta','La contraseña debe tener al menos 6 caracteres'); return false; }
   const waRaw = document.getElementById('inp-whatsapp').value.trim();
   const waCountry = document.getElementById('inp-wa-country').value;
-  const waDigits = waRaw.replace(/\D/g, '');
+  const waCountryDigits = waCountry.replace(/\D/g, '');
+  let waDigits = waRaw.replace(/\D/g, '');
+  if (waDigits.startsWith(waCountryDigits)) {
+    waDigits = waDigits.slice(waCountryDigits.length);
+  }
   if (!waDigits) { showErr('err-cuenta','Ingresa tu número de WhatsApp'); return false; }
   if (waDigits.length < 7 || waDigits.length > 12) { showErr('err-cuenta','Número de WhatsApp inválido'); return false; }
   state.whatsapp = waCountry + waDigits;
@@ -1509,7 +1514,7 @@ async function generarPlan() {
 
     // Redirigir al app en 4 segundos
     setTimeout(() => {
-      window.location.href = '/';
+      window.location.href = 'index.html';
     }, 4000);
 
   } catch(err) {
