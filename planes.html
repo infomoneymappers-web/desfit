@@ -864,7 +864,7 @@ async function submitVoucher() {
         nombre,
         email,
         whatsapp,
-        rol: 'usuario',
+        rol: 'afiliado',
         activo: false,
         estado: 'pendiente'   // necesario para que aparezca en FL > Miembros
       }, { onConflict: 'id' });
