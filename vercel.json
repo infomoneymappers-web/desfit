@@ -1,19 +1,21 @@
 {
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/",          "destination": "/landing.html" },
-    { "source": "/app",       "destination": "/index.html" },
-    { "source": "/admin",     "destination": "/desfit-admin.html" },
-    { "source": "/planes",    "destination": "/planes.html" },
+    { "source": "/", "destination": "/landing.html" },
+    { "source": "/app", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/desfit-admin.html" },
+    { "source": "/planes", "destination": "/planes.html" },
     { "source": "/afiliados", "destination": "/afiliados.html" },
-    { "source": "/brochure",  "destination": "/brochure.html" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-      ]
-    }
+    { "source": "/brochure", "destination": "/brochure.html" }
   ]
 }
+```
+
+Guarda, luego:
+```
+git add .
+```
+```
+git commit -m "fix rutas sin cleanUrls"
+```
+```
+git push
