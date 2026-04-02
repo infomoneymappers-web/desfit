@@ -1,11 +1,10 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/", "destination": "/landing.html" },
-    { "source": "/app", "destination": "/index.html" },
-    { "source": "/admin", "destination": "/desfit-admin.html" },
-    { "source": "/planes", "destination": "/planes.html" },
-    { "source": "/afiliados", "destination": "/afiliados.html" },
-    { "source": "/brochure", "destination": "/brochure.html" }
+  "routes": [
+    { "src": "/", "dest": "/landing.html" },
+    { "src": "/app", "dest": "/index.html" },
+    { "src": "/admin", "dest": "/desfit-admin.html" },
+    { "src": "/planes", "dest": "/planes.html" },
+    { "src": "/afiliados", "dest": "/afiliados.html" },
+    { "src": "/brochure", "dest": "/brochure.html" }
   ]
 }
