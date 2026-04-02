@@ -1372,7 +1372,7 @@ document.getElementById('btn-registro').addEventListener('click', async () => {
   });
   // Fallback: guardar en metadata de Auth si falla el RPC
   if (rpcErr) {
-    await sb.auth.updateUser({ data: { nombre, estado: 'pendiente', rol: 'cliente' } });
+    await sb.auth.updateUser({ data: { nombre, estado: 'pendiente', rol: 'afiliado' } });
   }
 
   // 3. Cerrar sesión — no dejar entrar hasta que admin apruebe
@@ -1415,7 +1415,7 @@ async function initApp(user) {
       .select('nombre, rol, estado').eq('id', user.id).maybeSingle();
 
   if (!perfil) {
-    await sb.from('usuarios').upsert({ id: user.id, email: user.email, rol: 'cliente', estado: 'pendiente' });
+    await sb.from('usuarios').upsert({ id: user.id, email: user.email, rol: 'afiliado', estado: 'pendiente' });
     await sb.auth.signOut();
     _appIniciado = false;
     const err = document.getElementById('login-error');
